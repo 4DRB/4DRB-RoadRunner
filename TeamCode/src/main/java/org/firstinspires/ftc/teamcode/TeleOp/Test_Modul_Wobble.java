@@ -6,10 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.Servo;
 
 
-@TeleOp(name= "TestCremaliera")
-public class Test_Servo_Sensori_Magnetici_TeleOP extends LinearOpMode {
+@TeleOp(name= "TestModulWobble")
+public class Test_Modul_Wobble extends LinearOpMode {
 
     private Boolean CrSensLastDep = true;
 
@@ -28,6 +29,7 @@ public class Test_Servo_Sensori_Magnetici_TeleOP extends LinearOpMode {
         //private DcMotor ColectorV = null;
         CRServo cremaliera_Servo = hardwareMap.get(CRServo.class, "SR_CRM");
         DigitalChannel digChannel = hardwareMap.get(DigitalChannel.class, "Mag_CRM");
+        Servo clamp=hardwareMap.get(Servo.class, "SR_CLAMP");
         // set the digital channel to input.
         digChannel.setMode(DigitalChannel.Mode.INPUT);
 
@@ -37,6 +39,25 @@ public class Test_Servo_Sensori_Magnetici_TeleOP extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
+
+
+            // run until the end of the match (driver presses STOP)
+
+
+                // check to see if we need to move the servo.
+                if(gamepad1.y) {
+                    // move to 0 degrees.
+                    clamp.setPosition(0.0);
+
+                } else if (gamepad1.x) {
+                    // move to 90 degrees.
+                    clamp.setPosition(0.5);
+                }
+                telemetry.addData("Servo Position", clamp.getPosition());
+                telemetry.addData("Status", "Running");
+
+
+
 
 
             boolean crMg_OK;
