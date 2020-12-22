@@ -5,6 +5,8 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -12,10 +14,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "TestModulWobble")
 public class Test_Modul_Wobble extends LinearOpMode {
 
-    private Boolean CrSensLastDep = true;
-
-    boolean crMg_OK;
-
+    private Boolean CrSensLastDep = true;//ultima directie in care am mers(scos sau bagat)
+    private Boolean GlSensLastDep = true;//ultima directie in care am mers(sus sau jos)
+    double glPwr = 0.5;//putere glisiera
+    double crPwr = 1.0;//putere cremaliera
+    boolean crMg_OK;//daca senzorul de pe cremaliera simte unul dintre magneti
+    boolean glMg_OK;//daca senzorul de pe glisiera simte unul dintre magneti
 
     /**
      *
@@ -32,13 +36,31 @@ public class Test_Modul_Wobble extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             // run until the end of the match (driver presses STOP)
+
+
             ClampTeleOp();//X si Y pentru clamp
+
+
             CremalieraTeleOp();//A si B pentru Cremaliera
+
+
+            GlisieraTeleOp();//Sageti sus si jos
+
+
+            telemetry.addData("sens", CrSensLastDep);
+            telemetry.addData("magnet", crMg_OK);
+            telemetry.addData("Buton A", gamepad1.a);
+            telemetry.addData("Buton B", gamepad1.b);
+            telemetry.addData("sens glisiera", GlSensLastDep);
+            telemetry.addData("magnet glisiera", glMg_OK);
+            telemetry.addData("Sageata sus", gamepad1.dpad_up);
+            telemetry.addData("sageata jos", gamepad1.dpad_down);
+            telemetry.update();
         }
     }
 
     // run until the end of the match (driver presses STOP)
-    public void ClampTeleOp(){
+    public void ClampTeleOp() {
         Servo clamp = hardwareMap.get(Servo.class, "SR_CLAMP");
 
 
@@ -65,13 +87,13 @@ public class Test_Modul_Wobble extends LinearOpMode {
                     cremaliera_Servo.setPower(0);
                     //CrSensLastDep = false;
                 } else if (gamepad1.b) {
-                    cremaliera_Servo.setPower(-1);
+                    cremaliera_Servo.setPower(-crPwr);
                     //CrSensLastDep = false;
                 }
 
             } else {
                 if (gamepad1.a) {
-                    cremaliera_Servo.setPower(1);
+                    cremaliera_Servo.setPower(crPwr);
                     ////////////////////////CrSensLastDep = true;
                 } else if (gamepad1.b) {
                     cremaliera_Servo.setPower(0);
@@ -85,27 +107,75 @@ public class Test_Modul_Wobble extends LinearOpMode {
                 if (gamepad1.b) {
                     cremaliera_Servo.setPower(0);
                 } else if (gamepad1.a) {
-                    cremaliera_Servo.setPower(1);
+                    cremaliera_Servo.setPower(crPwr);
                     //CrSensLastDep = true;
                 }
             }
             if (!crMg_OK) {
                 if (gamepad1.b) {
-                    cremaliera_Servo.setPower(-1);
+                    cremaliera_Servo.setPower(-crPwr);
                 } else if (gamepad1.a) {
-                    cremaliera_Servo.setPower(1);
+                    cremaliera_Servo.setPower(crPwr);
                     CrSensLastDep = true;
                 } else {
                     cremaliera_Servo.setPower(0);
                 }
             }
         }
-        telemetry.addData("sens", CrSensLastDep);
-        telemetry.addData("magnet", crMg_OK);
-        telemetry.addData("Buton A", gamepad1.a);
-        telemetry.addData("Buton B", gamepad1.b);
-        telemetry.update();
+
+
     }
 
+    public void GlisieraTeleOp() {
+
+        DcMotor glisiera = hardwareMap.get(DcMotorEx.class, "GLS");
+        glisiera.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        DigitalChannel crMg = hardwareMap.get(DigitalChannel.class, "Mag_GLS");
+
+        glMg_OK = !crMg.getState();
+        if (GlSensLastDep) {
+            if (glMg_OK) {
+                if (gamepad1.dpad_down) {
+                    glisiera.setPower(0);
+
+                    //CrSensLastDep = false;
+                } else if (gamepad1.dpad_up) {
+                    glisiera.setPower(glPwr);
+                    //CrSensLastDep = false;
+                }
+
+            } else {
+                if (gamepad1.dpad_down) {
+                    glisiera.setPower(-glPwr);
+                    ////////////////////////CrSensLastDep = true;
+                } else if (gamepad1.dpad_up) {
+                    glisiera.setPower(0);
+                    GlSensLastDep = false;
+                } else {
+                    glisiera.setPower(0);
+                }
+            }
+        } else {
+            if (glMg_OK) {
+                if (gamepad1.dpad_up) {
+                    glisiera.setPower(0);
+                } else if (gamepad1.dpad_down) {
+                    glisiera.setPower(-glPwr);
+                    //CrSensLastDep = true;
+                }
+            }
+            if (!glMg_OK) {
+                if (gamepad1.dpad_up) {
+                    glisiera.setPower(glPwr);
+                } else if (gamepad1.dpad_down) {
+                    glisiera.setPower(-glPwr);
+                    GlSensLastDep = true;
+                } else {
+                    glisiera.setPower(0);
+                }
+            }
+        }
+
+    }
 }
 
