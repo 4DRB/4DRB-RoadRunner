@@ -38,7 +38,7 @@ public class Test_Modul_Wobble extends LinearOpMode {
     }
 
     // run until the end of the match (driver presses STOP)
-    public void ClampTeleOp() {
+    public void ClampTeleOp(){
         Servo clamp = hardwareMap.get(Servo.class, "SR_CLAMP");
 
 
