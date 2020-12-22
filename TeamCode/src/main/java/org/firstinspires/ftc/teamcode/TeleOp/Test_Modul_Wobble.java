@@ -16,7 +16,7 @@ public class Test_Modul_Wobble extends LinearOpMode {
 
     private Boolean CrSensLastDep = true;//ultima directie in care am mers(scos sau bagat)
     private Boolean GlSensLastDep = true;//ultima directie in care am mers(sus sau jos)
-    double glPwr = 0.5;//putere glisiera
+    double glPwr = 0.8;//putere glisiera
     double crPwr = 1.0;//putere cremaliera
     boolean crMg_OK;//daca senzorul de pe cremaliera simte unul dintre magneti
     boolean glMg_OK;//daca senzorul de pe glisiera simte unul dintre magneti
@@ -49,8 +49,8 @@ public class Test_Modul_Wobble extends LinearOpMode {
 
             telemetry.addData("sens", CrSensLastDep);
             telemetry.addData("magnet", crMg_OK);
-            telemetry.addData("Buton A", gamepad1.a);
-            telemetry.addData("Buton B", gamepad1.b);
+            telemetry.addData("sageata dreapta", gamepad1.dpad_right);
+            telemetry.addData("sageata stanga", gamepad1.dpad_left);
             telemetry.addData("sens glisiera", GlSensLastDep);
             telemetry.addData("magnet glisiera", glMg_OK);
             telemetry.addData("Sageata sus", gamepad1.dpad_up);
@@ -70,7 +70,7 @@ public class Test_Modul_Wobble extends LinearOpMode {
 
         } else if (gamepad1.x) {
             // move to 90 degrees.
-            clamp.setPosition(0.25);
+            clamp.setPosition(0.3);
         }
         telemetry.addData("Servo Position", clamp.getPosition());
         telemetry.addData("Status", "Running");
@@ -83,19 +83,19 @@ public class Test_Modul_Wobble extends LinearOpMode {
         crMg_OK = !digChannel.getState();
         if (CrSensLastDep) {
             if (crMg_OK) {
-                if (gamepad1.a) {
+                if (gamepad1.dpad_left) {
                     cremaliera_Servo.setPower(0);
                     //CrSensLastDep = false;
-                } else if (gamepad1.b) {
+                } else if (gamepad1.dpad_right) {
                     cremaliera_Servo.setPower(-crPwr);
                     //CrSensLastDep = false;
                 }
 
             } else {
-                if (gamepad1.a) {
+                if (gamepad1.dpad_left) {
                     cremaliera_Servo.setPower(crPwr);
                     ////////////////////////CrSensLastDep = true;
-                } else if (gamepad1.b) {
+                } else if (gamepad1.dpad_right) {
                     cremaliera_Servo.setPower(0);
                     CrSensLastDep = false;
                 } else {
@@ -104,17 +104,17 @@ public class Test_Modul_Wobble extends LinearOpMode {
             }
         } else {
             if (crMg_OK) {
-                if (gamepad1.b) {
+                if (gamepad1.dpad_right) {
                     cremaliera_Servo.setPower(0);
-                } else if (gamepad1.a) {
+                } else if (gamepad1.dpad_left) {
                     cremaliera_Servo.setPower(crPwr);
                     //CrSensLastDep = true;
                 }
             }
             if (!crMg_OK) {
-                if (gamepad1.b) {
+                if (gamepad1.dpad_right) {
                     cremaliera_Servo.setPower(-crPwr);
-                } else if (gamepad1.a) {
+                } else if (gamepad1.dpad_left) {
                     cremaliera_Servo.setPower(crPwr);
                     CrSensLastDep = true;
                 } else {
@@ -131,8 +131,8 @@ public class Test_Modul_Wobble extends LinearOpMode {
         DcMotor glisiera = hardwareMap.get(DcMotorEx.class, "GLS");
         glisiera.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         DigitalChannel crMg = hardwareMap.get(DigitalChannel.class, "Mag_GLS");
-
         glMg_OK = !crMg.getState();
+        glisiera.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         if (GlSensLastDep) {
             if (glMg_OK) {
                 if (gamepad1.dpad_down) {
