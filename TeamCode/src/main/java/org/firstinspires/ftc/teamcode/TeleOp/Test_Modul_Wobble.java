@@ -13,58 +13,51 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Test_Modul_Wobble extends LinearOpMode {
 
     private Boolean CrSensLastDep = true;
-    Servo clamp = hardwareMap.get(Servo.class, "SR_CLAMP");
-    CRServo cremaliera_Servo = hardwareMap.get(CRServo.class, "SR_CRM");
-    DigitalChannel digChannel = hardwareMap.get(DigitalChannel.class, "Mag_CRM");
+
     boolean crMg_OK;
+
 
     /**
      *
      */
     @Override
     public void runOpMode() {
-        /**public DcMotor MotorDF = null;
-         //public DcMotor MotorSF = null;
-         //public DcMotor MotorDJ = null;
-         //public DcMotor MotorSJ = null;
-         //private DcMotor ColectorE = null;
-         private DcMotor ColectorV = null;**/
-
-
+        Servo clamp = hardwareMap.get(Servo.class, "SR_CLAMP");
+        CRServo cremaliera_Servo = hardwareMap.get(CRServo.class, "SR_CRM");
+        DigitalChannel digChannel = hardwareMap.get(DigitalChannel.class, "Mag_CRM");
         // set the digital channel to input.
-        digChannel.setMode(DigitalChannel.Mode.INPUT);
-
-
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-
+        digChannel.setMode(DigitalChannel.Mode.INPUT);
         waitForStart();
         while (opModeIsActive()) {
-
-
             // run until the end of the match (driver presses STOP)
-            ClampTeleOp();
-
-
+            ClampTeleOp();//X si Y pentru clamp
+            CremalieraTeleOp();//A si B pentru Cremaliera
         }
     }
 
     // run until the end of the match (driver presses STOP)
     public void ClampTeleOp() {
+        Servo clamp = hardwareMap.get(Servo.class, "SR_CLAMP");
+
 
         if (gamepad1.y) {
             // move to 0 degrees.
-            clamp.setPosition(0.1);
+            clamp.setPosition(0.0);
 
         } else if (gamepad1.x) {
             // move to 90 degrees.
-            clamp.setPosition(0.5);
+            clamp.setPosition(0.25);
         }
         telemetry.addData("Servo Position", clamp.getPosition());
         telemetry.addData("Status", "Running");
     }
 
     public void CremalieraTeleOp() {
+
+        CRServo cremaliera_Servo = hardwareMap.get(CRServo.class, "SR_CRM");
+        DigitalChannel digChannel = hardwareMap.get(DigitalChannel.class, "Mag_CRM");
         crMg_OK = !digChannel.getState();
         if (CrSensLastDep) {
             if (crMg_OK) {
