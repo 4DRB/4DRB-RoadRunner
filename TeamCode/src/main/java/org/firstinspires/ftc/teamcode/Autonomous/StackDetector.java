@@ -38,7 +38,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 @Autonomous
-public class StarterStackDetector extends LinearOpMode
+public class StackDetector extends LinearOpMode
 {
     OpenCvInternalCamera phoneCam;
     SkystoneDeterminationPipeline pipeline;
@@ -68,7 +68,7 @@ public class StarterStackDetector extends LinearOpMode
             }
         });
 
-waitForStart();
+        waitForStart();
 
         while (opModeIsActive())
         {

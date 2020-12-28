@@ -5,15 +5,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="TeleOpStick", group="Linear Opmode")
+import org.firstinspires.ftc.teamcode.util.Encoder;
 
-public class  TeleOpStick extends LinearOpMode {
+@TeleOp(name="TestStraight", group="Linear Opmode")
+
+public class TestDriveStraight extends LinearOpMode {
     private int speedAdjust = 8;
     boolean isPulling = false, clamped = false, prevX = false, prevLeft = false, prevRight = false, prevB = false, rotated = false, prevA = false;
     double speed, robotAngle, realign = 0;
@@ -23,10 +21,11 @@ public class  TeleOpStick extends LinearOpMode {
     private DcMotor BleftDrive = null;
     private DcMotor TrightDrive = null;
     private DcMotor BrightDrive = null;
-    public final double offTLD=3.25;
-    public final double offBLD=2.25;
-    public final double offTRD=4;
-    public final double offBRD=6.5;
+    public double offTLD=3.25;
+    public double offBLD=2.25;
+    public double offTRD=4;
+    public double offBRD=6.5;
+    private Encoder leftEncoder, rightEncoder, frontEncoder;
     /*private Servo LegoStanga1 = null;
     private  Servo LegoStanga2 = null;
     private Servo LegoDreapta1 = null;
@@ -39,6 +38,7 @@ public class  TeleOpStick extends LinearOpMode {
     DigitalChannel  TouchDreapta;
     DigitalChannel  TouchStanga;*/
     double ok=0;
+    double okOff=0;
     double  power   = 0.3;
     double FranaS,FranaD;
     // public Servo ServomotorE = null;
@@ -59,6 +59,10 @@ public class  TeleOpStick extends LinearOpMode {
         BleftDrive  = hardwareMap.get(DcMotorEx.class, "leftRear");
         BrightDrive = hardwareMap.get(DcMotorEx.class, "rightRear");
 
+
+        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftEncoder"));
+        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightEncoder"));
+        frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontEncoder"));
         //leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
        // leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         //rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
@@ -75,10 +79,7 @@ public class  TeleOpStick extends LinearOpMode {
         LegoDreapta2 = hardwareMap.servo.get("LegoDreapta2");
         Grip=hardwareMap.servo.get("Grip");*/
 
-        TleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        TrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         //ColectorE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //ColectorV.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -94,6 +95,10 @@ public class  TeleOpStick extends LinearOpMode {
         //TouchDreapta.setMode(DigitalChannel.Mode.INPUT);
 
         // Wait for the game to start (driver presses PLAY)
+        TleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        TrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         waitForStart();
         runtime.reset();
 
@@ -109,16 +114,13 @@ public class  TeleOpStick extends LinearOpMode {
             telemetry.update();
             //ColectorE.setPower(0.7);
             //ColectorV.setPower(0.7);
+
             while (gamepad1.dpad_up) {
-                TleftDrive.setPower(-power + power*-offTLD/100);
-                BleftDrive.setPower(-power + power*-offBLD/100);
                 TrightDrive.setPower(-power + power*-offTRD/100);
                 BrightDrive.setPower(-power + power*-offBRD/100);
-
-                CurbaFata(power, FranaD, FranaS);
-
-                if (gamepad1.start)
-                    power = 0.7;
+                TleftDrive.setPower(-power + power*-offTLD/100);
+                BleftDrive.setPower(-power + power*-offBLD/100);
+                telemetry.update();
                 if (!gamepad1.dpad_up) {
                     TleftDrive.setPower(0);
                     BleftDrive.setPower(0);
@@ -127,15 +129,20 @@ public class  TeleOpStick extends LinearOpMode {
                     power = 0.3;
                     break;
                 }
-            }
-            telemetry.update();
-            while (gamepad1.dpad_down) {
-                TleftDrive.setPower(power + power*(offTLD-0.5)/100);
-                BleftDrive.setPower(power + power*(offBLD-0.5)/100);
-                TrightDrive.setPower(power + power*(offTRD+1)/100);
-                BrightDrive.setPower(power + power*(offBRD+0.6)/100);
 
-                CurbaSpate(power, FranaD, FranaS);
+            }
+
+            while (gamepad1.dpad_down) {
+                /*TleftDrive.setPower(power + power*(offTLD-0.9)/100);
+                BleftDrive.setPower(power + power*(offBLD-0.89)/100);
+                TrightDrive.setPower(power + power*(offTRD+1.45)/100);
+                BrightDrive.setPower(power + power*(offBRD+0.95)/100);*/
+                TleftDrive.setPower(power + power*offTLD/100);
+                BleftDrive.setPower(power + power*offBLD/100);
+                TrightDrive.setPower(power + power*offTRD/100);
+                BrightDrive.setPower(power + power*offBRD/100);
+
+
 
                 if (gamepad1.start)
                     power = 0.3;
@@ -155,10 +162,6 @@ public class  TeleOpStick extends LinearOpMode {
                 BleftDrive.setPower(-power + power* -offBLD/100);
                 TrightDrive.setPower(-power + power* -offTRD/100);
                 BrightDrive.setPower(power + power* offBRD/100);
-                if (gamepad1.start)
-                    power = 0.3;
-                if (!gamepad1.start)
-                    power = 0.3;
                 if (!gamepad1.dpad_left) {
                     TleftDrive.setPower(0);
                     BleftDrive.setPower(0);
@@ -175,10 +178,7 @@ public class  TeleOpStick extends LinearOpMode {
                 BleftDrive.setPower(power + power*offBLD/100);
                 TrightDrive.setPower(power + power*offTRD/100);
                 BrightDrive.setPower(-power + power*-offBRD/100);
-                if (gamepad1.start)
-                    power = 0.3;
-                if (!gamepad1.start)
-                    power = 0.3;
+
                 if (!gamepad1.dpad_right) {
                     TleftDrive.setPower(0);
                     BleftDrive.setPower(0);
@@ -189,69 +189,56 @@ public class  TeleOpStick extends LinearOpMode {
                 }
             }
 
-            while (gamepad1.y) {
-                TleftDrive.setPower(0.4);
-                BrightDrive.setPower(0.4);
-                if (!(gamepad1.y)) {
-                    TleftDrive.setPower(0);
-                    BrightDrive.setPower(0);
-                    break;
-                }
+
+            if (gamepad1.a&&okOff==0)
+            {
+                offTRD=offTRD+0.1;
+                okOff=1;
             }
-            while (gamepad1.a) {
-                BleftDrive.setPower(0.4);
-                TrightDrive.setPower(0.4);
-                if (!(gamepad1.a)) {
-                    BleftDrive.setPower(0);
-                    TrightDrive.setPower(0);
-                    break;
-                }
+
+            if (gamepad1.b&&okOff==0) {
+                offTRD=offTRD-0.1;
+                okOff=1;
+
             }
+
+            if (gamepad1.x&&okOff==0) {
+                offTLD=offTLD+0.1;
+                okOff=1;
+            }
+
+            if (gamepad1.y&&okOff==0) {
+                offTLD=offTLD-0.1;
+                okOff=1;
+            }
+            if (gamepad1.left_bumper&&okOff==0) {
+               offBRD=offBRD+0.1;
+                okOff=1;
+            }
+            if (gamepad1.right_bumper&&okOff==0) {
+                offBRD=offBRD-0.1;
+                okOff=1;
+            }
+            if (gamepad1.start&&okOff==0)
+            {
+                offBLD=offBLD+0.1;
+                okOff=1;
+            }
+            if (gamepad1.back&&okOff==0)
+            {
+                offBLD=offBLD-0.1;
+                okOff=1;
+            }
+            if(!gamepad1.a&&!gamepad1.b&&!gamepad1.x&&!gamepad1.y&&!gamepad1.left_bumper&&!gamepad1.right_bumper&&!gamepad1.start&&!gamepad1.back)
+            {
+                okOff=0;
+            }
+            telemetry.addData("offTRD",offTRD);
+            telemetry.addData("offTLD",offTLD);
+            telemetry.addData("offBRD",offBRD);
+            telemetry.addData("offBLD",offBLD);
             telemetry.update();
-            while (gamepad1.x) {
-                TleftDrive.setPower(-0.4);
-                BrightDrive.setPower(-0.4);
-                if (!(gamepad1.x)) {
-                    TleftDrive.setPower(0);
-                    BrightDrive.setPower(0);
-                    break;
-                }
-            }
-            while (gamepad1.b) {
-                BleftDrive.setPower(-0.4);
-                TrightDrive.setPower(-0.4);
-                if (!(gamepad1.b)) {
-                    BleftDrive.setPower(0);
-                    TrightDrive.setPower(0);
-                    break;
-                }
-            }
-            while (gamepad1.left_bumper) {
-                TleftDrive.setPower(0.4);
-                BleftDrive.setPower(0.4);
-                TrightDrive.setPower(-0.4);
-                BrightDrive.setPower(-0.4);
-                if (!gamepad1.left_bumper) {
-                    TleftDrive.setPower(0);
-                    BleftDrive.setPower(0);
-                    TrightDrive.setPower(0);
-                    BrightDrive.setPower(0);
-                    break;
-                }
-            }
-            while (gamepad1.right_bumper) {
-                TleftDrive.setPower(-0.4);
-                BleftDrive.setPower(-0.4);
-                TrightDrive.setPower(0.4);
-                BrightDrive.setPower(0.4);
-                if (!gamepad1.right_bumper) {
-                    TleftDrive.setPower(0);
-                    BleftDrive.setPower(0);
-                    TrightDrive.setPower(0);
-                    BrightDrive.setPower(0);
-                    break;
-                }
-            }
+
             /*while(gamepad2.right_bumper)
             {
                 CulisataOrizontala.setPower(0.8);
@@ -327,7 +314,7 @@ public class  TeleOpStick extends LinearOpMode {
         }
     }
 
-    public void CurbaFata(double power,double FranaD,double FranaS){
+    /*public void CurbaFata(double power,double FranaD,double FranaS){
         FranaD=gamepad1.right_trigger;
         FranaS=gamepad1.left_trigger;
 
@@ -354,5 +341,5 @@ public class  TeleOpStick extends LinearOpMode {
             BrightDrive.setPower(power-FranaD);
         }
 
-    }
+    }*/
 }

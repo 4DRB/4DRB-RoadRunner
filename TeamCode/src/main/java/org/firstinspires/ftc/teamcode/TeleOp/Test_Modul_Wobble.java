@@ -41,10 +41,12 @@ public class Test_Modul_Wobble extends LinearOpMode {
             ClampTeleOp();//X si Y pentru clamp
 
 
-            CremalieraTeleOp();//A si B pentru Cremaliera
+            CremalieraTeleOp();//sageti stanga dreapta
 
 
             GlisieraTeleOp();//Sageti sus si jos
+
+            WRealeaseLeftTeleOp();//A si B pentru WReleae
 
 
             telemetry.addData("sens", CrSensLastDep);
@@ -73,6 +75,21 @@ public class Test_Modul_Wobble extends LinearOpMode {
             clamp.setPosition(0.3);
         }
         telemetry.addData("Servo Position", clamp.getPosition());
+        telemetry.addData("Status", "Running");
+    }
+    public void WRealeaseLeftTeleOp() {
+        Servo wRelease = hardwareMap.get(Servo.class, "Sr_WReleaseLeft");
+
+
+        if (gamepad1.a) {
+            // move to 0 degrees.
+            wRelease.setPosition(0.0);
+
+        } else if (gamepad1.b) {
+            // move to 90 degrees.
+            wRelease.setPosition(0.3);
+        }
+        telemetry.addData("Servo Position", wRelease.getPosition());
         telemetry.addData("Status", "Running");
     }
 
