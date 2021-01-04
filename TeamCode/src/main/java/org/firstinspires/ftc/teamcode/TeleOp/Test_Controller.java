@@ -36,6 +36,7 @@ public class Test_Controller extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             // run until the end of the match (driver presses STOP)
+            WRealeaseLeftTeleOp();//A si B pentru WRelease
             SingleShotTeleOp();
 
             MultiShotTeleOp();
@@ -48,7 +49,7 @@ public class Test_Controller extends LinearOpMode {
 
             GlisieraTeleOp();//Sageti sus si jos
 
-            WRealeaseLeftTeleOp();//A si B pentru WRelease
+
 
 
             telemetry.addData("sens", CrSensLastDep);
@@ -64,6 +65,21 @@ public class Test_Controller extends LinearOpMode {
     }
 
     // run until the end of the match (driver presses STOP)
+    public void WRealeaseLeftTeleOp() {
+        Servo wRelease = hardwareMap.get(Servo.class, "Sr_WReleaseLeft");
+
+
+        if (gamepad1.a) {
+            // move to 0 degrees.
+            wRelease.setPosition(0.0);
+
+        } else if (gamepad1.b) {
+            // move to 90 degrees.
+            wRelease.setPosition(0.3);
+        }
+        telemetry.addData("Servo Position", wRelease.getPosition());
+        telemetry.addData("Status", "Running");
+    }
     public void SingleShotTeleOp(){
         double power = -1;
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
@@ -127,21 +143,7 @@ public class Test_Controller extends LinearOpMode {
         telemetry.addData("Status", "Running");
     }
 
-    public void WRealeaseLeftTeleOp() {
-        Servo wRelease = hardwareMap.get(Servo.class, "Sr_WReleaseLeft");
 
-
-        if (gamepad1.a) {
-            // move to 0 degrees.
-            wRelease.setPosition(0.0);
-
-        } else if (gamepad1.b) {
-            // move to 90 degrees.
-            wRelease.setPosition(0.3);
-        }
-        telemetry.addData("Servo Position", wRelease.getPosition());
-        telemetry.addData("Status", "Running");
-    }
 
     public void CremalieraTeleOp() {
 

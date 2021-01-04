@@ -42,7 +42,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 @Autonomous
-public class AutonomDemoV1 extends LinearOpMode
+public class wReleaseTesting extends LinearOpMode
 {
     OpenCvInternalCamera phoneCam;
     SkystoneDeterminationPipeline pipeline;
@@ -62,12 +62,11 @@ public class AutonomDemoV1 extends LinearOpMode
 
 
     @Override
-    public void runOpMode()
-    {
+    public void runOpMode() throws InterruptedException {
 // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        TleftDrive  = hardwareMap.get(DcMotorEx.class, "leftFront");
+        /*TleftDrive  = hardwareMap.get(DcMotorEx.class, "leftFront");
         TrightDrive = hardwareMap.get(DcMotorEx.class, "rightFront");
         BleftDrive  = hardwareMap.get(DcMotorEx.class, "leftRear");
         BrightDrive = hardwareMap.get(DcMotorEx.class, "rightRear");
@@ -83,7 +82,7 @@ public class AutonomDemoV1 extends LinearOpMode
         TleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         TrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
@@ -105,7 +104,7 @@ public class AutonomDemoV1 extends LinearOpMode
         });
 
         waitForStart();
-        WRealeaseLeftAutonom(0.0);
+
 
 
             telemetry.addData("Analysis", pipeline.getAnalysis());
@@ -113,45 +112,48 @@ public class AutonomDemoV1 extends LinearOpMode
             telemetry.update();
 
             if (intPosition == 4)
-            {   WRealeaseLeftAutonom(0.0);
+            {
                 telemetry.addData("It's",4 );
                 telemetry.update();
+                Servo wRelease = hardwareMap.get(Servo.class, "Sr_WReleaseLeft");
 
-                Back(5400,0.4);
-                Stop();
-                WRealeaseLeftAutonom(0.4);
-                Forward(1800,0.4);
-                Stop();
-                stop();
+                wRelease.setPosition(0.4);
+                Thread.sleep(1000);
 
-            }else
+                telemetry.addData("Servo Position", wRelease.getPosition());
+                telemetry.update();
+
+
+            }
             if (intPosition == 1)
             {
                 telemetry.addData("It's",1 );
                 telemetry.update();
                 WRealeaseLeftAutonom(0.0);
-                Back(4000,0.4);
 
-                WRealeaseLeftAutonom(0.4);
-                sleep(1000);
-                Forward(800,0.4);
-                stop();
-            }else
+            }
             if (intPosition == 0)
             {
-                telemetry.addData("It's",0 );
-                telemetry.update();
-                WRealeaseLeftAutonom(0.0);
-                Back(3000,0.4);
+
 
                 WRealeaseLeftAutonom(0.4);
-                sleep(1000);
-                stop();
+
+
             }// Don't burn CPU cycles busy-looping in this sample
 
 
     }
+    public void WRealeaseLeftAutonom(double position) {
+        Servo wRelease = hardwareMap.get(Servo.class, "Sr_WReleaseLeft");
 
+        wRelease.setPosition(position);
+
+        for(int i =1;i<=2000;i++)
+        {wRelease.setPosition(position);}
+
+        telemetry.addData("Servo Position", wRelease.getPosition());
+        telemetry.update();
+    }
     public static class SkystoneDeterminationPipeline extends OpenCvPipeline
     {
         public static int getPosition() {
@@ -265,17 +267,7 @@ public class AutonomDemoV1 extends LinearOpMode
 
 
     }
-    public void WRealeaseLeftAutonom(double position) {
-        Servo wRelease = hardwareMap.get(Servo.class, "Sr_WReleaseLeft");
 
-        wRelease.setPosition(position);
-
-        for(int i =1;i<=2000;i++)
-        {wRelease.setPosition(position);}
-
-        telemetry.addData("Servo Position", wRelease.getPosition());
-        telemetry.update();
-    }
     public void Forward(int target  , double power) {
 
         TleftDrive  = hardwareMap.get(DcMotorEx.class, "leftFront");
@@ -296,52 +288,29 @@ public class AutonomDemoV1 extends LinearOpMode
         BrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        TleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        TrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        TrightDrive.setPower(-power + power*-offTRD/100);
+        BrightDrive.setPower(-power + power*-offBRD/100);
+        TleftDrive.setPower(-power + power*-offTLD/100);
+        BleftDrive.setPower(-power + power*-offBLD/100);
 
-        TleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        TrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-        TleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        TrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-
-        TleftDrive.setTargetPosition(-target);
-        BleftDrive.setTargetPosition(-target);
-        TrightDrive.setTargetPosition(-target);
-        BrightDrive.setTargetPosition(-target);
+        TrightDrive.setTargetPosition(target);
+        BrightDrive.setTargetPosition(target);
+        TleftDrive.setTargetPosition(target);
+        BleftDrive.setTargetPosition(target);
 
         TleftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BleftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         TrightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BleftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         BrightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        TleftDrive.setPower(power);
-        BleftDrive.setPower(power);
-        TrightDrive.setPower(power);
-        BrightDrive.setPower(power);
-        while(TleftDrive.isBusy() && BleftDrive.isBusy() && opModeIsActive()&& TrightDrive.isBusy() && opModeIsActive()&& BrightDrive.isBusy() && opModeIsActive())
-        {
-            telemetry.addData("Status:", "Moving to pos");
-            telemetry.addData("Pos:",TleftDrive.getCurrentPosition());
-            telemetry.update();
+        int currPos = TrightDrive.getCurrentPosition();
+        int targetPos = TrightDrive.getTargetPosition();
+        while(currPos<targetPos){
+            currPos = TrightDrive.getCurrentPosition();
+            targetPos = TrightDrive.getTargetPosition();
+        if (currPos>=targetPos){
+            break;
         }
-        telemetry.addData("Status:", "At pos");
-        telemetry.update();
-        /* We've reached position once that loop above this ends. Stop motors from moving. */
-        TleftDrive.setPower(0);
-        BleftDrive.setPower(0);
-        TrightDrive.setPower(0);
-        BrightDrive.setPower(0);
-
+        }
         TleftDrive.close();
         TrightDrive.close();
         BleftDrive.close();
