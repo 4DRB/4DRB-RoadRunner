@@ -49,6 +49,8 @@ public class Test_Controller extends LinearOpMode {
 
             GlisieraTeleOp();//Sageti sus si jos
 
+            IntakeTeleOp();//LeftStickBumper
+
 
 
 
@@ -125,6 +127,16 @@ public class Test_Controller extends LinearOpMode {
         }
 
 
+    }
+    public void IntakeTeleOp(){
+        double power = 1;
+        DcMotorEx InTake = hardwareMap.get(DcMotorEx.class,"leftEncoder");
+        InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if (gamepad1.left_stick_button){
+            InTake.setPower(power);
+        } else {
+            InTake.setPower(0);
+        }
     }
 
     public void ClampTeleOp() {
