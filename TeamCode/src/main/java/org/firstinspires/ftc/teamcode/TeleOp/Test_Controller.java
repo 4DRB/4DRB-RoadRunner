@@ -7,8 +7,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @TeleOp(name = "TestController")
@@ -20,6 +22,22 @@ public class Test_Controller extends LinearOpMode {
     double crPwr = 1.0;//putere cremaliera
     boolean crMg_OK;//daca senzorul de pe cremaliera simte unul dintre magneti
     boolean glMg_OK;//daca senzorul de pe glisiera simte unul dintre magneti
+    boolean prevX = false, prevLeft = false, prevRight = false;
+    double speed, robotAngle;
+    // Declare OpMode members.
+    private ElapsedTime runtime = new ElapsedTime();
+    private DcMotor TleftDrive = null;
+    private DcMotor BleftDrive = null;
+    private DcMotor TrightDrive = null;
+    private DcMotor BrightDrive = null;
+    public final double offTLD=3.25;
+    public final double offBLD=2.25;
+    public final double offTRD=4;
+    public final double offBRD=6.5;
+
+    double ok=0;
+    double  power   = 0.3;
+    double FranaS,FranaD;
 
     /**
      *
@@ -33,7 +51,23 @@ public class Test_Controller extends LinearOpMode {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         digChannel.setMode(DigitalChannel.Mode.INPUT);
+        TleftDrive  = hardwareMap.get(DcMotorEx.class, "leftFront");
+        TrightDrive = hardwareMap.get(DcMotorEx.class, "rightFront");
+        BleftDrive  = hardwareMap.get(DcMotorEx.class, "leftRear");
+        BrightDrive = hardwareMap.get(DcMotorEx.class, "rightRear");
+
+        TleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        TrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+
+        TrightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        BrightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
         waitForStart();
+
         while (opModeIsActive()) {
             // run until the end of the match (driver presses STOP)
             WRealeaseLeftTeleOp();//A si B pentru WRelease
@@ -63,6 +97,23 @@ public class Test_Controller extends LinearOpMode {
             telemetry.addData("Sageata sus", gamepad1.dpad_up);
             telemetry.addData("sageata jos", gamepad1.dpad_down);
             telemetry.update();
+
+
+            prevX = gamepad1.x;
+
+
+            //uses the hypotenuse of left joystick and right joystick to calculate the speed of the robot
+            speed = -Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
+
+            //finds the angle the robot is moving at
+            //robotAngle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) + (angles.firstAngle + Math.PI + angles2.firstAngle + Math.PI) / 2 - Math.PI / 4 + realign;
+            robotAngle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
+            //finds the percent of power to each wheel and multiplies it by the speed
+            TleftDrive.setPower(speed * Math.sin(robotAngle) - gamepad1.right_stick_x /*+ power*-offTLD/100*/);
+            TrightDrive.setPower(speed * Math.cos(robotAngle) + gamepad1.right_stick_x /*+ power*-offTLD/100*/);
+            BleftDrive.setPower(speed * Math.cos(robotAngle) - gamepad1.right_stick_x /*+ power*-offTLD/100*/);
+            BrightDrive.setPower(speed * Math.sin(robotAngle) + gamepad1.right_stick_x /*+ power*-offTLD/100*/);
+
         }
     }
 

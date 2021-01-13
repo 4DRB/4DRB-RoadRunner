@@ -14,9 +14,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name="TeleOpStick", group="Linear Opmode")
 
 public class  TeleOpStick extends LinearOpMode {
-    private int speedAdjust = 8;
-    boolean isPulling = false, clamped = false, prevX = false, prevLeft = false, prevRight = false, prevB = false, rotated = false, prevA = false;
-    double speed, robotAngle, realign = 0;
+
+    boolean prevX = false, prevLeft = false, prevRight = false;
+    double speed, robotAngle;
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor TleftDrive = null;
@@ -27,23 +27,11 @@ public class  TeleOpStick extends LinearOpMode {
     public final double offBLD=2.25;
     public final double offTRD=4;
     public final double offBRD=6.5;
-    /*private Servo LegoStanga1 = null;
-    private  Servo LegoStanga2 = null;
-    private Servo LegoDreapta1 = null;
-    private  Servo LegoDreapta2 = null;
-    private  Servo Grip = null;
-    private DcMotor ColectorE = null;
-    private DcMotor ColectorV = null;
-    private DcMotor CulisataOrizontala=null;
-    private DcMotor CulisantaVerticala=null;
-    DigitalChannel  TouchDreapta;
-    DigitalChannel  TouchStanga;*/
+
     double ok=0;
     double  power   = 0.3;
     double FranaS,FranaD;
-    // public Servo ServomotorE = null;
-    //public Servo ServomotorV = null;
-    double k=0;
+
 
 
     @Override
@@ -59,39 +47,15 @@ public class  TeleOpStick extends LinearOpMode {
         BleftDrive  = hardwareMap.get(DcMotorEx.class, "leftRear");
         BrightDrive = hardwareMap.get(DcMotorEx.class, "rightRear");
 
-        //leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-       // leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        //rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        //rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-        /*ColectorE = hardwareMap.get(DcMotor.class, "ColectorE");
-        ColectorV = hardwareMap.get(DcMotor.class, "ColectorV");
-        CulisataOrizontala= hardwareMap.get(DcMotor.class, "CulisantaOrizontala");
-        CulisantaVerticala= hardwareMap.get(DcMotor.class, "CulisantaVerticala");
-        ServomotorE = hardwareMap.servo.get("Servo_SpateE");
-        ServomotorV = hardwareMap.servo.get("Servo_SpateV");
-        LegoStanga1 = hardwareMap.servo.get("LegoStanga1");
-        LegoStanga2 = hardwareMap.servo.get("LegoStanga2");
-        LegoDreapta1 = hardwareMap.servo.get("LegoDreapta1");
-        LegoDreapta2 = hardwareMap.servo.get("LegoDreapta2");
-        Grip=hardwareMap.servo.get("Grip");*/
-
         TleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         TrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //ColectorE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //ColectorV.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
 
 
 
         TrightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         BrightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        //TouchStanga = hardwareMap.get(DigitalChannel.class, "TouchStanga");
-        //TouchDreapta = hardwareMap.get(DigitalChannel.class, "TouchDreapta");
-        // set the digital channel to input.
-        //TouchStanga.setMode(DigitalChannel.Mode.INPUT);
-        //TouchDreapta.setMode(DigitalChannel.Mode.INPUT);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -252,62 +216,6 @@ public class  TeleOpStick extends LinearOpMode {
                     break;
                 }
             }
-            /*while(gamepad2.right_bumper)
-            {
-                CulisataOrizontala.setPower(0.8);
-                if(!gamepad2.right_bumper)
-                {
-                    CulisataOrizontala.setPower(0);
-                    break;
-                }
-            }
-            while(gamepad2.left_bumper)
-            {
-                CulisataOrizontala.setPower(-0.8);
-                if(!gamepad2.left_bumper)
-                {
-                    CulisataOrizontala.setPower(0);
-                    break;
-                }
-            }
-            if(gamepad2.dpad_left)
-            {
-                Grip.setPosition(-0.3);
-            }
-            if(gamepad2.dpad_right)
-            {
-                Grip.setPosition(0.3);
-            }
-            while(gamepad2.dpad_up)
-            {
-                if (TouchDreapta.getState() == true) {
-                    telemetry.addData("TouchDreapta", "Is Not Pressed");
-                    CulisantaVerticala.setPower(-1);
-                }
-                else
-                    telemetry.addData("TouchDreapta", "Is Pressed");
-                CulisantaVerticala.setPower(0);
-                telemetry.update();
-            }
-            while(gamepad2.dpad_down)
-            {
-                if (TouchStanga.getState() == true) {
-                    telemetry.addData("TouchStanga", "Is Not Pressed");
-                    CulisantaVerticala.setPower(0.8);
-                }
-                else
-                    telemetry.addData("TouchStanga", "Is Pressed");
-                CulisantaVerticala.setPower(0);
-                telemetry.update();
-            }*/
-            //controls speed adjusting
-            if(gamepad1.dpad_left && !prevLeft) speedAdjust--;
-            if(gamepad1.dpad_right && !prevRight) speedAdjust++;
-            prevLeft = gamepad1.dpad_left;
-            prevRight = gamepad1.dpad_right;
-
-            //sets clip that attaches to the foundation
-
             prevX = gamepad1.x;
 
 
