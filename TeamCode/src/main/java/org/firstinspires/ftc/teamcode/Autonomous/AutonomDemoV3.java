@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -24,7 +25,7 @@ import java.util.Arrays;
 public class AutonomDemoV3 extends LinearOpMode {
 
     //hardware variables
-    OpenCvCamera phoneCam = null;
+
     DcMotor FL = null;
     DcMotor FR = null;
     DcMotor BL = null;
@@ -44,22 +45,23 @@ public class AutonomDemoV3 extends LinearOpMode {
 
     int initDiff,lastDiff,diffDiff;
     Encoder leftEncoder, rightEncoder, frontEncoder;
-
+    OpenCvCamera webCam = null;
 
     @Override
     public void runOpMode()
     {
 //hardware maps
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        //phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        webCam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam"), cameraMonitorViewId);
         //detecting the starter stack height.
         leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftEncoder"));
         rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightEncoder"));
         frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontEncoder"));
         //tells the phone which detector to use
-        phoneCam.setPipeline(new RingDetectingPipeline());
+        webCam.setPipeline(new RingDetectingPipeline());
         //starts the stream
-        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        webCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
 
             public void onOpened()
@@ -75,7 +77,7 @@ public class AutonomDemoV3 extends LinearOpMode {
                  * For a rear facing camera or a webcam, rotation is defined assuming the camera is facing
                  * away from the user.
                  */
-                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+                webCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
         });
 
@@ -97,6 +99,8 @@ public class AutonomDemoV3 extends LinearOpMode {
         BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        Servo wRelease = hardwareMap.get(Servo.class, "Sr_WReleaseLeft");
+
 
 
 
@@ -114,25 +118,34 @@ public class AutonomDemoV3 extends LinearOpMode {
             sleep(3000);
             IntakeAutonom(0);
         }else if(ringCount == 4){
+            wRelease.setPosition(0);
             encoderDrive(0.5,145,145);
             strafeDrive(0.3,47,-47);
             MultiShotAutonom();
+            //arunca gogosile,se duca sa mai ia gogosi
             IntakeAutonom(1);
             encoderDrive(0.3,-30,-30);
             sleep(1500);
             encoderDrive(0.3,-11,-11);
             sleep(1500);
             encoderDrive(0.3,-11,-11);
-            sleep(2500);
+            sleep(2700);
             IntakeAutonom(0);
             encoderDrive(0.5,52,52);
             MultiShotAutonom();
+            //arunca gogosile,se duce la  patrat 3
             encoderDrive(0.5,140,143);
-            strafeDrive(0.4,-15,15);
+            strafeDrive(0.4,-25,25);
 
             encoderDrive(0.5,30,-30);
+            wRelease.setPosition(0.4);
+
+            for(int i =1;i<=2000;i++)
+            {wRelease.setPosition(0.4);}
+            sleep(500);
             encoderDrive(0.5,-30,30);
             encoderDrive(0.5,-100,-103);
+
 
 
 

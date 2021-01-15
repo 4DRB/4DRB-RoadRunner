@@ -36,7 +36,7 @@ public class Test_Controller extends LinearOpMode {
     public final double offBRD=6.5;
 
     double ok=0;
-    double  power   = 0.3;
+    double  power   = 1.2;
     double FranaS,FranaD;
 
     /**
@@ -85,18 +85,9 @@ public class Test_Controller extends LinearOpMode {
 
             IntakeTeleOp();//LeftStickBumper
 
+            IntakeInversTeleOp();
 
 
-
-            telemetry.addData("sens", CrSensLastDep);
-            telemetry.addData("magnet", crMg_OK);
-            telemetry.addData("sageata dreapta", gamepad1.dpad_right);
-            telemetry.addData("sageata stanga", gamepad1.dpad_left);
-            telemetry.addData("sens glisiera", GlSensLastDep);
-            telemetry.addData("magnet glisiera", glMg_OK);
-            telemetry.addData("Sageata sus", gamepad1.dpad_up);
-            telemetry.addData("sageata jos", gamepad1.dpad_down);
-            telemetry.update();
 
 
             prevX = gamepad1.x;
@@ -109,10 +100,14 @@ public class Test_Controller extends LinearOpMode {
             //robotAngle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) + (angles.firstAngle + Math.PI + angles2.firstAngle + Math.PI) / 2 - Math.PI / 4 + realign;
             robotAngle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
             //finds the percent of power to each wheel and multiplies it by the speed
-            TleftDrive.setPower(speed * Math.sin(robotAngle) - gamepad1.right_stick_x /*+ power*-offTLD/100*/);
-            TrightDrive.setPower(speed * Math.cos(robotAngle) + gamepad1.right_stick_x /*+ power*-offTLD/100*/);
-            BleftDrive.setPower(speed * Math.cos(robotAngle) - gamepad1.right_stick_x /*+ power*-offTLD/100*/);
-            BrightDrive.setPower(speed * Math.sin(robotAngle) + gamepad1.right_stick_x /*+ power*-offTLD/100*/);
+            TleftDrive.setPower((speed * Math.sin(robotAngle) - gamepad1.right_stick_x )*power);
+            TrightDrive.setPower((speed * Math.cos(robotAngle) + gamepad1.right_stick_x )*power);
+            BleftDrive.setPower((speed * Math.cos(robotAngle) - gamepad1.right_stick_x )*power);
+            BrightDrive.setPower((speed * Math.sin(robotAngle) + gamepad1.right_stick_x )*power);
+
+            telemetry.addData("power", BrightDrive.getPower());
+            telemetry.update();
+
 
         }
     }
@@ -184,6 +179,16 @@ public class Test_Controller extends LinearOpMode {
         DcMotorEx InTake = hardwareMap.get(DcMotorEx.class,"leftEncoder");
         InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (gamepad1.left_stick_button){
+            InTake.setPower(power);
+        } else {
+            InTake.setPower(0);
+        }
+    }
+    public void IntakeInversTeleOp(){
+        double power = -1;
+        DcMotorEx InTake = hardwareMap.get(DcMotorEx.class,"leftEncoder");
+        InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if (gamepad1.right_stick_button){
             InTake.setPower(power);
         } else {
             InTake.setPower(0);
