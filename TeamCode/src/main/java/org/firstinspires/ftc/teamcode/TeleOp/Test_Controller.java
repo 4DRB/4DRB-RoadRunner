@@ -36,7 +36,7 @@ public class Test_Controller extends LinearOpMode {
     public final double offBRD=6.5;
 
     double ok=0;
-    double  power   = 1.2;
+    double  power   = 1.1;//1.41
     double FranaS,FranaD;
 
     /**
@@ -180,7 +180,7 @@ public class Test_Controller extends LinearOpMode {
         InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (gamepad1.left_stick_button){
             InTake.setPower(power);
-        } else {
+        } else if (!gamepad1.right_stick_button){
             InTake.setPower(0);
         }
     }
@@ -190,7 +190,7 @@ public class Test_Controller extends LinearOpMode {
         InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (gamepad1.right_stick_button){
             InTake.setPower(power);
-        } else {
+        } else if (!gamepad1.left_stick_button){
             InTake.setPower(0);
         }
     }
