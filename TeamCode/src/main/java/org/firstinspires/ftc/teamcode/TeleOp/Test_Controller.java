@@ -19,7 +19,7 @@ public class Test_Controller extends LinearOpMode {
     private Boolean CrSensLastDep = true;//ultima directie in care am mers(scos sau bagat)
     private Boolean GlSensLastDep = true;//ultima directie in care am mers(sus sau jos)
     double glPwr = 0.8;//putere glisiera
-    double crPwr = 1.0;//putere cremaliera
+    double crPwr = 0.8;//putere cremaliera
     boolean crMg_OK;//daca senzorul de pe cremaliera simte unul dintre magneti
     boolean glMg_OK;//daca senzorul de pe glisiera simte unul dintre magneti
     boolean prevX = false, prevLeft = false, prevRight = false;
@@ -105,8 +105,8 @@ public class Test_Controller extends LinearOpMode {
             BleftDrive.setPower((speed * Math.cos(robotAngle) - gamepad1.right_stick_x )*power);
             BrightDrive.setPower((speed * Math.sin(robotAngle) + gamepad1.right_stick_x )*power);
 
-            telemetry.addData("power", BrightDrive.getPower());
-            telemetry.update();
+            //telemetry.addData("power", BrightDrive.getPower());
+            //telemetry.update();
 
 
         }
@@ -125,8 +125,8 @@ public class Test_Controller extends LinearOpMode {
             // move to 90 degrees.
             wRelease.setPosition(0.3);
         }
-        telemetry.addData("Servo Position", wRelease.getPosition());
-        telemetry.addData("Status", "Running");
+        //telemetry.addData("Servo Position", wRelease.getPosition());
+        //telemetry.addData("Status", "Running");
     }
     public void SingleShotTeleOp(){
         double power = -1;
@@ -207,8 +207,8 @@ public class Test_Controller extends LinearOpMode {
             // move to 90 degrees.
             clamp.setPosition(0.3);
         }
-        telemetry.addData("Servo Position", clamp.getPosition());
-        telemetry.addData("Status", "Running");
+        //telemetry.addData("Servo Position", clamp.getPosition());
+        //telemetry.addData("Status", "Running");
     }
 
 
@@ -217,6 +217,7 @@ public class Test_Controller extends LinearOpMode {
 
         CRServo cremaliera_Servo = hardwareMap.get(CRServo.class, "SR_CRM");
         DigitalChannel digChannel = hardwareMap.get(DigitalChannel.class, "Mag_CRM");
+        digChannel.setMode(DigitalChannel.Mode.INPUT);
         crMg_OK = !digChannel.getState();
         if (CrSensLastDep) {
             if (crMg_OK) {
@@ -259,6 +260,11 @@ public class Test_Controller extends LinearOpMode {
                 }
             }
         }
+        telemetry.addData("crMg",digChannel.getState());
+        telemetry.addData("sens",CrSensLastDep);
+        telemetry.addData("left",gamepad1.dpad_left);
+        telemetry.addData("right",gamepad1.dpad_right);
+        telemetry.update();
 
 
     }
@@ -267,8 +273,8 @@ public class Test_Controller extends LinearOpMode {
 
         DcMotor glisiera = hardwareMap.get(DcMotorEx.class, "GLS");
         glisiera.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        DigitalChannel crMg = hardwareMap.get(DigitalChannel.class, "Mag_GLS");
-        glMg_OK = !crMg.getState();
+        DigitalChannel glsMg = hardwareMap.get(DigitalChannel.class, "Mag_GLS");
+        glMg_OK = !glsMg.getState();
         glisiera.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         if (GlSensLastDep) {
             if (glMg_OK) {
@@ -312,7 +318,11 @@ public class Test_Controller extends LinearOpMode {
                 }
             }
         }
-
+        /*telemetry.addData("crMg",glsMg.getState());
+        telemetry.addData("sens",CrSensLastDep);
+        telemetry.addData("A",gamepad1.a);
+        telemetry.addData("B",gamepad1.b);
+        telemetry.update();*/
     }
 }
 
