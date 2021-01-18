@@ -28,6 +28,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -40,12 +41,13 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
+import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
 public class AutonomDemoV1 extends LinearOpMode
 {
-    OpenCvInternalCamera phoneCam;
-    SkystoneDeterminationPipeline pipeline;
+    OpenCvCamera webCam = null;
+    RingDetectingPipeline pipeline;
     private static int intPosition;
     private DcMotor TleftDrive = null;
     private DcMotor BleftDrive = null;
@@ -86,21 +88,27 @@ public class AutonomDemoV1 extends LinearOpMode
         BleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        pipeline = new SkystoneDeterminationPipeline();
-        phoneCam.setPipeline(pipeline);
-
-        // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
-        // out when the RC activity is in portrait. We do our actual image processing assuming
-        // landscape orientation, though.
-        phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
-
-        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        webCam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam"), cameraMonitorViewId);
+        pipeline = new RingDetectingPipeline();
+        webCam.setPipeline(new RingDetectingPipeline());
+        //starts the stream
+        webCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
-            @Override
+
             public void onOpened()
             {
-                phoneCam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
+                /*
+                 * Tell the camera to start streaming images to us! Note that you must make sure
+                 * the resolution you specify is supported by the camera. If it is not, an exception
+                 * will be thrown.
+                 *
+                 * Also, we specify the rotation that the camera is used in. This is so that the image
+                 * from the camera sensor can be rotated such that it is always displayed with the image upright.
+                 * For a front facing camera, rotation is defined assuming the user is looking at the screen.
+                 * For a rear facing camera or a webcam, rotation is defined assuming the camera is facing
+                 * away from the user.
+                 */
+                webCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
         });
 
@@ -152,7 +160,7 @@ public class AutonomDemoV1 extends LinearOpMode
 
     }
 
-    public static class SkystoneDeterminationPipeline extends OpenCvPipeline
+    public static class RingDetectingPipeline extends OpenCvPipeline
     {
         public static int getPosition() {
             return intPosition;

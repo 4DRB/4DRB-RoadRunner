@@ -1,43 +1,63 @@
+/*
+ * Copyright (c) 2020 OpenFTC Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.Arrays;
 
-@Autonomous(name = "TestAutonomousV3")
-public class AutonomDemoV3 extends LinearOpMode {
-
-    //hardware variables
-
+@Autonomous
+public class AutonomDemoV4 extends LinearOpMode
+{
+    static double ringCount = 0;
+    RingDetectingPipeline pipeline;
+    private static int intPosition;
     DcMotor FL = null;
     DcMotor FR = null;
     DcMotor BL = null;
     DcMotor BR = null;
-    //Intake intake = new Intake(hardwareMap);
-    //static and other variables
-    static double ringCount = 0;
-    int rect1X = 70;
-    int rect1Y = 170;
-    int rect2X =70;
-    int rect2Y = 190;
-
+    public double offTLD=3.25;
+    public double offBLD=2.25;
+    public double offTRD=4;
+    public double offBRD=6.5;
+    double  power   = 0.3;
     final double TICKS_PER_REV = 537.6 ;    // eg: TETRIX Motor Encoder
     final double DRIVE_GEAR_REDUCTION = 1;     // This is < 1.0 if geared UP
     final double WHEEL_DIAMETER_CM = 9.6;     // For figuring circumference 9.6
@@ -47,18 +67,28 @@ public class AutonomDemoV3 extends LinearOpMode {
     Encoder leftEncoder, rightEncoder, frontEncoder;
     OpenCvCamera webCam = null;
 
+
+
+
+
     @Override
     public void runOpMode()
     {
-//hardware maps
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        //phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        webCam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam"), cameraMonitorViewId);
-        //detecting the starter stack height.
+// Initialize the hardware variables. Note that the strings used here as parameters
+        // to 'get' must correspond to the names assigned during the robot configuration
+        // step (using the FTC Robot Controller app on the phone).
+
+
+
         leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftEncoder"));
         rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightEncoder"));
         frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontEncoder"));
-        //tells the phone which detector to use
+
+
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        webCam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam"), cameraMonitorViewId);
+        pipeline = new RingDetectingPipeline();
         webCam.setPipeline(new RingDetectingPipeline());
         //starts the stream
         webCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
@@ -79,9 +109,7 @@ public class AutonomDemoV3 extends LinearOpMode {
                  */
                 webCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
-        });
-
-        FL = hardwareMap.get(DcMotor.class, "leftFront");
+        });FL = hardwareMap.get(DcMotor.class, "leftFront");
         FR = hardwareMap.get(DcMotor.class, "rightFront");
         BL = hardwareMap.get(DcMotor.class, "leftRear");
         BR = hardwareMap.get(DcMotor.class, "rightRear");
@@ -101,8 +129,8 @@ public class AutonomDemoV3 extends LinearOpMode {
 
         Servo wRelease = hardwareMap.get(Servo.class, "Sr_WReleaseLeft");
 
-    telemetry.addData("Suntem in cazul",ringCount);
-    telemetry.update();
+        telemetry.addData("Suntem in cazul",ringCount);
+        telemetry.update();
 
 
         waitForStart();
@@ -110,7 +138,8 @@ public class AutonomDemoV3 extends LinearOpMode {
 
 
 
-        if(ringCount == 1){
+        if(ringCount == 1.0){
+
 
             wRelease.setPosition(0);
             encoderDrive(0.5,145,145);
@@ -125,18 +154,17 @@ public class AutonomDemoV3 extends LinearOpMode {
             MultiShotAutonom();
             //arunca gogosile,se duce la  patrat 2
             encoderDrive(0.5,100,100);
-            strafeDrive(0.4,25,-25);
+            strafeDrive(0.4,35,-35);
 
-            encoderDrive(0.5,30,-30);
             wRelease.setPosition(0.4);
 
             for(int i =1;i<=2000;i++)
             {wRelease.setPosition(0.4);}
             sleep(500);
-            encoderDrive(0.5,-30,30);
-            encoderDrive(0.5,-70,-70);
 
-        }else if(ringCount == 4){
+            encoderDrive(0.5,-70,-70);
+            stop();
+        }else if(ringCount == 4.0){
             wRelease.setPosition(0);
             encoderDrive(0.5,145,145);
             strafeDrive(0.3,47,-47);
@@ -169,17 +197,17 @@ public class AutonomDemoV3 extends LinearOpMode {
 
 
             //drive somewhere else
+            stop();
         }else{
             //drive to a different spot
             encoderDrive(0.5,145,145);
             strafeDrive(0.3,48,-48);
             MultiShotAutonom();
             encoderDrive(0.7,20,20);
+            stop();
         }
+
     }
-
-
-
 
 
     public void encoderDrive(double speed, double leftInches, double rightInches){
@@ -307,15 +335,15 @@ public class AutonomDemoV3 extends LinearOpMode {
         Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            Launcher1.setPower(power);
-            Launcher2.setPower(power);
-            sleep(1000);
-            Shooter.setPosition(0.3);
-            sleep(300);
-            Shooter.setPosition(0);
-            sleep(100);
-            Launcher1.setPower(0);
-            Launcher2.setPower(0);
+        Launcher1.setPower(power);
+        Launcher2.setPower(power);
+        sleep(1000);
+        Shooter.setPosition(0.3);
+        sleep(300);
+        Shooter.setPosition(0);
+        sleep(100);
+        Launcher1.setPower(0);
+        Launcher2.setPower(0);
     }
 
     public void MultiShotAutonom(){
@@ -326,27 +354,27 @@ public class AutonomDemoV3 extends LinearOpMode {
         Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            Launcher1.setPower(power);
-            Launcher2.setPower(power);
-            sleep(1100);
-            Shooter.setPosition(0.3);
-            sleep(200);
-            Shooter.setPosition(0);
-            sleep(300);
-            Shooter.setPosition(0.3);
-            sleep(200);
-            Shooter.setPosition(0);
-            sleep(300);
-            Shooter.setPosition(0.3);
-            sleep(200);
-            Shooter.setPosition(0);
-            sleep(300);
-            Shooter.setPosition(0.3);
-            sleep(200);
-            Shooter.setPosition(0);
-           // sleep(300);
-            Launcher1.setPower(0);
-            Launcher2.setPower(0);
+        Launcher1.setPower(power);
+        Launcher2.setPower(power);
+        sleep(1100);
+        Shooter.setPosition(0.3);
+        sleep(200);
+        Shooter.setPosition(0);
+        sleep(300);
+        Shooter.setPosition(0.3);
+        sleep(200);
+        Shooter.setPosition(0);
+        sleep(300);
+        Shooter.setPosition(0.3);
+        sleep(200);
+        Shooter.setPosition(0);
+        sleep(300);
+        Shooter.setPosition(0.3);
+        sleep(200);
+        Shooter.setPosition(0);
+        // sleep(300);
+        Launcher1.setPower(0);
+        Launcher2.setPower(0);
 
 
 
@@ -354,7 +382,7 @@ public class AutonomDemoV3 extends LinearOpMode {
     public void IntakeAutonom(double power){
         DcMotorEx InTake = hardwareMap.get(DcMotorEx.class,"leftEncoder");
         InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            InTake.setPower(power);
+        InTake.setPower(power);
     }
     public void move(double x, double y, double rot, double cmdistance){
         //do some sort of distance conversion
@@ -398,72 +426,131 @@ public class AutonomDemoV3 extends LinearOpMode {
             backLeftMotorPower /= motorPowers[3];
         }
     }
+    public static class RingDetectingPipeline extends OpenCvPipeline
+    {
+        public static int getPosition() {
+            return intPosition;
+        }
+
+        /*
+         * An enum to define the skystone position
+         */
+        public enum RingPosition
+        {
+            FOUR,
+            ONE,
+            NONE
+        }
+
+        /*
+         * Some color constants
+         */
+        static final Scalar BLUE = new Scalar(0, 0, 255);
+        static final Scalar GREEN = new Scalar(0, 255, 0);
+
+        /*
+         * The core values which define the location and size of the sample regions
+         */
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(70,170);
+
+        static final int REGION_WIDTH = 35;
+        static final int REGION_HEIGHT = 25;
+
+        final int FOUR_RING_THRESHOLD = 150;
+        final int ONE_RING_THRESHOLD = 135;
+
+        Point region1_pointA = new Point(
+                REGION1_TOPLEFT_ANCHOR_POINT.x,
+                REGION1_TOPLEFT_ANCHOR_POINT.y);
+        Point region1_pointB = new Point(
+                REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
+                REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
+
+        /*
+         * Working variables
+         */
+        Mat region1_Cb;
+        Mat YCrCb = new Mat();
+        Mat Cb = new Mat();
+        int avg1;
 
 
-    class RingDetectingPipeline extends OpenCvPipeline{
+        // Volatile since accessed by OpMode thread w/o synchronization
+        private volatile RingPosition position = RingPosition.FOUR;
 
-        Mat YCbCr = new Mat();
-        Mat outPut = new Mat();
-        Mat upperCrop = new Mat();
-        Mat lowerCrop = new Mat();
-
+        /*
+         * This function takes the RGB frame, converts to YCrCb,
+         * and extracts the Cb channel to the 'Cb' variable
+         */
+        void inputToCb(Mat input)
+        {
+            Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
+            Core.extractChannel(YCrCb, Cb, 1);
+        }
 
         @Override
-        public Mat processFrame(Mat input) {
-            //image conversion
-            Imgproc.cvtColor(input, YCbCr, Imgproc.COLOR_RGB2YCrCb);
+        public void init(Mat firstFrame)
+        {
+            inputToCb(firstFrame);
 
-            //copying input to output
-            input.copyTo(outPut);
-
-            //creating the top rectangle
-            Rect rect1 = new Rect(rect1X, rect1Y, 40, 20);
-
-
-            //creating the bottom rectangle
-            Rect rect2 = new Rect(rect2X, rect2Y, 40, 10);
-
-            Scalar rectangleColor = new Scalar(0,0,255);
-
-            //drawing rectangles on screen
-            Imgproc.rectangle(outPut, rect1, rectangleColor,2);
-
-            Imgproc.rectangle(outPut, rect2, rectangleColor,2);
-
-
-            //cropping the image for stack height
-
-            //cropping YCbCr, putting it on lowerCrop mat
-            lowerCrop = YCbCr.submat(rect1);
-            //cropping YCbCr, putting it on upperCrop mat
-            upperCrop = YCbCr.submat(rect2);
-
-            //taking the orange color out, placing on mat
-            Core.extractChannel(lowerCrop, lowerCrop, 2);
-            //taking the orange color out, placing on mat
-            Core.extractChannel(upperCrop, upperCrop, 2);
-
-            //take the raw average data, put it on a Scalar variable
-            Scalar lowerAverageOrange = Core.mean(lowerCrop);
-
-            //take the raw average data, put it on a Scalar variable
-            Scalar upperAverageOrange = Core.mean(lowerCrop);
-
-            //finally, taking the first value of the average and putting it in a variable
-            double finalLowerAverage = lowerAverageOrange.val[0];
-
-            double finalUpperAverage = upperAverageOrange.val[0];
-
-            //comparing average values
-            if(finalLowerAverage > 15 && finalLowerAverage < 130 && finalUpperAverage < 130){
-                ringCount = 4.0;
-            }else if(finalLowerAverage > 10 && finalUpperAverage < 15 && finalLowerAverage > 10 && finalUpperAverage < 15){
-                ringCount = 0.0;
-            }else{
-                ringCount = 1.0;
-            }
-            //this will be what we are showing on the viewport
-            return outPut;
+            region1_Cb = Cb.submat(new Rect(region1_pointA, region1_pointB));
         }
+
+        @Override
+        public Mat processFrame(Mat input)
+        {
+            inputToCb(input);
+
+            avg1 = (int) Core.mean(region1_Cb).val[0];
+
+            Imgproc.rectangle(
+                    input, // Buffer to draw on
+                    region1_pointA, // First point which defines the rectangle
+                    region1_pointB, // Second point which defines the rectangle
+                    BLUE, // The color the rectangle is drawn in
+                    2); // Thickness of the rectangle lines
+
+            position = RingPosition.FOUR; // Record our analysis
+            if(avg1 > FOUR_RING_THRESHOLD){
+                position = RingPosition.FOUR;
+                ringCount=4;
+            }else if (avg1 > ONE_RING_THRESHOLD){
+                position = RingPosition.ONE;
+                ringCount=1;
+            }else{
+                position = RingPosition.NONE;
+                ringCount=0;
+            }
+
+            Imgproc.rectangle(
+                    input, // Buffer to draw on
+                    region1_pointA, // First point which defines the rectangle
+                    region1_pointB, // Second point which defines the rectangle
+                    GREEN, // The color the rectangle is drawn in
+                    -1); // Negative thickness means solid fill
+
+            return input;
+        }
+
+        public int getAnalysis()
+        {
+            return avg1;
+        }
+
+
     }
+    public void WRealeaseLeftAutonom(double position) {
+        Servo wRelease = hardwareMap.get(Servo.class, "Sr_WReleaseLeft");
+
+        wRelease.setPosition(position);
+
+        for(int i =1;i<=2000;i++)
+        {wRelease.setPosition(position);}
+
+        telemetry.addData("Servo Position", wRelease.getPosition());
+        telemetry.update();
+    }
+
+
+
 }
