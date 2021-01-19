@@ -38,6 +38,9 @@ public class Test_Controller extends LinearOpMode {
     double ok=0;
     double  power   = 1.1;//1.41
     double FranaS,FranaD;
+    boolean leftstickpress; //Outside of loop()
+    double intakePower=0;
+    boolean intakeOk=true;
 
     /**
      *
@@ -85,7 +88,7 @@ public class Test_Controller extends LinearOpMode {
 
             IntakeTeleOp();//LeftStickBumper
 
-            IntakeInversTeleOp();
+            //IntakeInversTeleOp();
 
 
 
@@ -176,13 +179,25 @@ public class Test_Controller extends LinearOpMode {
     }
     public void IntakeTeleOp(){
         double power = 1;
+
         DcMotorEx InTake = hardwareMap.get(DcMotorEx.class,"leftEncoder");
         InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if (gamepad1.left_stick_button){
-            InTake.setPower(power);
-        } else if (!gamepad1.right_stick_button){
-            InTake.setPower(0);
+
+        /*if(gamepad1.left_stick_button && !changed) {
+            if(InTake.getPower() == 0) InTake.setPower(power);
+            else InTake.setPower(0);
+            changed = true;
+        } else if(!gamepad1.left_stick_button) changed = false;*/
+        if (gamepad1.left_stick_button)
+        {if (intakeOk==true){
+            if (intakePower == 1) intakePower=0;
+            else intakePower =1;
+            intakeOk=false;}
         }
+        else intakeOk=true;
+
+        InTake.setPower(intakePower);
+
     }
     public void IntakeInversTeleOp(){
         double power = -1;
