@@ -23,9 +23,11 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -83,6 +85,8 @@ public class AutonomDemoV4 extends LinearOpMode
         leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftEncoder"));
         rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightEncoder"));
         frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontEncoder"));
+
+        Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
 
 
 
@@ -200,10 +204,38 @@ public class AutonomDemoV4 extends LinearOpMode
             stop();
         }else{
             //drive to a different spot
-            encoderDrive(0.5,145,145);
-            strafeDrive(0.3,48,-48);
+            Shooter.setPosition(0.1);
+            Shooter.setPosition(0);
+            wRelease.setPosition(0);
+            sleep(100);
+            encoderDrive(0.5,190,190);
+            wRelease.setPosition(0.4);
+            strafeDrive(0.5,48,-48);
+
+            encoderDrive(0.5,-43,-43);
+
             MultiShotAutonom();
-            encoderDrive(0.7,20,20);
+            strafeDrive(0.5,15,-15);
+            sleep(100);
+            encoderDrive(0.5,117.25,-117.25);
+            encoderDrive(0.5,73,73);
+
+            CremalieraAutonom(-0.8);
+            ClampAutonom(0);
+            sleep(500);
+            GlisieraAutonom(200);
+
+
+
+            encoderDrive(0.5,-135,-135);
+            encoderDrive(0.5,58.6,-58.6);
+            encoderDrive(0.5,15,15);
+
+            ClampAutonom(0.3);
+            CremalieraAutonom(0.8);
+
+            strafeDrive(0.5,-10,10);
+            encoderDrive(0.6,-10,-10);
             stop();
         }
 
@@ -347,7 +379,7 @@ public class AutonomDemoV4 extends LinearOpMode
     }
 
     public void MultiShotAutonom(){
-        double power = -1;
+        double power = -0.95;
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
         DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class,"frontEncoder");
         Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
@@ -384,6 +416,54 @@ public class AutonomDemoV4 extends LinearOpMode
         InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         InTake.setPower(power);
     }
+    public void ClampAutonom(double position) {
+        Servo clamp = hardwareMap.get(Servo.class, "SR_CLAMP");
+
+
+        clamp.setPosition(position);
+        sleep(500);
+        //telemetry.addData("Servo Position", clamp.getPosition());
+        //telemetry.addData("Status", "Running");
+    }
+    public void CremalieraAutonom(double viteza) {      //     - scoate , + baga
+        CRServo cremaliera_Servo = hardwareMap.get(CRServo.class, "SR_CRM");
+        DigitalChannel mag_crm = hardwareMap.get(DigitalChannel.class, "Mag_CRM");
+        mag_crm.setMode(DigitalChannel.Mode.INPUT);
+
+        cremaliera_Servo.setPower(viteza);
+
+        sleep(500);
+
+        while (mag_crm.getState())
+        {
+            cremaliera_Servo.setPower(viteza);
+            if (!mag_crm.getState())
+            {
+                cremaliera_Servo.setPower(0);
+                break;
+            }
+        }
+        if (!mag_crm.getState())
+        {
+            cremaliera_Servo.setPower(0);
+        }
+
+
+
+    }
+    public void GlisieraAutonom(long sleep) {
+
+        DcMotor glisiera = hardwareMap.get(DcMotorEx.class, "GLS");
+        glisiera.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        DigitalChannel glsMg = hardwareMap.get(DigitalChannel.class, "Mag_GLS");
+
+
+        glisiera.setPower(1);
+        sleep(sleep);
+        glisiera.setPower(0);
+    }
+
+
     public void move(double x, double y, double rot, double cmdistance){
         //do some sort of distance conversion
         double distance;
@@ -426,6 +506,17 @@ public class AutonomDemoV4 extends LinearOpMode
             backLeftMotorPower /= motorPowers[3];
         }
     }
+
+
+
+
+
+
+
+
+
+
+
     public static class RingDetectingPipeline extends OpenCvPipeline
     {
         public static int getPosition() {
