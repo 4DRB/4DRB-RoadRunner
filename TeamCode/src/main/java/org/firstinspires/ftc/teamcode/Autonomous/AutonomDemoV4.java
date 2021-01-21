@@ -392,15 +392,15 @@ public class AutonomDemoV4 extends LinearOpMode
         Shooter.setPosition(0.3);
         sleep(200);
         Shooter.setPosition(0);
-        sleep(300);
+        sleep(400);
         Shooter.setPosition(0.3);
         sleep(200);
         Shooter.setPosition(0);
-        sleep(300);
+        sleep(400);
         Shooter.setPosition(0.3);
         sleep(200);
         Shooter.setPosition(0);
-        sleep(300);
+        sleep(400);
         Shooter.setPosition(0.3);
         sleep(200);
         Shooter.setPosition(0);
