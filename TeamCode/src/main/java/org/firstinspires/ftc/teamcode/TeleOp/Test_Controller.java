@@ -88,6 +88,7 @@ public class Test_Controller extends LinearOpMode {
 
             IntakeTeleOp();//LeftStickBumper
 
+            SingleShotSlowTeleOp();
             //IntakeInversTeleOp();
 
 
@@ -139,13 +140,38 @@ public class Test_Controller extends LinearOpMode {
         Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (gamepad1.back){
+            TleftDrive.setPower(0);
+            TrightDrive.setPower(0);
+            BleftDrive.setPower(0);
+            BrightDrive.setPower(0);
             Launcher1.setPower(power);
             Launcher2.setPower(power);
             sleep(1000);
             Shooter.setPosition(0.3);
             sleep(300);
             Shooter.setPosition(0);
-        } else {
+            Launcher1.setPower(0);
+            Launcher2.setPower(0);}
+    }
+    public void SingleShotSlowTeleOp(){
+        double power = -0.9;
+        DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
+        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class,"frontEncoder");
+        Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
+        Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if (gamepad1.ps){
+
+            TleftDrive.setPower(0);
+            TrightDrive.setPower(0);
+            BleftDrive.setPower(0);
+            BrightDrive.setPower(0);
+            Launcher1.setPower(power);
+            Launcher2.setPower(power);
+            sleep(1000);
+            Shooter.setPosition(0.3);
+            sleep(300);
+            Shooter.setPosition(0);
             Launcher1.setPower(0);
             Launcher2.setPower(0);}
     }
@@ -157,6 +183,10 @@ public class Test_Controller extends LinearOpMode {
         Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (gamepad1.start){
+            TleftDrive.setPower(0);
+            TrightDrive.setPower(0);
+            BleftDrive.setPower(0);
+            BrightDrive.setPower(0);
             Launcher1.setPower(power);
             Launcher2.setPower(power);
             sleep(1000);
@@ -172,6 +202,8 @@ public class Test_Controller extends LinearOpMode {
             sleep(300);
             Shooter.setPosition(0);
             sleep(300);
+            Launcher1.setPower(0);
+            Launcher2.setPower(0);
 
         }
 
