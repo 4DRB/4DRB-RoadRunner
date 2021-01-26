@@ -133,8 +133,9 @@ public class AutonomDemoV6 extends LinearOpMode
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         Servo wRelease = hardwareMap.get(Servo.class, "Sr_WReleaseLeft");
-
+        sleep(1000);
         telemetry.addData("Suntem in cazul",ringCount);
+        telemetry.addData("Average",pipeline.avg1);
         telemetry.update();
 
 
@@ -142,6 +143,7 @@ public class AutonomDemoV6 extends LinearOpMode
 
 
         telemetry.addData("Suntem in cazul",ringCount);
+        telemetry.addData("Average",pipeline.avg1);
         telemetry.update();
 
         if(ringCount == 1.0){
@@ -570,8 +572,8 @@ public class AutonomDemoV6 extends LinearOpMode
         static final int REGION_WIDTH = 30;
         static final int REGION_HEIGHT = 20;
 
-        final int FOUR_RING_THRESHOLD = 160;
-        final int ONE_RING_THRESHOLD = 130;
+        final int FOUR_RING_THRESHOLD = 150;
+        final int ONE_RING_THRESHOLD = 125;
 
         Point region1_pointA = new Point(
                 REGION1_TOPLEFT_ANCHOR_POINT.x,
@@ -628,6 +630,7 @@ public class AutonomDemoV6 extends LinearOpMode
             if(avg1 > FOUR_RING_THRESHOLD){
                 position = RingPosition.FOUR;
                 ringCount=4;
+
             }else if (avg1 > ONE_RING_THRESHOLD){
                 position = RingPosition.ONE;
                 ringCount=1;
