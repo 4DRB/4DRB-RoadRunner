@@ -143,14 +143,14 @@ public class AutonomDemoV6 extends LinearOpMode
 
 
         telemetry.addData("Suntem in cazul",ringCount);
-        telemetry.addData("Average",pipeline.avg1);
+        telemetry.addData("Average",pipeline.getAnalysis());
         telemetry.update();
 
         if(ringCount == 1.0){
 
 
             wRelease.setPosition(0);
-            encoderDrive(0.7,145,145);
+            encoderDrive(0.7,144,144);
             strafeDrive(0.5,47,-47);
             MultiShotAutonom();
             //arunca gogosile,se duca sa mai ia gogosi
@@ -172,7 +172,7 @@ public class AutonomDemoV6 extends LinearOpMode
 
             encoderDrive(0.7,-70,-70);
 
-            encoderDrive(0.7,121,-121);
+            encoderDrive(0.7,120,-120);
             strafeDrive(0.6,11,-11);
             encoderDrive(0.7,103,103);
 
@@ -191,7 +191,7 @@ public class AutonomDemoV6 extends LinearOpMode
             stop();
         } else if(ringCount == 4.0){
             wRelease.setPosition(0);
-            encoderDrive(0.7,145,145);
+            encoderDrive(0.7,144,144);
             strafeDrive(0.4,47,-47);
             MultiShotAutonom();
             //arunca gogosile,se duca sa mai ia gogosi
@@ -243,7 +243,7 @@ public class AutonomDemoV6 extends LinearOpMode
             strafeDrive(0.5,17,-17);
             sleep(100);
             encoderDrive(0.5,117.25,-117.25);
-            encoderDrive(0.5,78,78);
+            encoderDrive(0.5,76,76);
 
             CremalieraAutonom(-0.8);
             ClampAutonom(0);
@@ -572,8 +572,8 @@ public class AutonomDemoV6 extends LinearOpMode
         static final int REGION_WIDTH = 30;
         static final int REGION_HEIGHT = 20;
 
-        final int FOUR_RING_THRESHOLD = 150;
-        final int ONE_RING_THRESHOLD = 125;
+        final int FOUR_RING_THRESHOLD = 145;
+        final int ONE_RING_THRESHOLD = 135;
 
         Point region1_pointA = new Point(
                 REGION1_TOPLEFT_ANCHOR_POINT.x,
@@ -592,7 +592,7 @@ public class AutonomDemoV6 extends LinearOpMode
 
 
         // Volatile since accessed by OpMode thread w/o synchronization
-        private volatile RingPosition position = RingPosition.FOUR;
+        public volatile RingPosition position = RingPosition.FOUR;
 
         /*
          * This function takes the RGB frame, converts to YCrCb,
