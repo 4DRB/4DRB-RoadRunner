@@ -174,7 +174,7 @@ public class AutonomDemoV6 extends LinearOpMode
 
             encoderDrive(0.7,120,-120);
             strafeDrive(0.6,11,-11);
-            encoderDrive(0.7,103,103);
+            encoderDrive(0.5,103,103);
 
 
             CremalieraAutonom(-0.8);
@@ -182,8 +182,8 @@ public class AutonomDemoV6 extends LinearOpMode
             sleep(500);
             GlisieraAutonom(200,1);
 
-            encoderDrive(0.6,-120,-120);
-            encoderDrive(0.7,-110,110);
+            encoderDrive(0.5,-120,-120);
+            encoderDrive(0.5,-110,110);
             ClampAutonom(0.3);
             CremalieraAutonom(0.8);
             //drive somewhere else
@@ -385,16 +385,21 @@ public class AutonomDemoV6 extends LinearOpMode
 
     }
     public void SingleShotAutonom(){
-        double power = -0.95;
+        double power = -1;
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
         DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class,"frontEncoder");
         Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
         Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+
+        FL.setPower(0);
+        FR.setPower(0);
+        BL.setPower(0);
+        BR.setPower(0);
         Launcher1.setPower(power);
         Launcher2.setPower(power);
-        sleep(1000);
+        sleep(1500);
         Shooter.setPosition(0.3);
         sleep(300);
         Shooter.setPosition(0);
@@ -404,32 +409,31 @@ public class AutonomDemoV6 extends LinearOpMode
     }
 
     public void MultiShotAutonom(){
-        double power = -0.95;
+        double power = -1;
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
         DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class,"frontEncoder");
         Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
         Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        FL.setPower(0);
+        FR.setPower(0);
+        BL.setPower(0);
+        BR.setPower(0);
         Launcher1.setPower(power);
         Launcher2.setPower(power);
-        sleep(1100);
+        sleep(1500);
         Shooter.setPosition(0.3);
-        sleep(200);
-        Shooter.setPosition(0);
         sleep(400);
-        Shooter.setPosition(0.3);
-        sleep(200);
         Shooter.setPosition(0);
+        sleep(100);
+        Shooter.setPosition(0.3);
         sleep(400);
-        Shooter.setPosition(0.3);
-        sleep(200);
         Shooter.setPosition(0);
+        sleep(100);
+        Shooter.setPosition(0.3);
         sleep(400);
-        Shooter.setPosition(0.3);
-        sleep(200);
         Shooter.setPosition(0);
-        // sleep(300);
         Launcher1.setPower(0);
         Launcher2.setPower(0);
 
