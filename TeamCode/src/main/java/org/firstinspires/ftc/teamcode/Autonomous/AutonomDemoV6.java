@@ -152,18 +152,18 @@ public class AutonomDemoV6 extends LinearOpMode
             Shooter.setPosition(0);
             wRelease.setPosition(0);
             encoderDrive(0.6,144,144);
-            strafeDrive(0.4,47,-47);
+            strafeDrive(0.5,47,-47);
             MultiShotAutonom();
             //arunca gogosile,se duca sa mai ia gogosi
             IntakeAutonom(1);
-            encoderDrive(0.5,-31,-31);
+            encoderDrive(0.6,-31,-31);
             sleep(2700);
             IntakeAutonom(0);
-            encoderDrive(0.5,29,29);
+            encoderDrive(0.6,29,29);
             SingleShotAutonom();
             //arunca gogosile,se duce la  patrat 2
-            encoderDrive(0.5,100,100);
-            strafeDrive(0.4,30,-30);
+            encoderDrive(0.6,101,101);
+            strafeDrive(0.5,30,-30);
 
             wRelease.setPosition(0.4);
 
@@ -171,11 +171,11 @@ public class AutonomDemoV6 extends LinearOpMode
             {wRelease.setPosition(0.4);}
             sleep(500);
 
-            encoderDrive(0.5,-70,-70);
+            encoderDrive(0.6,-70,-70);
 
-            encoderDrive(0.5,120,-120);
+            encoderDrive(0.6,120,-120);
             strafeDrive(0.5,11,-11);
-            encoderDrive(0.5,103,103);
+            encoderDrive(0.6,100,100);
 
 
             CremalieraAutonom(-0.8);
@@ -183,8 +183,8 @@ public class AutonomDemoV6 extends LinearOpMode
             sleep(500);
             GlisieraAutonom(200,1);
 
-            encoderDrive(0.5,-120,-120);
-            encoderDrive(0.5,-110,110);
+            encoderDrive(0.6,-120,-120);
+            encoderDrive(0.6,-115,115);
             ClampAutonom(0.3);
             CremalieraAutonom(0.8);
             //drive somewhere else
@@ -194,25 +194,25 @@ public class AutonomDemoV6 extends LinearOpMode
             Shooter.setPosition(0.1);
             Shooter.setPosition(0);
             wRelease.setPosition(0);
-            encoderDrive(0.7,144,144);
-            strafeDrive(0.4,47,-47);
-            MultiShotAutonom();
+            encoderDrive(0.7,142,142);
+            strafeDrive(0.4,51,-51);
+            MultiShottestAutonom();
             //arunca gogosile,se duca sa mai ia gogosi
             IntakeAutonom(1);
             encoderDrive(0.5,-31,-31);
-            sleep(1500);
+            sleep(1000);
             encoderDrive(0.5,-11,-11);
-            sleep(1500);
+            sleep(1000);
             encoderDrive(0.5,-12,-12);
-            sleep(2700);
+            sleep(2500);
             IntakeAutonom(0);
-            encoderDrive(0.7,54,54);
-            MultiShotAutonom();
+            encoderDrive(0.7,56,56);
+            MultiShottestAutonom();
 
             IntakeAutonom(1);
             encoderDrive(0.7,-65,-65);
             sleep(500);
-            encoderDrive(0.7,65,65);
+            encoderDrive(0.7,67,67);
             sleep(700);
             IntakeAutonom(0);
             SingleShotAutonom();
@@ -402,9 +402,9 @@ public class AutonomDemoV6 extends LinearOpMode
         BR.setPower(0);
         Launcher1.setPower(power);
         Launcher2.setPower(power);
-        sleep(1500);
+        sleep(1700);
         Shooter.setPosition(0.3);
-        sleep(300);
+        sleep(500);
         Shooter.setPosition(0);
         sleep(100);
         Launcher1.setPower(0);
@@ -425,17 +425,49 @@ public class AutonomDemoV6 extends LinearOpMode
         BR.setPower(0);
         Launcher1.setPower(power);
         Launcher2.setPower(power);
-        sleep(1500);
+        sleep(1800);
         Shooter.setPosition(0.3);
-        sleep(400);
+        sleep(600);
         Shooter.setPosition(0);
         sleep(100);
         Shooter.setPosition(0.3);
-        sleep(400);
+        sleep(600);
         Shooter.setPosition(0);
         sleep(100);
         Shooter.setPosition(0.3);
-        sleep(400);
+        sleep(600);
+        Shooter.setPosition(0);
+        Launcher1.setPower(0);
+        Launcher2.setPower(0);
+
+
+
+    }
+    public void MultiShottestAutonom(){
+        double power = -1;
+        DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
+        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class,"frontEncoder");
+        Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
+        Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        FL.setPower(0);
+        FR.setPower(0);
+        BL.setPower(0);
+        BR.setPower(0);
+        Launcher1.setPower(power);
+        Launcher2.setPower(power);
+        sleep(1700);
+        Shooter.setPosition(0.3);
+        sleep(500);
+        Shooter.setPosition(0);
+        sleep(100);
+        Shooter.setPosition(0.3);
+        sleep(500);
+        Shooter.setPosition(0);
+        sleep(100);
+        Shooter.setPosition(0.3);
+        sleep(500);
         Shooter.setPosition(0);
         Launcher1.setPower(0);
         Launcher2.setPower(0);
