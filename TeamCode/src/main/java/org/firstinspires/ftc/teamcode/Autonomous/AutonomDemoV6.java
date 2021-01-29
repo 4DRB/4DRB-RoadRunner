@@ -148,21 +148,22 @@ public class AutonomDemoV6 extends LinearOpMode
 
         if(ringCount == 1.0){
 
-
+            Shooter.setPosition(0.1);
+            Shooter.setPosition(0);
             wRelease.setPosition(0);
-            encoderDrive(0.7,144,144);
-            strafeDrive(0.5,47,-47);
+            encoderDrive(0.6,144,144);
+            strafeDrive(0.4,47,-47);
             MultiShotAutonom();
             //arunca gogosile,se duca sa mai ia gogosi
             IntakeAutonom(1);
-            encoderDrive(0.7,-31,-31);
+            encoderDrive(0.5,-31,-31);
             sleep(2700);
             IntakeAutonom(0);
-            encoderDrive(0.6,29,29);
+            encoderDrive(0.5,29,29);
             SingleShotAutonom();
             //arunca gogosile,se duce la  patrat 2
-            encoderDrive(0.7,100,100);
-            strafeDrive(0.5,30,-30);
+            encoderDrive(0.5,100,100);
+            strafeDrive(0.4,30,-30);
 
             wRelease.setPosition(0.4);
 
@@ -170,10 +171,10 @@ public class AutonomDemoV6 extends LinearOpMode
             {wRelease.setPosition(0.4);}
             sleep(500);
 
-            encoderDrive(0.7,-70,-70);
+            encoderDrive(0.5,-70,-70);
 
-            encoderDrive(0.7,120,-120);
-            strafeDrive(0.6,11,-11);
+            encoderDrive(0.5,120,-120);
+            strafeDrive(0.5,11,-11);
             encoderDrive(0.5,103,103);
 
 
@@ -190,6 +191,8 @@ public class AutonomDemoV6 extends LinearOpMode
             sleep(1000);
             stop();
         } else if(ringCount == 4.0){
+            Shooter.setPosition(0.1);
+            Shooter.setPosition(0);
             wRelease.setPosition(0);
             encoderDrive(0.7,144,144);
             strafeDrive(0.4,47,-47);
