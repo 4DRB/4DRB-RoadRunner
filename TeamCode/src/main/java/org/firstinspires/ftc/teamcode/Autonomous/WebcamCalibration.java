@@ -144,7 +144,7 @@ while (opModeIsActive()){
         static final int REGION_WIDTH = 30;
         static final int REGION_HEIGHT = 20;
 
-        final int FOUR_RING_THRESHOLD = 145;
+        final int FOUR_RING_THRESHOLD = 151;
         final int ONE_RING_THRESHOLD = 135;
 
         Point region1_pointA = new Point(

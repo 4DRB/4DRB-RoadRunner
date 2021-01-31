@@ -46,7 +46,7 @@ public class Test_Controller extends LinearOpMode {
      *
      */
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         Servo clamp = hardwareMap.get(Servo.class, "SR_CLAMP");
         CRServo cremaliera_Servo = hardwareMap.get(CRServo.class, "SR_CRM");
         DigitalChannel digChannel = hardwareMap.get(DigitalChannel.class, "Mag_CRM");
@@ -211,7 +211,7 @@ public class Test_Controller extends LinearOpMode {
             Launcher1.setPower(0);
             Launcher2.setPower(0);}
     }
-    public void MultiShotTeleOp(){
+    public void MultiShotTeleOp() throws InterruptedException {
         double power = -1;
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
         DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class,"frontEncoder");
@@ -225,19 +225,19 @@ public class Test_Controller extends LinearOpMode {
             BrightDrive.setPower(0);
             Launcher1.setPower(power);
             Launcher2.setPower(power);
-            sleep(1500);
+            Thread.sleep(1500);
             Shooter.setPosition(0.3);
-            sleep(400);
+            Thread.sleep(400);
             Shooter.setPosition(0);
-            sleep(400);
+            Thread.sleep(400);
             Shooter.setPosition(0.3);
-            sleep(400);
+            Thread.sleep(400);
             Shooter.setPosition(0);
-            sleep(400);
+            Thread.sleep(400);
             Shooter.setPosition(0.3);
-            sleep(400);
+            Thread.sleep(400);
             Shooter.setPosition(0);
-            sleep(400);
+            Thread.sleep(400);
             Launcher1.setPower(0);
             Launcher2.setPower(0);
 
@@ -360,6 +360,47 @@ public class Test_Controller extends LinearOpMode {
         glMg_OK = !glsMg.getState();
         glisiera.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         if (GlSensLastDep) {
+            if (glMg_OK) {
+                if (gamepad1.dpad_down) {
+                    glisiera.setPower(0);
+                    //CrSensLastDep = false;
+                } else if (gamepad1.dpad_up) {
+                    glisiera.setPower(glPwr);
+                    //CrSensLastDep = false;
+                }
+
+            } else {
+                if (gamepad1.dpad_down) {
+                    glisiera.setPower(-crPwr);
+                    ////////////////////////CrSensLastDep = true;
+                } else if (gamepad1.dpad_up) {
+                    glisiera.setPower(0);
+                    GlSensLastDep = false;
+                } else {
+                    glisiera.setPower(0);
+                }
+            }
+        } else {
+            if (glMg_OK) {
+                if (gamepad1.dpad_up) {
+                    glisiera.setPower(0);
+                } else if (gamepad1.dpad_down) {
+                    glisiera.setPower(-glPwr);
+                    //CrSensLastDep = true;
+                }
+            }
+            if (!glMg_OK) {
+                if (gamepad1.dpad_up) {
+                    glisiera.setPower(glPwr);
+                } else if (gamepad1.dpad_down) {
+                    glisiera.setPower(-glPwr);
+                    GlSensLastDep = true;
+                } else {
+                    glisiera.setPower(0);
+                }
+            }
+        }
+        /*if (GlSensLastDep) {
             if (glMg_OK) {
                 if (gamepad1.dpad_down) {
                     glisiera.setPower(0);
