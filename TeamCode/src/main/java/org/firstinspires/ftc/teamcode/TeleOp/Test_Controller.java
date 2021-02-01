@@ -41,6 +41,7 @@ public class Test_Controller extends LinearOpMode {
     boolean leftstickpress; //Outside of loop()
     double intakePower=0;
     boolean intakeOk=true;
+    int target=0;
 
     /**
      *
@@ -343,110 +344,50 @@ public class Test_Controller extends LinearOpMode {
                 }
             }
         }
-        telemetry.addData("crMg",digChannel.getState());
-        telemetry.addData("sens",CrSensLastDep);
-        telemetry.addData("left",gamepad1.dpad_left);
-        telemetry.addData("right",gamepad1.dpad_right);
-        telemetry.update();
 
 
     }
 
     public void GlisieraTeleOp() {
-
+        double glsPower=0.8;
         DcMotor glisiera = hardwareMap.get(DcMotorEx.class, "GLS");
         glisiera.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         DigitalChannel glsMg = hardwareMap.get(DigitalChannel.class, "Mag_GLS");
-        glMg_OK = !glsMg.getState();
         glisiera.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        if (GlSensLastDep) {
-            if (glMg_OK) {
-                if (gamepad1.dpad_down) {
-                    glisiera.setPower(0);
-                    //CrSensLastDep = false;
-                } else if (gamepad1.dpad_up) {
-                    glisiera.setPower(glPwr);
-                    //CrSensLastDep = false;
-                }
 
-            } else {
-                if (gamepad1.dpad_down) {
-                    glisiera.setPower(-crPwr);
-                    ////////////////////////CrSensLastDep = true;
-                } else if (gamepad1.dpad_up) {
-                    glisiera.setPower(0);
-                    GlSensLastDep = false;
-                } else {
-                    glisiera.setPower(0);
-                }
-            }
-        } else {
-            if (glMg_OK) {
-                if (gamepad1.dpad_up) {
-                    glisiera.setPower(0);
-                } else if (gamepad1.dpad_down) {
-                    glisiera.setPower(-glPwr);
-                    //CrSensLastDep = true;
-                }
-            }
-            if (!glMg_OK) {
-                if (gamepad1.dpad_up) {
-                    glisiera.setPower(glPwr);
-                } else if (gamepad1.dpad_down) {
-                    glisiera.setPower(-glPwr);
-                    GlSensLastDep = true;
-                } else {
-                    glisiera.setPower(0);
-                }
+
+        if (gamepad1.dpad_up){
+            if(target<=2850) {glisiera.setPower(glsPower);
+            target = target+50;}
+        }
+        else if (!gamepad1.dpad_up && !gamepad1.dpad_down)
+        {
+            glisiera.setPower(0);
+        }
+
+
+        if (gamepad1.dpad_down){
+            if (glsMg.getState()){
+            glisiera.setPower(-glsPower);
+            target = target-50;}
+            else{
+                target=0;
             }
         }
-        /*if (GlSensLastDep) {
-            if (glMg_OK) {
-                if (gamepad1.dpad_down) {
-                    glisiera.setPower(0);
-
-                    //CrSensLastDep = false;
-                } else if (gamepad1.dpad_up) {
-                    glisiera.setPower(glPwr);
-                    //CrSensLastDep = false;
-                }
-
-            } else {
-                if (gamepad1.dpad_down) {
-                    glisiera.setPower(-glPwr);
-                    ////////////////////////CrSensLastDep = true;
-                } else if (gamepad1.dpad_up) {
-                    glisiera.setPower(0);
-                    GlSensLastDep = false;
-                } else {
-                    glisiera.setPower(0);
-                }
-            }
-        } else {
-            if (glMg_OK) {
-                if (gamepad1.dpad_up) {
-                    glisiera.setPower(0);
-                } else if (gamepad1.dpad_down) {
-                    glisiera.setPower(-glPwr);
-                    //CrSensLastDep = true;
-                }
-            }
-            if (!glMg_OK) {
-                if (gamepad1.dpad_up) {
-                    glisiera.setPower(glPwr);
-                } else if (gamepad1.dpad_down) {
-                    glisiera.setPower(-glPwr);
-                    GlSensLastDep = true;
-                } else {
-                    glisiera.setPower(0);
-                }
-            }
+        else if (!gamepad1.dpad_up && !gamepad1.dpad_down)
+        {
+            glisiera.setPower(0);
         }
-        /*telemetry.addData("crMg",glsMg.getState());
-        telemetry.addData("sens",CrSensLastDep);
-        telemetry.addData("A",gamepad1.a);
-        telemetry.addData("B",gamepad1.b);
-        telemetry.update();*/
+        glisiera.setTargetPosition(target);
+
+
+        glisiera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        telemetry.addData("pos gls",target);
+        telemetry.update();
+
+
     }
-}
+    }
+
 
