@@ -433,7 +433,7 @@ public class AutonomDemoV6 extends LinearOpMode
         Shooter.setPosition(0.3);
         sleep(600);
         Shooter.setPosition(0);
-        sleep(200);
+        sleep(250);
         Shooter.setPosition(0.3);
         sleep(600);
         Shooter.setPosition(0);
@@ -611,7 +611,7 @@ public class AutonomDemoV6 extends LinearOpMode
         static final int REGION_WIDTH = 30;
         static final int REGION_HEIGHT = 20;
 
-        final int FOUR_RING_THRESHOLD = 151;
+        final int FOUR_RING_THRESHOLD = 150;
         final int ONE_RING_THRESHOLD = 135;
 
         Point region1_pointA = new Point(

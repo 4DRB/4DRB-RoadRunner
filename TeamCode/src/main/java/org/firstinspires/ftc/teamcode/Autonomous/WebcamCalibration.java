@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -24,6 +25,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.Arrays;
 
 @Autonomous
+
 public class WebcamCalibration extends LinearOpMode
 {
     static double ringCount = 0;
@@ -144,7 +146,7 @@ while (opModeIsActive()){
         static final int REGION_WIDTH = 30;
         static final int REGION_HEIGHT = 20;
 
-        final int FOUR_RING_THRESHOLD = 151;
+        final int FOUR_RING_THRESHOLD = 150;
         final int ONE_RING_THRESHOLD = 135;
 
         Point region1_pointA = new Point(

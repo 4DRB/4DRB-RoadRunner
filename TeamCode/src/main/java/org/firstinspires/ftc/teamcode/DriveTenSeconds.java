@@ -12,6 +12,7 @@ import java.sql.Array;
 import java.util.Arrays;
 
 @Autonomous(name = "DriveTenSeconds")
+@Disabled
 public class DriveTenSeconds extends OpMode {
     //member data
     //declaring left motor

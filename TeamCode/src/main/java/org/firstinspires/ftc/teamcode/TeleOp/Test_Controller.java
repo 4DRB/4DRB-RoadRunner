@@ -74,10 +74,10 @@ public class Test_Controller extends LinearOpMode {
 
         while (opModeIsActive()) {
             // run until the end of the match (driver presses STOP)
-            WRealeaseLeftTeleOp();//A si B pentru WRelease
-            SingleShotTeleOp();
+            //WRealeaseLeftTeleOp();//A si B pentru WRelease
+            //SingleShotTeleOp();
 
-            MultiShotTeleOp();
+            //MultiShotTeleOp();
 
             ClampTeleOp();//X si Y pentru clamp
 
@@ -89,14 +89,16 @@ public class Test_Controller extends LinearOpMode {
 
             IntakeTeleOp();//LeftStickBumper
 
-            SingleShotSlowTeleOp();
+            //SingleShotSlowTeleOp();
             //IntakeInversTeleOp();
 
             JustLauncherTeleOp();
 
             JustShooterTeleOp();
 
+            ArmTeleOp();
 
+            FingerTeleOp();
 
 
             prevX = gamepad1.x;
@@ -350,6 +352,7 @@ public class Test_Controller extends LinearOpMode {
 
     public void GlisieraTeleOp() {
         double glsPower=0.8;
+
         DcMotor glisiera = hardwareMap.get(DcMotorEx.class, "GLS");
         glisiera.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         DigitalChannel glsMg = hardwareMap.get(DigitalChannel.class, "Mag_GLS");
@@ -359,6 +362,7 @@ public class Test_Controller extends LinearOpMode {
         if (gamepad1.dpad_up){
             if(target<=2850) {glisiera.setPower(glsPower);
             target = target+50;}
+            else glisiera.setPower(0);
         }
         else if (!gamepad1.dpad_up && !gamepad1.dpad_down)
         {
@@ -369,9 +373,10 @@ public class Test_Controller extends LinearOpMode {
         if (gamepad1.dpad_down){
             if (glsMg.getState()){
             glisiera.setPower(-glsPower);
-            target = target-50;}
+            target = target-100;}
             else{
                 target=0;
+                glisiera.setPower(0);
             }
         }
         else if (!gamepad1.dpad_up && !gamepad1.dpad_down)
@@ -383,11 +388,91 @@ public class Test_Controller extends LinearOpMode {
 
         glisiera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        telemetry.addData("pos gls",target);
+
+/* public void GlisieraTeleOp() {
+
+
+        DcMotor glisiera = hardwareMap.get(DcMotorEx.class, "GLS");
+        glisiera.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        DigitalChannel glsMg = hardwareMap.get(DigitalChannel.class, "Mag_GLS");
+        glisiera.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+        if (gamepad1.dpad_up) {
+            if (target <= 2850) {
+                glisiera.setPower(glsPower);
+                target = target + 50;
+                if (target <= 2000) glisiera.setPower(glsPower);
+                else glisiera.setPower(glsPower * 0.5);
+            } else glisiera.setPower(0);
+
+
+        } else if (!gamepad1.dpad_up && !gamepad1.dpad_down) {
+            glisiera.setPower(0);
+        }
+
+
+        if (gamepad1.dpad_down) {
+            if (glsMg.getState()) {
+                glisiera.setPower(-glsPower);
+                target = target - 100;
+                    if (target <= 2000) glisiera.setPower(-glsPower);
+                    else glisiera.setPower(-glsPower * 0.5);
+
+            } else {
+                target = 1;
+                glisiera.setPower(0);
+            }
+        } else if (!gamepad1.dpad_up && !gamepad1.dpad_down) {
+            glisiera.setPower(0);
+        }
+        glisiera.setTargetPosition(target);
+
+
+        glisiera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        telemetry.addData("pos gls", target);
+        telemetry.addData("speed", glsPower);
         telemetry.update();
 
 
+    }*/
+
+        }
+    public void ArmTeleOp(){
+        CRServo Arm = hardwareMap.get(CRServo.class, "SR_ARM");
+
+
+        if (gamepad1.back) {
+            // move to 0 degrees.
+            Arm.setPower(0.4);
+
+        } else if (gamepad1.start) {
+            // move to 90 degrees.
+            Arm.setPower(-0.4);
+        }
+        else {Arm.setPower(0);}
+        telemetry.addData("Servo Power", Arm.getPower());
+        telemetry.addData("Status", "Running");
+        telemetry.update();
     }
+
+    public void FingerTeleOp(){
+        Servo finger = hardwareMap.get(Servo.class, "SR_FINGER");
+
+
+        if (gamepad1.a) {
+            // move to 0 degrees.
+            finger.setPosition(0.5);
+
+        } else if (gamepad1.b) {
+            // move to 90 degrees.
+            finger.setPosition(0.0);
+        }
+        telemetry.addData("Servo Position", finger.getPosition());
+        telemetry.addData("Status", "Running");
+        //telemetry.update();
     }
+}
 
 
