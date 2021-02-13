@@ -173,7 +173,7 @@ public class AutonomDemoV6 extends LinearOpMode
 
             encoderDrive(0.6,-70,-70);
 
-            encoderDrive(0.6,120,-120);
+            encoderDrive(0.6,119.5,-119.5);
             strafeDrive(0.5,11,-11);
             encoderDrive(0.6,100,100);
 
@@ -195,7 +195,7 @@ public class AutonomDemoV6 extends LinearOpMode
             Shooter.setPosition(0);
             wRelease.setPosition(0);
             encoderDrive(0.7,142,142);
-            strafeDrive(0.4,51,-51);
+            strafeDrive(0.4,47,-47);
             MultiShottestAutonom();
             //arunca gogosile,se duca sa mai ia gogosi
             IntakeAutonom(1);
@@ -208,6 +208,7 @@ public class AutonomDemoV6 extends LinearOpMode
             IntakeAutonom(0);
             encoderDrive(0.7,56,56);
             MultiShottestAutonom();
+
 
             IntakeAutonom(1);
             encoderDrive(0.7,-65,-65);
@@ -245,7 +246,7 @@ public class AutonomDemoV6 extends LinearOpMode
             MultiShotAutonom();
             strafeDrive(0.5,17,-17);
             sleep(100);
-            encoderDrive(0.5,117.25,-117.25);
+            encoderDrive(0.5,117,-117);
             encoderDrive(0.5,76,76);
 
             CremalieraAutonom(-0.8);
@@ -611,8 +612,8 @@ public class AutonomDemoV6 extends LinearOpMode
         static final int REGION_WIDTH = 30;
         static final int REGION_HEIGHT = 20;
 
-        final int FOUR_RING_THRESHOLD = 150;
-        final int ONE_RING_THRESHOLD = 135;
+        final int FOUR_RING_THRESHOLD = 150;//150lumina multa//135luminaputina
+        final int ONE_RING_THRESHOLD = 135;//135luminamulta//128luminaputina
 
         Point region1_pointA = new Point(
                 REGION1_TOPLEFT_ANCHOR_POINT.x,

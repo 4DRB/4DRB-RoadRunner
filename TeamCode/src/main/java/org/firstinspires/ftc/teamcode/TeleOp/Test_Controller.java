@@ -36,7 +36,7 @@ public class Test_Controller extends LinearOpMode {
     public final double offBRD=6.5;
 
     double ok=0;
-    double  power   = 1.1;//1.41
+    double  power   = 1.2;//1.41
     double FranaS,FranaD;
     boolean leftstickpress; //Outside of loop()
     double intakePower=0;
