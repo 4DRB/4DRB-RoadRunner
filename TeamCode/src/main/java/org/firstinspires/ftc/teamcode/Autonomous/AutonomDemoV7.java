@@ -30,6 +30,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.OdometryAutonomous.OdometryGlobalCoordinatePosition;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -45,7 +46,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.Arrays;
 
 @Autonomous
-public class AutonomDemoV6 extends LinearOpMode
+public class AutonomDemoV7 extends LinearOpMode
 {
     static double ringCount = 0;
     RingDetectingPipeline pipeline;
@@ -64,10 +65,15 @@ public class AutonomDemoV6 extends LinearOpMode
     final double WHEEL_DIAMETER_CM = 9.6;     // For figuring circumference 9.6
     double TICKS_PER_CM = (TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
 
+    final double TICKS_PER_REV_ENC = 8192 ;    // eg: TETRIX Motor Encoder
+    final double DRIVE_GEAR_REDUCTION_ENC = 1;     // This is < 1.0 if geared UP
+    final double WHEEL_DIAMETER_CM_ENC = 6;     // For figuring circumference 9.6
+    double TICKS_PER_CM_ENC = 434;//(TICKS_PER_REV_ENC * DRIVE_GEAR_REDUCTION_ENC) / (WHEEL_DIAMETER_CM_ENC * 3.1415);
+
     int initDiff,lastDiff,diffDiff;
     Encoder leftEncoder, rightEncoder, frontEncoder;
     OpenCvCamera webCam = null;
-
+    OdometryGlobalCoordinatePosition globalPositionUpdate;
 
 
 
@@ -87,7 +93,7 @@ public class AutonomDemoV6 extends LinearOpMode
 
         Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
 
-
+        rightEncoder.setDirection(Encoder.Direction.REVERSE);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webCam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam"), cameraMonitorViewId);
@@ -194,7 +200,7 @@ public class AutonomDemoV6 extends LinearOpMode
             Shooter.setPosition(0.1);
             Shooter.setPosition(0);
             wRelease.setPosition(0);
-            encoderDrive(0.7,142,142);
+            encoderDrive(0.2,142,142);
             strafeDrive(0.4,47,-47);
             MultiShottestAutonom();
             //arunca gogosile,se duca sa mai ia gogosi
@@ -279,6 +285,14 @@ public class AutonomDemoV6 extends LinearOpMode
         int newLeftBackTarget = 0;
         int newRightBackTarget = 0;
 
+        double PosY = 0;
+        double PosXL = leftEncoder.getCurrentPosition();
+        double PosXR = rightEncoder.getCurrentPosition();
+
+        double WantedY = 0;
+        double WantedXL = leftInches*TICKS_PER_CM_ENC;
+        double WantedXR = rightInches*TICKS_PER_CM_ENC;
+
 // it calculates the distance that the robot has to move when you use the method.
         newLeftFrontTarget = FL.getCurrentPosition() + (int)(leftInches * TICKS_PER_CM);
         newRightFrontTarget = FR.getCurrentPosition() + (int)(rightInches * TICKS_PER_CM);
@@ -306,6 +320,58 @@ public class AutonomDemoV6 extends LinearOpMode
             telemetry.addData("Pos:",FL.getCurrentPosition());
             telemetry.update();
             initDiff=frontEncoder.getCurrentPosition()-leftEncoder.getCurrentPosition();
+        }
+
+        FR.setPower(0);
+        FL.setPower(0);
+        BR.setPower(0);
+        BL.setPower(0);
+// this stops the run to position.
+        FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+// resets all the data for the encoders.
+
+        int XLSign = 1;
+        int XRSign = 1;
+        int LegitY = 0;
+        double LegitXL = PosXL+WantedXL-leftEncoder.getCurrentPosition();
+        double LegitXR = PosXR+WantedXR-rightEncoder.getCurrentPosition();
+        boolean CloseEnough4Me=false;
+        while(CloseEnough4Me==false)
+        {
+            LegitXL = PosXL+WantedXL-leftEncoder.getCurrentPosition();
+            LegitXR = PosXR+WantedXR-rightEncoder.getCurrentPosition();
+
+            telemetry.addData("og pos XR",PosXR);
+            telemetry.addData("wanted pos XR",WantedXR);
+            telemetry.addData("rightNow pos XR",rightEncoder.getCurrentPosition());
+            telemetry.addData("Legit XR",LegitXR);
+            telemetry.update();
+
+            if (Math.abs(LegitXL)<1000&&Math.abs(LegitXR)<1000){
+                CloseEnough4Me = true;
+                break;
+            }
+
+
+            if (LegitXL<0) XLSign = -1;
+            else XLSign = 1;
+            if (Math.abs(LegitXL)>1000)
+            {
+                FL.setPower(Math.abs(speed)*XLSign);
+                BL.setPower(Math.abs(speed)*XLSign);
+            }
+
+            if (LegitXR<0) XRSign = 1;
+            else XRSign = -1;
+            if (Math.abs(LegitXR)>1000)
+            {
+                FR.setPower(Math.abs(speed)*XRSign);
+                BR.setPower(Math.abs(speed)*XRSign);
+            }
+
         }
 
 
