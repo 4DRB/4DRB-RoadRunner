@@ -96,6 +96,8 @@ public class Test_Controller extends LinearOpMode {
 
             JustShooterTeleOp();
 
+            JustLauncherTeleOpSlow();
+
             ArmTeleOp();
 
             FingerTeleOp();
@@ -122,6 +124,28 @@ public class Test_Controller extends LinearOpMode {
 
         }
     }
+
+    private void JustLauncherTeleOpSlow() {
+        double power = -0.9;
+        DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
+        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class,"frontEncoder");
+        Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
+        Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if (gamepad1.right_stick_button){
+            TleftDrive.setPower(0);
+            TrightDrive.setPower(0);
+            BleftDrive.setPower(0);
+            BrightDrive.setPower(0);
+            Launcher1.setPower(power);
+            Launcher2.setPower(power);
+        }
+        else if (!gamepad1.left_bumper){
+            Launcher1.setPower(0);
+            Launcher2.setPower(0);
+        }
+    }
+
     public void JustLauncherTeleOp(){
         double power = -1.2;
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
@@ -137,7 +161,7 @@ public class Test_Controller extends LinearOpMode {
             Launcher1.setPower(power);
             Launcher2.setPower(power);
             }
-        else {
+        else if (!gamepad1.right_stick_button){
             Launcher1.setPower(0);
             Launcher2.setPower(0);
         }
