@@ -157,18 +157,18 @@ public class AutonomDemoV7 extends LinearOpMode
             Shooter.setPosition(0.1);
             Shooter.setPosition(0);
             wRelease.setPosition(0);
-            encoderDrive(0.6,144,144);
-            strafeDrive(0.5,47,-47);
-            MultiShotAutonom();
+            encoderDrive(0.8,140,140);
+            strafeDrive(0.6,47,-47);
+            MultiShottestAutonom();
             //arunca gogosile,se duca sa mai ia gogosi
             IntakeAutonom(1);
             encoderDrive(0.6,-31,-31);
             sleep(2700);
-            IntakeAutonom(0);
             encoderDrive(0.6,29,29);
+            IntakeAutonom(0);
             SingleShotAutonom();
             //arunca gogosile,se duce la  patrat 2
-            encoderDrive(0.6,101,101);
+            normalDrive(0.6,101,101);
             strafeDrive(0.5,30,-30);
 
             wRelease.setPosition(0.4);
@@ -177,11 +177,11 @@ public class AutonomDemoV7 extends LinearOpMode
             {wRelease.setPosition(0.4);}
             sleep(500);
 
-            encoderDrive(0.6,-70,-70);
+            normalDrive(0.6,-70,-70);
 
-            encoderDrive(0.6,119.5,-119.5);
-            strafeDrive(0.5,11,-11);
-            encoderDrive(0.6,100,100);
+            normalDrive(0.6,119.70,-119.70);
+            strafeDrive(0.5,10,-10);
+            normalDrive(0.6,100,100);
 
 
             CremalieraAutonom(-0.8);
@@ -189,8 +189,8 @@ public class AutonomDemoV7 extends LinearOpMode
             sleep(500);
             GlisieraAutonom(200,1);
 
-            encoderDrive(0.6,-120,-120);
-            encoderDrive(0.6,-115,115);
+            normalDrive(0.6,-120,-120);
+            normalDrive(0.6,-115,115);
             ClampAutonom(0.3);
             CremalieraAutonom(0.8);
             //drive somewhere else
@@ -227,13 +227,13 @@ public class AutonomDemoV7 extends LinearOpMode
             encoderDrive(1,130,130);
             strafeDrive(0.5,-25,25);
 
-            spinDrive(0.7,30,-30);
+            normalDrive(0.7,30,-30);
             wRelease.setPosition(0.4);
 
             for(int i =1;i<=2000;i++)
             {wRelease.setPosition(0.4);}
             sleep(500);
-            spinDrive(0.7,-30,30);
+            normalDrive(0.7,-30,30);
             encoderDrive(1,-100,-100);
 
 
@@ -249,11 +249,11 @@ public class AutonomDemoV7 extends LinearOpMode
 
             encoderDrive(0.5,-38,-38);
 
-            MultiShotAutonom();
+            MultiShottestAutonom();
             strafeDrive(0.5,17,-17);
             sleep(100);
-            encoderDrive(0.5,117,-117);
-            encoderDrive(0.5,76,76);
+            normalDrive(0.5,120.15,-120.15);
+            normalDrive(0.5,76,76);
 
             CremalieraAutonom(-0.8);
             ClampAutonom(0);
@@ -262,15 +262,15 @@ public class AutonomDemoV7 extends LinearOpMode
 
 
 
-            encoderDrive(0.5,-135,-135);
-            encoderDrive(0.5,58.6,-58.6);
-            encoderDrive(0.5,15,15);
+            normalDrive(0.5,-135,-135);
+            normalDrive(0.5,58.6,-58.6);
+            normalDrive(0.5,15,15);
 
             ClampAutonom(0.3);
             CremalieraAutonom(0.8);
 
             strafeDrive(0.5,-10,10);
-            encoderDrive(0.6,-10,-10);
+            normalDrive(0.6,-10,-10);
             stop();
         }
 
@@ -348,7 +348,7 @@ public class AutonomDemoV7 extends LinearOpMode
             telemetry.addData("Legit XR",LegitXR);
             telemetry.update();
 
-            if (Math.abs(LegitXL)<200&&Math.abs(LegitXR)<200){
+            if (Math.abs(LegitXL)<100&&Math.abs(LegitXR)<100){
                 CloseEnough4Me = true;
                 break;
             }
@@ -356,18 +356,24 @@ public class AutonomDemoV7 extends LinearOpMode
 
             if (LegitXL<0) XLSign = -1;
             else XLSign = 1;
-            if (Math.abs(LegitXL)>200)
+            if (Math.abs(LegitXL)>100)
             {
                 FL.setPower(Math.abs(encSpeed)*XLSign);
                 BL.setPower(Math.abs(encSpeed)*XLSign);
+                telemetry.addData("Legit XL",LegitXL);
+                telemetry.addData("Legit XR",LegitXR);
+                telemetry.update();
             }
 
             if (LegitXR<0) XRSign = -1;
             else XRSign = 1;
-            if (Math.abs(LegitXR)>200)
+            if (Math.abs(LegitXR)>100)
             {
                 FR.setPower(Math.abs(encSpeed)*XRSign);
                 BR.setPower(Math.abs(encSpeed)*XRSign);
+                telemetry.addData("Legit XL",LegitXL);
+                telemetry.addData("Legit XR",LegitXR);
+                telemetry.update();
             }
 
         }
@@ -449,7 +455,7 @@ public class AutonomDemoV7 extends LinearOpMode
         BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
-    public void spinDrive(double speed, double leftInches, double rightInches){
+    public void normalDrive(double speed, double leftInches, double rightInches){
 
 // this creates the variables that will be calculated
         int newLeftFrontTarget = 0;
@@ -532,7 +538,7 @@ public class AutonomDemoV7 extends LinearOpMode
         Launcher2.setPower(0);
     }
 
-    public void MultiShotAutonom(){
+    /*public void MultiShotAutonom(){
         double power = -1;
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
         DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class,"frontEncoder");
@@ -563,7 +569,7 @@ public class AutonomDemoV7 extends LinearOpMode
 
 
 
-    }
+    }*/
     public void MultiShottestAutonom(){
         double power = -1;
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
