@@ -42,6 +42,8 @@ public class Test_Controller extends LinearOpMode {
     double intakePower=0;
     boolean intakeOk=true;
     int target=0;
+    int intakePowerR=0;
+    boolean intakeOkR=true;
 
     /**
      *
@@ -87,10 +89,12 @@ public class Test_Controller extends LinearOpMode {
 
             GlisieraTeleOp();//Sageti sus si jos
 
-            IntakeTeleOp();//LeftStickBumper
+            //IntakeTeleOp();//LeftStickBumper
 
             //SingleShotSlowTeleOp();
             //IntakeInversTeleOp();
+
+            BetterIntakeTeleOp();
 
             JustLauncherTeleOp();
 
@@ -126,6 +130,8 @@ public class Test_Controller extends LinearOpMode {
     }
 
     private void JustLauncherTeleOpSlow() {
+        DcMotorEx InTake = hardwareMap.get(DcMotorEx.class,"leftEncoder");
+        InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         double power = -0.9;
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
         DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class,"frontEncoder");
@@ -133,6 +139,7 @@ public class Test_Controller extends LinearOpMode {
         Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (gamepad1.right_stick_button){
+            InTake.setPower(0);
             TleftDrive.setPower(0);
             TrightDrive.setPower(0);
             BleftDrive.setPower(0);
@@ -147,6 +154,8 @@ public class Test_Controller extends LinearOpMode {
     }
 
     public void JustLauncherTeleOp(){
+        DcMotorEx InTake = hardwareMap.get(DcMotorEx.class,"leftEncoder");
+        InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         double power = -1.2;
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
         DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class,"frontEncoder");
@@ -154,6 +163,7 @@ public class Test_Controller extends LinearOpMode {
         Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (gamepad1.left_bumper){
+            InTake.setPower(0);
             TleftDrive.setPower(0);
             TrightDrive.setPower(0);
             BleftDrive.setPower(0);
@@ -295,25 +305,61 @@ public class Test_Controller extends LinearOpMode {
 
     }
     public void IntakeInversTeleOp(){
-        double power = -1;
+        double power = 1;
+
+
         DcMotorEx InTake = hardwareMap.get(DcMotorEx.class,"leftEncoder");
         InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if (gamepad1.right_stick_button){
-            InTake.setPower(power);
-        } else if (!gamepad1.left_stick_button){
-            InTake.setPower(0);
+
+        /*if(gamepad1.left_stick_button && !changed) {
+            if(InTake.getPower() == 0) InTake.setPower(power);
+            else InTake.setPower(0);
+            changed = true;
+        } else if(!gamepad1.left_stick_button) changed = false;*/
+        if (gamepad2.right_stick_button)
+        {if (intakeOkR==true){
+            if (intakePowerR == -1) intakePowerR=0;
+            else intakePowerR =-1;
+            intakeOkR=false;}
         }
+        else intakeOkR=true;
+
+        InTake.setPower(intakePowerR);
+
+    }
+
+    public void BetterIntakeTeleOp(){
+        double power = 1;
+
+
+        DcMotorEx InTake = hardwareMap.get(DcMotorEx.class,"leftEncoder");
+        InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        if (gamepad1.a){//1
+            InTake.setPower(1);
+            telemetry.addLine("caz 1 ");
+        }
+        else if(gamepad1.b)//-1
+                {
+                    InTake.setPower(-1);
+                    telemetry.addLine("caz -1 ");
+                }
+        else if (!gamepad1.a&&!gamepad1.b){//0
+            InTake.setPower(0);
+            telemetry.addLine("caz 0 ");
+        }
+        telemetry.update();
     }
 
     public void ClampTeleOp() {
         Servo clamp = hardwareMap.get(Servo.class, "SR_CLAMP");
 
 
-        if (gamepad1.y) {
+        if (gamepad2.b) {
             // move to 0 degrees.
             clamp.setPosition(0.0);
 
-        } else if (gamepad1.x) {
+        } else if (gamepad2.a) {
             // move to 90 degrees.
             clamp.setPosition(0.3);
         }
@@ -485,11 +531,11 @@ public class Test_Controller extends LinearOpMode {
         Servo finger = hardwareMap.get(Servo.class, "SR_FINGER");
 
 
-        if (gamepad1.a) {
+        if (gamepad1.x) {
             // move to 0 degrees.
             finger.setPosition(0.5);
 
-        } else if (gamepad1.b) {
+        } else if (gamepad1.y) {
             // move to 90 degrees.
             finger.setPosition(0.0);
         }

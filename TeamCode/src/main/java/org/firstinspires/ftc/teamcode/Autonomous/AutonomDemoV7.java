@@ -163,7 +163,7 @@ public class AutonomDemoV7 extends LinearOpMode
             //arunca gogosile,se duca sa mai ia gogosi
             IntakeAutonom(1);
             encoderDrive(0.6,-31,-31);
-            sleep(2700);
+            sleep(2000);
             encoderDrive(0.6,29,29);
             IntakeAutonom(0);
             SingleShotAutonom();
