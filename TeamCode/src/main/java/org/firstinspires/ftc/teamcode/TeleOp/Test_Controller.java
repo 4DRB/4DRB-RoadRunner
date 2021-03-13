@@ -154,7 +154,7 @@ public class Test_Controller extends LinearOpMode {
     public void JustLauncherTeleOp() {
         DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
         InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        double power = -1.2;
+        double power = -0.96;
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
         DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
         Servo Shooter = hardwareMap.get(Servo.class, "SR_SHOOTER");
