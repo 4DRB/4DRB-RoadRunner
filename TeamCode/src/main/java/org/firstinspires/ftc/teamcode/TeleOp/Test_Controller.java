@@ -36,7 +36,7 @@ public class Test_Controller extends LinearOpMode {
     public final double offBRD = 6.5;
 
     double ok = 0;
-    double power = 1.2;//1.41
+    double power = 1;//1.41
     double FranaS, FranaD;
     boolean leftstickpress; //Outside of loop()
     double intakePower = 0;
@@ -44,6 +44,7 @@ public class Test_Controller extends LinearOpMode {
     int target = 0;
     int intakePowerR = 0;
     boolean intakeOkR = true;
+    boolean changed = false;
 
     /**
      *
@@ -105,6 +106,7 @@ public class Test_Controller extends LinearOpMode {
 
             FingerTeleOp();
 
+            GearBox();
 
             prevX = gamepad1.x;
 
@@ -128,17 +130,31 @@ public class Test_Controller extends LinearOpMode {
         }
     }
 
+
+    public void GearBox()
+    {
+
+        if(gamepad1.a && !changed) {
+            if(power == 0.5) power=1;
+            else power=0.5;
+            changed = true;
+        } else if(!gamepad1.a) changed = false;
+
+        telemetry.addData("power:",power);
+        telemetry.update();
+    }
     private void JustLauncherTeleOpSlow() {
         DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
         InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        double power = -0.9;
+        double power = -0.82;
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
         DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
         Servo Shooter = hardwareMap.get(Servo.class, "SR_SHOOTER");
         Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (gamepad1.right_stick_button) {
-            InTake.setPower(0);
+
+
             TleftDrive.setPower(0);
             TrightDrive.setPower(0);
             BleftDrive.setPower(0);
@@ -210,7 +226,7 @@ public class Test_Controller extends LinearOpMode {
 
         Servo Shooter = hardwareMap.get(Servo.class, "SR_SHOOTER");
 
-        if (gamepad1.left_bumper)
+        if (gamepad1.left_bumper||gamepad1.right_stick_button)
         {Shooter.setPosition(0.3);}
         else Shooter.setPosition(0);
     }
@@ -562,7 +578,7 @@ public class Test_Controller extends LinearOpMode {
 
         if (gamepad1.x) {
             // move to 0 degrees.
-            finger.setPosition(0.5);
+            finger.setPosition(0.6);
 
         } else if (gamepad1.y) {
             // move to 90 degrees.
