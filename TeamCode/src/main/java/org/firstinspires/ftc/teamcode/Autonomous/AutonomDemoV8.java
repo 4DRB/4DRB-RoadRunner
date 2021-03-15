@@ -46,7 +46,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.Arrays;
 
 @Autonomous
-public class AutonomDemoV7 extends LinearOpMode
+public class AutonomDemoV8 extends LinearOpMode
 {
     static double ringCount = 0;
     RingDetectingPipeline pipeline;
@@ -159,18 +159,19 @@ public class AutonomDemoV7 extends LinearOpMode
             Shooter.setPosition(0);
             wRelease.setPosition(0);
             encoderDrive(0.6,145,145);
-            strafeDrive(0.6,51,-51);
+            normalstrafeDrive(0.6,51,-51);
             MSBAutonom();
             //arunca gogosile,se duca sa mai ia gogosi
             IntakeAutonom(-1);
-            encoderDrive(0.5,-32,-32);
+            normalDrive(0.5,-32,-32);
             sleep(100);
             encoderDrive(0.6,29,29);
             IntakeAutonom(0);
             SSBAutonom();
             sleep(100);
             //arunca gogosile,se duce la  patrat 2
-            normalDrive(0.6,101,101);
+
+            encoderDrive(0.6,101,101);
             strafeDrive(0.5,30,-30);
 
             wRelease.setPosition(0.4);
@@ -179,10 +180,10 @@ public class AutonomDemoV7 extends LinearOpMode
             {wRelease.setPosition(0.4);}
             sleep(500);
 
-            normalDrive(0.6,-70,-70);
+            encoderDrive(0.6,-70,-70);
 
             normalDrive(0.6,119,-119);
-            strafeDrive(0.5,15,-15);
+            normalstrafeDrive(0.5,15,-15);
             normalDrive(0.5,99,99);
 
 
@@ -208,11 +209,11 @@ public class AutonomDemoV7 extends LinearOpMode
             strafeDrive(0.4,-10,10);
             //arunca gogosile,se duca sa mai ia gogosi
             IntakeAutonom(-1);
-            normalDrive(0.4,-25,-25);
+            encoderDrive(0.4,-25,-25);
             sleep(1000);
-            normalDrive(0.4,-5,-5);
+            encoderDrive(0.4,-5,-5);
             sleep(1000);
-            normalDrive(0.4,-10,-10);
+            encoderDrive(0.4,-10,-10);
             sleep(1200);
             encoderDrive(0.8,39,39);
             sleep(600);
@@ -222,14 +223,14 @@ public class AutonomDemoV7 extends LinearOpMode
 
 
             IntakeAutonom(-1);
-            normalDrive(0.5,-65,-65);
+            encoderDrive(0.5,-65,-65);
             sleep(1000);
-            normalDrive(0.8,67,67);
+            encoderDrive(0.8,67,67);
             sleep(600);
             IntakeAutonom(0);
             SSBAutonom();
             //arunca gogosile,se duce la  patrat 3
-            normalDrive(1,130,130);
+            encoderDrive(1,130,130);
             strafeDrive(0.5,-25,25);
 
             normalDrive(0.8,30,-30);
@@ -250,13 +251,13 @@ public class AutonomDemoV7 extends LinearOpMode
             sleep(100);
             encoderDrive(0.5,188,188);
             wRelease.setPosition(0.4);
-            strafeDrive(0.5,47,-47);
+            normalstrafeDrive(0.5,47,-47);
 
-            encoderDrive(0.5,-38,-38);
+            normalDrive(0.5,-38,-38);
 
             //MultiShottestAutonom();
             MSBAutonom();
-            strafeDrive(0.5,17,-17);
+            normalstrafeDrive(0.5,17,-17);
             sleep(100);
             normalDrive(0.5,120.15,-120.15);
             normalDrive(0.5,77.5,77.5);
@@ -275,7 +276,7 @@ public class AutonomDemoV7 extends LinearOpMode
             ClampAutonom(0.3);
             CremalieraAutonom(0.8);
 
-            strafeDrive(0.5,-10,10);
+            normalstrafeDrive(0.5,-10,10);
             normalDrive(0.6,-30,-30);
             normalDrive(0.5,-58.6,58.6);
             stop();
@@ -340,17 +341,23 @@ public class AutonomDemoV7 extends LinearOpMode
     }
 
     public void encoderDrive(double speed, double leftInches, double rightInches){
-        double encSpeed = 0.2;
-        double CloseEnough = 75;
+
+        double encPower = 0.2;
 // this creates the variables that will be calculated
+
+        double PosXL = leftEncoder.getCurrentPosition();
+        double PosXR = rightEncoder.getCurrentPosition();
+
+
+
+        double semn;
+
         int newLeftFrontTarget = 0;
         int newRightFrontTarget = 0;
         int newLeftBackTarget = 0;
         int newRightBackTarget = 0;
 
-        double PosY = 0;
-        double PosXL = leftEncoder.getCurrentPosition();
-        double PosXR = rightEncoder.getCurrentPosition();
+
 
         double WantedY = 0;
         double WantedXL = leftInches*TICKS_PER_CM_ENC;
@@ -396,7 +403,7 @@ public class AutonomDemoV7 extends LinearOpMode
         BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 // resets all the data for the encoders.
 
-        int XLSign = 1;
+        /*int XLSign = 1;
         int XRSign = 1;
         int LegitY = 0;
         double LegitXL = PosXL+WantedXL-leftEncoder.getCurrentPosition();
@@ -459,7 +466,26 @@ public class AutonomDemoV7 extends LinearOpMode
             }
 
         }
+*/
+        double x=PosXL-PosXR;
+        while (Math.abs(x)>100&&opModeIsActive()){
+            PosXL = leftEncoder.getCurrentPosition();
+            PosXR = rightEncoder.getCurrentPosition();
+            telemetry.addData("leftEN",leftEncoder.getCurrentPosition());
+            telemetry.addData("rightEN",rightEncoder.getCurrentPosition());
+            telemetry.addData("frontEn",frontEncoder.getCurrentPosition());
+            telemetry.update();
 
+
+            x=PosXL-PosXR;
+
+            semn = x / Math.abs(x);
+
+            FL.setPower(-semn*encPower);
+            BL.setPower(-semn*encPower);
+            if (Math.abs(x)<100)break;
+
+        }
 
         FR.setPower(0);
         FL.setPower(0);
@@ -483,6 +509,16 @@ public class AutonomDemoV7 extends LinearOpMode
 
     }
     public void strafeDrive(double speed, double leftInches, double rightInches){
+
+        double encPower = 0.2;
+// this creates the variables that will be calculated
+
+        double PosXL = leftEncoder.getCurrentPosition();
+        double PosXR = rightEncoder.getCurrentPosition();
+
+        double x=PosXL-PosXR;
+
+        double semn;
 // this creates the variables that will be calculated
         int newLeftFrontTarget = 0;
         int newRightFrontTarget = 0;
@@ -526,6 +562,35 @@ public class AutonomDemoV7 extends LinearOpMode
         BR.setPower(0);
         BL.setPower(0);
 // this stops the run to position.
+        FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+// resets all the data for the encoders.
+        while (Math.abs(x)>100&&opModeIsActive()){
+            PosXL = leftEncoder.getCurrentPosition();
+            PosXR = rightEncoder.getCurrentPosition();
+            telemetry.addData("leftEN",leftEncoder.getCurrentPosition());
+            telemetry.addData("rightEN",rightEncoder.getCurrentPosition());
+            telemetry.addData("frontEn",frontEncoder.getCurrentPosition());
+            telemetry.update();
+
+
+            x=PosXL-PosXR;
+
+            semn = x / Math.abs(x);
+
+            FL.setPower(-semn*encPower);
+            BL.setPower(-semn*encPower);
+            if (Math.abs(x)<100)break;
+
+        }
+
+        FR.setPower(0);
+        FL.setPower(0);
+        BR.setPower(0);
+        BL.setPower(0);
+// this stops the run to position.
         FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -535,7 +600,6 @@ public class AutonomDemoV7 extends LinearOpMode
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
     }
     public void normalDrive(double speed, double leftInches, double rightInches){
 
@@ -594,6 +658,61 @@ public class AutonomDemoV7 extends LinearOpMode
 
 
 
+
+    }
+    public void normalstrafeDrive(double speed, double leftInches, double rightInches){
+// this creates the variables that will be calculated
+        int newLeftFrontTarget = 0;
+        int newRightFrontTarget = 0;
+        int newLeftBackTarget = 0;
+        int newRightBackTarget = 0;
+        //FL.setDirection(DcMotor.Direction.REVERSE);
+        //BL.setDirection(DcMotor.Direction.REVERSE);
+// it calculates the distance that the robot has to move when you use the method.
+        newLeftFrontTarget = FL.getCurrentPosition() + (int)(leftInches * TICKS_PER_CM);
+        newRightFrontTarget = FR.getCurrentPosition() + (int)(rightInches * TICKS_PER_CM);
+        newRightBackTarget = BR.getCurrentPosition() + (int)(rightInches * TICKS_PER_CM);
+        newLeftBackTarget = BL.getCurrentPosition() + (int)(leftInches * TICKS_PER_CM);
+        // this gets the position and makes the robot ready to move
+        // this flips the diagonals which allows the robot to strafe
+        FL.setTargetPosition(-newLeftFrontTarget);
+        FR.setTargetPosition(-newRightFrontTarget);
+        BR.setTargetPosition(newRightBackTarget);
+        BL.setTargetPosition(newLeftBackTarget);
+
+        //the robot will run to that position and stop once it gets to the position.
+        FL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        FR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //this gets the absolute speed and converts it into power for the motor.
+        FR.setPower(Math.abs(speed));
+        FL.setPower(Math.abs(speed));
+        BR.setPower(Math.abs(speed));
+        BL.setPower(Math.abs(speed));
+
+
+        while(FL.isBusy() && BL.isBusy() &&  FR.isBusy() &&  BR.isBusy() && opModeIsActive())
+        {
+            telemetry.addData("Status:", "Moving to pos");
+            telemetry.addData("Pos:",FL.getCurrentPosition());
+            telemetry.update();
+        }
+
+        FR.setPower(0);
+        FL.setPower(0);
+        BR.setPower(0);
+        BL.setPower(0);
+// this stops the run to position.
+        FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+// resets all the data for the encoders.
+        FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
     public void SingleShotAutonom(){
