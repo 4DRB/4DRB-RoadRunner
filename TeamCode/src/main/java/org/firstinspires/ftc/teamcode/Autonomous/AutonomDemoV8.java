@@ -158,21 +158,22 @@ public class AutonomDemoV8 extends LinearOpMode
             Shooter.setPosition(0.1);
             Shooter.setPosition(0);
             wRelease.setPosition(0);
-            encoderDrive(0.6,145,145);
+            normalDrive(0.6,145,145);
             normalstrafeDrive(0.6,51,-51);
             MSBAutonom();
+            sleep(100);
             //arunca gogosile,se duca sa mai ia gogosi
             IntakeAutonom(-1);
-            normalDrive(0.5,-32,-32);
-            sleep(100);
-            encoderDrive(0.6,29,29);
+            normalDrive(0.5,-34,-34);
+            sleep(1000);
+            normalDrive(0.6,34,34);
             IntakeAutonom(0);
             SSBAutonom();
             sleep(100);
             //arunca gogosile,se duce la  patrat 2
 
-            encoderDrive(0.6,101,101);
-            strafeDrive(0.5,30,-30);
+            normalDrive(0.6,101,101);
+            normalstrafeDrive(0.5,30,-30);
 
             wRelease.setPosition(0.4);
 
@@ -180,11 +181,12 @@ public class AutonomDemoV8 extends LinearOpMode
             {wRelease.setPosition(0.4);}
             sleep(500);
 
-            encoderDrive(0.6,-70,-70);
+            normalDrive(0.6,-70,-70);
 
-            normalDrive(0.6,119,-119);
+            normalDrive(0.6,117.5,-117.5);
+            sleep(100);
             normalstrafeDrive(0.5,15,-15);
-            normalDrive(0.5,99,99);
+            normalDrive(0.5,104,104);
 
 
             CremalieraAutonom(-0.8);
@@ -251,16 +253,16 @@ public class AutonomDemoV8 extends LinearOpMode
             sleep(100);
             encoderDrive(0.5,188,188);
             wRelease.setPosition(0.4);
-            normalstrafeDrive(0.5,47,-47);
+            normalstrafeDrive(0.5,63,-63);
 
-            normalDrive(0.5,-38,-38);
+            normalDrive(0.5,-40,-40);
 
             //MultiShottestAutonom();
             MSBAutonom();
-            normalstrafeDrive(0.5,17,-17);
+            //normalstrafeDrive(0.5,-5,5);
             sleep(100);
-            normalDrive(0.5,120.15,-120.15);
-            normalDrive(0.5,77.5,77.5);
+            normalDrive(0.5,120.5,-120.5);
+            normalDrive(0.5,75,75);
 
             CremalieraAutonom(-0.8);
             ClampAutonom(0);
@@ -298,14 +300,14 @@ public class AutonomDemoV8 extends LinearOpMode
         FR.setPower(0);
         BL.setPower(0);
         BR.setPower(0);
-        sleep(300);
+        //sleep(300);
         Launcher1.setPower(power);
         Launcher2.setPower(power);
         sleep(400);
         Shooter.setPosition(0.3);
-        sleep(700);
+        sleep(400);
         InTake.setPower(-1);
-        sleep(2000);
+        sleep(2500);
         InTake.setPower(0);
         Shooter.setPosition(0);
         Launcher1.setPower(0);
@@ -326,14 +328,14 @@ public class AutonomDemoV8 extends LinearOpMode
         FR.setPower(0);
         BL.setPower(0);
         BR.setPower(0);
-        sleep(300);
+        //sleep(300);
         Launcher1.setPower(power);
         Launcher2.setPower(power);
         sleep(400);
         Shooter.setPosition(0.3);
         sleep(700);
         InTake.setPower(-1);
-        sleep(1000);
+        sleep(1300);
         InTake.setPower(0);
         Shooter.setPosition(0);
         Launcher1.setPower(0);
@@ -345,9 +347,11 @@ public class AutonomDemoV8 extends LinearOpMode
         double encPower = 0.2;
 // this creates the variables that will be calculated
 
+        double OldXL = leftEncoder.getCurrentPosition();
+        double OldXR = rightEncoder.getCurrentPosition();
+
         double PosXL = leftEncoder.getCurrentPosition();
         double PosXR = rightEncoder.getCurrentPosition();
-
 
 
         double semn;
@@ -386,10 +390,10 @@ public class AutonomDemoV8 extends LinearOpMode
         BL.setPower(Math.abs(speed));
         while(FL.isBusy() && BL.isBusy() &&  FR.isBusy() &&  BR.isBusy() && opModeIsActive())
         {
-            telemetry.addData("Status:", "Moving to pos");
-            telemetry.addData("Pos:",FL.getCurrentPosition());
+            telemetry.addData("leftEN",leftEncoder.getCurrentPosition());
+            telemetry.addData("rightEN",rightEncoder.getCurrentPosition());
+            telemetry.addData("frontEn",frontEncoder.getCurrentPosition());
             telemetry.update();
-            initDiff=frontEncoder.getCurrentPosition()-leftEncoder.getCurrentPosition();
         }
 
         FR.setPower(0);
@@ -467,23 +471,27 @@ public class AutonomDemoV8 extends LinearOpMode
 
         }
 */
-        double x=PosXL-PosXR;
-        while (Math.abs(x)>100&&opModeIsActive()){
+        PosXL = leftEncoder.getCurrentPosition();
+        PosXR = rightEncoder.getCurrentPosition();
+
+        double x=(PosXL-OldXL)-(PosXR-OldXR);
+
+        while (Math.abs(x)>50&&opModeIsActive()){
             PosXL = leftEncoder.getCurrentPosition();
             PosXR = rightEncoder.getCurrentPosition();
             telemetry.addData("leftEN",leftEncoder.getCurrentPosition());
             telemetry.addData("rightEN",rightEncoder.getCurrentPosition());
-            telemetry.addData("frontEn",frontEncoder.getCurrentPosition());
+            telemetry.addData("SE CORECTEAZA POG!1!!",1);
             telemetry.update();
 
 
-            x=PosXL-PosXR;
+            x=(PosXL-OldXL)-(PosXR-OldXR);
 
             semn = x / Math.abs(x);
 
             FL.setPower(-semn*encPower);
             BL.setPower(-semn*encPower);
-            if (Math.abs(x)<100)break;
+            if (Math.abs(x)<50)break;
 
         }
 
@@ -513,10 +521,13 @@ public class AutonomDemoV8 extends LinearOpMode
         double encPower = 0.2;
 // this creates the variables that will be calculated
 
+        double OldXL = leftEncoder.getCurrentPosition();
+        double OldXR = rightEncoder.getCurrentPosition();
+
         double PosXL = leftEncoder.getCurrentPosition();
         double PosXR = rightEncoder.getCurrentPosition();
 
-        double x=PosXL-PosXR;
+        double x=(PosXL-OldXL)-(PosXR-OldXR);
 
         double semn;
 // this creates the variables that will be calculated
@@ -566,8 +577,13 @@ public class AutonomDemoV8 extends LinearOpMode
         FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        PosXL = leftEncoder.getCurrentPosition();
+        PosXR = rightEncoder.getCurrentPosition();
 // resets all the data for the encoders.
-        while (Math.abs(x)>100&&opModeIsActive()){
+        x=(PosXL-OldXL)-(PosXR-OldXR);
+
+        while (Math.abs(x)>50&&opModeIsActive()){
             PosXL = leftEncoder.getCurrentPosition();
             PosXR = rightEncoder.getCurrentPosition();
             telemetry.addData("leftEN",leftEncoder.getCurrentPosition());
@@ -576,13 +592,13 @@ public class AutonomDemoV8 extends LinearOpMode
             telemetry.update();
 
 
-            x=PosXL-PosXR;
+            x=(PosXL-OldXL)-(PosXR-OldXR);
 
             semn = x / Math.abs(x);
 
             FL.setPower(-semn*encPower);
             BL.setPower(-semn*encPower);
-            if (Math.abs(x)<100)break;
+            if (Math.abs(x)<50)break;
 
         }
 
