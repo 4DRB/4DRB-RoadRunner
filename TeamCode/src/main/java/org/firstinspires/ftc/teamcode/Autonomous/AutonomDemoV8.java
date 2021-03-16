@@ -205,44 +205,48 @@ public class AutonomDemoV8 extends LinearOpMode
             Shooter.setPosition(0.1);
             Shooter.setPosition(0);
             wRelease.setPosition(0);
-            encoderDrive(0.65,150,150);
-            strafeDrive(0.4,55,-55);
+            normalDrive(0.65,150,150);
+            normalstrafeDrive(0.4,55,-55);
             MSBAutonom();
-            strafeDrive(0.4,-10,10);
+            normalstrafeDrive(0.4,-5,5);
             //arunca gogosile,se duca sa mai ia gogosi
             IntakeAutonom(-1);
-            encoderDrive(0.4,-25,-25);
-            sleep(1000);
-            encoderDrive(0.4,-5,-5);
-            sleep(1000);
-            encoderDrive(0.4,-10,-10);
-            sleep(1200);
-            encoderDrive(0.8,39,39);
-            sleep(600);
+            normalDrive(0.4,-27,-27);
+            sleep(900);
+            normalDrive(0.4,-10,-10);
+            sleep(1100);
+            normalDrive(0.4,-13,-13);
+            sleep(1300);
+            normalDrive(0.7,34,38);
             IntakeAutonom(0);
             //strafeDrive(0.4,-3,3);
+            //normalstrafeDrive(0.4,7,-7);
+            normalDrive(0.5,5,-5);
             MSBAutonom();
-
+            //normalstrafeDrive(0.4,-7,7);
+            normalDrive(0.5,-5,5);
 
             IntakeAutonom(-1);
-            encoderDrive(0.5,-65,-65);
-            sleep(1000);
-            encoderDrive(0.8,67,67);
-            sleep(600);
+            normalDrive(0.5,-65,-65);
+            sleep(800);
+            normalDrive(0.8,67,67);
+            normalDrive(0.5,4,-4);
             IntakeAutonom(0);
             SSBAutonom();
+            //normalstrafeDrive(0.4,-7,7);
+            normalDrive(0.5,-4,4);
             //arunca gogosile,se duce la  patrat 3
-            encoderDrive(1,130,130);
-            strafeDrive(0.5,-25,25);
+            normalDrive(1,130,130);
+            normalstrafeDrive(0.7,-25,25);
 
-            normalDrive(0.8,30,-30);
+            normalDrive(1,30,-30);
             wRelease.setPosition(0.4);
 
             for(int i =1;i<=2000;i++)
             {wRelease.setPosition(0.4);}
             sleep(500);
-            normalDrive(0.7,-30,30);
-            normalDrive(1,-95,-95);
+            normalDrive(0.75,-30,30);
+            normalDrive(1,-85,-85);
 
 
         }else{
@@ -251,7 +255,7 @@ public class AutonomDemoV8 extends LinearOpMode
             Shooter.setPosition(0);
             wRelease.setPosition(0);
             sleep(100);
-            encoderDrive(0.5,188,188);
+            normalDrive(0.5,188,188);
             wRelease.setPosition(0.4);
             normalstrafeDrive(0.5,63,-63);
 
