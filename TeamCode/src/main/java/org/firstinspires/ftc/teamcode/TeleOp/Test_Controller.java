@@ -31,9 +31,9 @@ public class Test_Controller extends LinearOpMode {
     private DcMotor TrightDrive = null;
     private DcMotor BrightDrive = null;
     public final double offTLD = 3.25;
-    public final double offBLD = 2.25;
+    public final double offBleftDriveD = 2.25;
     public final double offTRD = 4;
-    public final double offBRD = 6.5;
+    public final double offBrightDriveD = 6.5;
 
     double ok = 0;
     double power = 1;//1.41
@@ -45,6 +45,14 @@ public class Test_Controller extends LinearOpMode {
     int intakePowerR = 0;
     boolean intakeOkR = true;
     boolean changed = false;
+    //DcMotor TleftDrive = null;
+    //DcMotor TrightDrive = null;
+    //DcMotor BleftDrive = null;
+    //DcMotor BrightDrive = null;
+    final double TICKS_PER_REV = 537.6 ;    // eg: TETRIX Motor Encoder
+    final double DRIVE_GEAR_REDUCTION = 1;     // This is < 1.0 if geared UP
+    final double WHEEL_DIAMETER_CM = 9.6;     // For figuring circumference 9.6
+    double TICKS_PER_CM = (TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
 
     /**
      *
@@ -108,6 +116,8 @@ public class Test_Controller extends LinearOpMode {
 
             GearBox();
 
+            PowerShotAutomation();
+
             prevX = gamepad1.x;
 
 
@@ -123,14 +133,232 @@ public class Test_Controller extends LinearOpMode {
             BleftDrive.setPower((speed * Math.cos(robotAngle) - gamepad1.right_stick_x) * power);
             BrightDrive.setPower((speed * Math.sin(robotAngle) + gamepad1.right_stick_x) * power);
 
-            //telemetry.addData("power", BrightDrive.getPower());
             //telemetry.update();
 
 
         }
     }
+    private void PowerShotAutomation(){
+        DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
+        InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
+        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class,"frontEncoder");
+        Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
+        Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //deci te dai in colt,apesi butonul si face PRA PRA PRA
+        if (gamepad2.start){
+        normalstrafeDrive(0.6,-40,40);
+
+        normalDrive(0.4,-3,3);
+            TleftDrive.setPower(0);
+            TrightDrive.setPower(0);
+            BleftDrive.setPower(0);
+            BrightDrive.setPower(0);
 
 
+            //sleep(300);
+            Launcher1.setPower(-0.8);
+            Launcher2.setPower(-0.8);
+            sleep(600);
+            Shooter.setPosition(0.3);
+
+            InTake.setPower(-1);
+            sleep(700);
+            InTake.setPower(0);
+
+                  // SSBAutonom(0.8);
+        normalDrive(0.4,-4.5,4.5);
+            InTake.setPower(-1);
+            sleep(700);
+            InTake.setPower(0);
+        normalDrive(0.4,-6.75,6.75);
+            InTake.setPower(-1);
+            sleep(700);
+            InTake.setPower(0);
+        sleep(1000);
+
+
+            Shooter.setPosition(0);
+            Launcher1.setPower(0);
+            Launcher2.setPower(0);
+        }
+    }
+
+    private void SSBAutonom(double power) {
+        //double power = -0.78;
+        DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
+        InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
+        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class,"frontEncoder");
+        Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
+        Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        TleftDrive.setPower(0);
+        TrightDrive.setPower(0);
+        BleftDrive.setPower(0);
+        BrightDrive.setPower(0);
+        //sleep(300);
+        Launcher1.setPower(-power);
+        Launcher2.setPower(-power);
+        sleep(400);
+        Shooter.setPosition(0.3);
+        sleep(200);
+        InTake.setPower(-1);
+        sleep(700);
+        InTake.setPower(0);
+        Shooter.setPosition(0);
+        Launcher1.setPower(0);
+        Launcher2.setPower(0);
+    }
+    public void normalDrive(double speed, double leftInches, double rightInches){
+        TleftDrive = hardwareMap.get(DcMotor.class, "leftFront");
+        TrightDrive = hardwareMap.get(DcMotor.class, "rightFront");
+        BleftDrive = hardwareMap.get(DcMotor.class, "leftRear");
+        BrightDrive = hardwareMap.get(DcMotor.class, "rightRear");
+//stop and reset
+        TleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        TrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+// this offsets the two motors that are facing the opposite direction.
+        TrightDrive.setDirection(DcMotor.Direction.REVERSE);
+        BrightDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        TleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        TrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+// this creates the variables that will be calculated
+        int newLeftFrontTarget = 0;
+        int newRightFrontTarget = 0;
+        int newLeftBackTarget = 0;
+        int newRightBackTarget = 0;
+
+// it calculates the distance that the robot has to move when you use the method.
+        newLeftFrontTarget = TleftDrive.getCurrentPosition() + (int)(leftInches * TICKS_PER_CM);
+        newRightFrontTarget = TrightDrive.getCurrentPosition() + (int)(rightInches * TICKS_PER_CM);
+        newRightBackTarget = BrightDrive.getCurrentPosition() + (int)(rightInches * TICKS_PER_CM);
+        newLeftBackTarget = BleftDrive.getCurrentPosition() + (int)(leftInches * TICKS_PER_CM);
+        // this gets the position and makes the robot ready to move
+        TleftDrive.setTargetPosition(newLeftFrontTarget);
+        TrightDrive.setTargetPosition(newRightFrontTarget);
+        BrightDrive.setTargetPosition(newRightBackTarget);
+        BleftDrive.setTargetPosition(newLeftBackTarget);
+
+        //the robot will run to that position and stop once it gets to the position.
+        TleftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        TrightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BleftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BrightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //this gets the absolute speed and converdets it into power for the motor.
+        TrightDrive.setPower(Math.abs(speed));
+        TleftDrive.setPower(Math.abs(speed));
+        BrightDrive.setPower(Math.abs(speed));
+        BleftDrive.setPower(Math.abs(speed));
+        while(TleftDrive.isBusy() && BleftDrive.isBusy() &&  TrightDrive.isBusy() &&  BrightDrive.isBusy() && opModeIsActive())
+        {
+            telemetry.addData("Status:", "Moving to pos");
+            telemetry.addData("Pos:",TleftDrive.getCurrentPosition());
+            telemetry.update();
+            //initDiff=frontEncoder.getCurrentPosition()-leftEncoder.getCurrentPosition();
+        }
+
+
+        TrightDrive.setPower(0);
+        TleftDrive.setPower(0);
+        BrightDrive.setPower(0);
+        BleftDrive.setPower(0);
+// this stops the run to position.
+        TleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        TrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+// resets all the data for the encoders.
+        TleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        TrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+
+
+
+
+    }
+    public void normalstrafeDrive(double speed, double leftInches, double rightInches){
+        TleftDrive = hardwareMap.get(DcMotor.class, "leftFront");
+        TrightDrive = hardwareMap.get(DcMotor.class, "rightFront");
+        BleftDrive = hardwareMap.get(DcMotor.class, "leftRear");
+        BrightDrive = hardwareMap.get(DcMotor.class, "rightRear");
+//stop and reset
+        TleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        TrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+// this offsets the two motors that are facing the opposite direction.
+        TrightDrive.setDirection(DcMotor.Direction.REVERSE);
+        BrightDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        TleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        TrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+// this creates the variables that will be calculated
+        int newLeftFrontTarget = 0;
+        int newRightFrontTarget = 0;
+        int newLeftBackTarget = 0;
+        int newRightBackTarget = 0;
+        //FL.setDirection(DcMotor.Direction.REVERSE);
+        //BleftDrive.setDirection(DcMotor.Direction.REVERSE);
+// it calculates the distance that the robot has to move when you use the method.
+        newLeftFrontTarget = TleftDrive.getCurrentPosition() + (int)(leftInches * TICKS_PER_CM);
+        newRightFrontTarget = TrightDrive.getCurrentPosition() + (int)(rightInches * TICKS_PER_CM);
+        newRightBackTarget = BrightDrive.getCurrentPosition() + (int)(rightInches * TICKS_PER_CM);
+        newLeftBackTarget = BleftDrive.getCurrentPosition() + (int)(leftInches * TICKS_PER_CM);
+        // this gets the position and makes the robot ready to move
+        // this flips the diagonals which allows the robot to strafe
+        TleftDrive.setTargetPosition(-newLeftFrontTarget);
+        TrightDrive.setTargetPosition(-newRightFrontTarget);
+        BrightDrive.setTargetPosition(newRightBackTarget);
+        BleftDrive.setTargetPosition(newLeftBackTarget);
+
+        //the robot will run to that position and stop once it gets to the position.
+        TleftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        TrightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BleftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BrightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //this gets the absolute speed and converts it into power for the motor.
+        TrightDrive.setPower(Math.abs(speed));
+        TleftDrive.setPower(Math.abs(speed));
+        BrightDrive.setPower(Math.abs(speed));
+        BleftDrive.setPower(Math.abs(speed));
+
+
+        while(TleftDrive.isBusy() && BleftDrive.isBusy() &&  TrightDrive.isBusy() &&  BrightDrive.isBusy() && opModeIsActive())
+        {
+            telemetry.addData("Status:", "Moving to pos");
+            telemetry.addData("Pos:",TleftDrive.getCurrentPosition());
+            telemetry.update();
+        }
+
+        TrightDrive.setPower(0);
+        TleftDrive.setPower(0);
+        BrightDrive.setPower(0);
+        BleftDrive.setPower(0);
+// this stops the run to position.
+        TleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        TrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+// resets all the data for the encoders.
+        TleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        TrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+    }
     public void GearBox()
     {
 
@@ -170,7 +398,7 @@ public class Test_Controller extends LinearOpMode {
     public void JustLauncherTeleOp() {
         DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
         InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        double power = -0.96;
+        double power = -0.975;
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
         DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
         Servo Shooter = hardwareMap.get(Servo.class, "SR_SHOOTER");
@@ -508,7 +736,7 @@ public class Test_Controller extends LinearOpMode {
         DcMotor glisiera = hardwareMap.get(DcMotorEx.class, "GLS");
         glisiera.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         DigitalChannel glsMg = hardwareMap.get(DigitalChannel.class, "Mag_GLS");
-        glisiera.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        glisiera.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BrightDriveAKE);
 
 
         if (gamepad1.dpad_up) {

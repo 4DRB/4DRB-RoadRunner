@@ -160,16 +160,22 @@ public class AutonomDemoV8 extends LinearOpMode
             wRelease.setPosition(0);
             normalDrive(0.6,145,145);
             normalstrafeDrive(0.6,51,-51);
-            MSBAutonom();
-            sleep(100);
+            normalDrive(0.5,5,-5);
+            IntakeAutonom(0);
+            BetterShooterAutonomV2(0.935,2250);
+            sleep(100);//normalstrafeDrive(0.4,-7,7);
+            normalDrive(0.5,-5,5);
             //arunca gogosile,se duca sa mai ia gogosi
             IntakeAutonom(-1);
             normalDrive(0.5,-34,-34);
             sleep(1000);
             normalDrive(0.6,34,34);
+            normalDrive(0.5,5,-5);
             IntakeAutonom(0);
-            SSBAutonom();
-            sleep(100);
+            BetterShooterAutonomV2(0.935,850);
+            sleep(100);//normalstrafeDrive(0.4,-7,7);
+            normalDrive(0.5,-5,5);
+
             //arunca gogosile,se duce la  patrat 2
 
             normalDrive(0.6,101,101);
@@ -183,7 +189,7 @@ public class AutonomDemoV8 extends LinearOpMode
 
             normalDrive(0.6,-70,-70);
 
-            normalDrive(0.6,117.5,-117.5);
+            normalDrive(0.6,119,-119);
             sleep(100);
             normalstrafeDrive(0.5,15,-15);
             normalDrive(0.5,104,104);
@@ -197,7 +203,7 @@ public class AutonomDemoV8 extends LinearOpMode
             normalDrive(0.6,-120,-120);
             normalDrive(0.6,-115,115);
             ClampAutonom(0.3);
-            CremalieraAutonom(0.8);
+            CremalieraAutonom(0.9);
             //drive somewhere else
             sleep(1000);
             stop();
@@ -265,7 +271,7 @@ public class AutonomDemoV8 extends LinearOpMode
             MSBAutonom();
             //normalstrafeDrive(0.5,-5,5);
             sleep(100);
-            normalDrive(0.5,120.5,-120.5);
+            normalDrive(0.5,118,-118);
             normalDrive(0.5,75,75);
 
             CremalieraAutonom(-0.8);
@@ -317,7 +323,33 @@ public class AutonomDemoV8 extends LinearOpMode
         Launcher1.setPower(0);
         Launcher2.setPower(0);
     }
+    private void BetterShooterAutonomV2(double power,long sleep) {
+        //double power = -0.78;
+        DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
+        InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class,"rightEncoder");
+        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class,"frontEncoder");
+        Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
+        Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        FL.setPower(0);
+        FR.setPower(0);
+        BL.setPower(0);
+        BR.setPower(0);
+        //sleep(300);
+        Launcher1.setPower(-power);
+        Launcher2.setPower(-power);
+        sleep(400);
+        Shooter.setPosition(0.3);
+        sleep(200);
+        InTake.setPower(-1);
+        sleep(sleep);
+        InTake.setPower(0);
+        Shooter.setPosition(0);
+        Launcher1.setPower(0);
+        Launcher2.setPower(0);
+    }
     private void SSBAutonom() {
         double power = -0.94;
         DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
