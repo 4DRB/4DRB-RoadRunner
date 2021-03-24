@@ -30,7 +30,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.OdometryAutonomous.OdometryGlobalCoordinatePosition;
+//import org.firstinspires.ftc.teamcode.OdometryAutonomous.OdometryGlobalCoordinatePosition;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -73,7 +73,7 @@ public class AutonomDemoV7 extends LinearOpMode
     int initDiff,lastDiff,diffDiff;
     Encoder leftEncoder, rightEncoder, frontEncoder;
     OpenCvCamera webCam = null;
-    OdometryGlobalCoordinatePosition globalPositionUpdate;
+
 
 
 

@@ -30,7 +30,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.OdometryAutonomous.OdometryGlobalCoordinatePosition;
+//import org.firstinspires.ftc.teamcode.OdometryAutonomous.OdometryGlobalCoordinatePosition;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -73,7 +73,7 @@ public class AutonomDemoV8 extends LinearOpMode
     int initDiff,lastDiff,diffDiff;
     Encoder leftEncoder, rightEncoder, frontEncoder;
     OpenCvCamera webCam = null;
-    OdometryGlobalCoordinatePosition globalPositionUpdate;
+
 
 
 
@@ -162,7 +162,7 @@ public class AutonomDemoV8 extends LinearOpMode
             normalstrafeDrive(0.6,51,-51);
             normalDrive(0.5,5,-5);
             IntakeAutonom(0);
-            BetterShooterAutonomV2(0.935,2250);
+            BetterShooterAutonomV2(0.92,2250);
             sleep(100);//normalstrafeDrive(0.4,-7,7);
             normalDrive(0.5,-5,5);
             //arunca gogosile,se duca sa mai ia gogosi
@@ -172,7 +172,7 @@ public class AutonomDemoV8 extends LinearOpMode
             normalDrive(0.6,34,34);
             normalDrive(0.5,5,-5);
             IntakeAutonom(0);
-            BetterShooterAutonomV2(0.935,850);
+            BetterShooterAutonomV2(0.92,850);
             sleep(100);//normalstrafeDrive(0.4,-7,7);
             normalDrive(0.5,-5,5);
 
@@ -189,7 +189,7 @@ public class AutonomDemoV8 extends LinearOpMode
 
             normalDrive(0.6,-70,-70);
 
-            normalDrive(0.6,119,-119);
+            normalDrive(0.6,120,-120);
             sleep(100);
             normalstrafeDrive(0.5,15,-15);
             normalDrive(0.5,104,104);
@@ -207,38 +207,46 @@ public class AutonomDemoV8 extends LinearOpMode
             //drive somewhere else
             sleep(1000);
             stop();
-        } else if(ringCount == 4.0){
+        } else
+            if(ringCount == 4.0){
             Shooter.setPosition(0.1);
             Shooter.setPosition(0);
             wRelease.setPosition(0);
             normalDrive(0.65,150,150);
-            normalstrafeDrive(0.4,55,-55);
-            MSBAutonom();
-            normalstrafeDrive(0.4,-5,5);
+            normalstrafeDrive(0.4,50,-50);
+            normalDrive(0.5,3,-3);
+            sleep(100);
+            BetterShooterAutonomV2(0.9,2200);
+            //normalstrafeDrive(0.4,-7,7);
+            normalDrive(0.5,-3,3);
+            //normalstrafeDrive(0.4,-5,5);
             //arunca gogosile,se duca sa mai ia gogosi
             IntakeAutonom(-1);
-            normalDrive(0.4,-27,-27);
-            sleep(900);
-            normalDrive(0.4,-10,-10);
+            normalDrive(0.6,-18,-18);
+            sleep(1000);
+            normalDrive(0.5,-10,-10);
             sleep(1100);
-            normalDrive(0.4,-13,-13);
-            sleep(1300);
-            normalDrive(0.7,34,38);
+            normalDrive(0.3,-10,-10);
+            sleep(1100);
+            normalDrive(0.7,34,34);
             IntakeAutonom(0);
             //strafeDrive(0.4,-3,3);
             //normalstrafeDrive(0.4,7,-7);
-            normalDrive(0.5,5,-5);
-            MSBAutonom();
+            normalDrive(0.5,4,-4);
+            sleep(100);
+            BetterShooterAutonomV2(0.9,2200);
             //normalstrafeDrive(0.4,-7,7);
-            normalDrive(0.5,-5,5);
+            normalDrive(0.5,-4,4);
 
             IntakeAutonom(-1);
             normalDrive(0.5,-65,-65);
             sleep(800);
             normalDrive(0.8,67,67);
             normalDrive(0.5,4,-4);
+            sleep(100);
             IntakeAutonom(0);
-            SSBAutonom();
+            sleep(50);
+            BetterShooterAutonomV2(0.9,900);
             //normalstrafeDrive(0.4,-7,7);
             normalDrive(0.5,-4,4);
             //arunca gogosile,se duce la  patrat 3
@@ -268,11 +276,11 @@ public class AutonomDemoV8 extends LinearOpMode
             normalDrive(0.5,-40,-40);
 
             //MultiShottestAutonom();
-            MSBAutonom();
+            BetterShooterAutonomV2(0.935,2250);
             //normalstrafeDrive(0.5,-5,5);
             sleep(100);
-            normalDrive(0.5,118,-118);
-            normalDrive(0.5,75,75);
+            normalDrive(0.5,119.5,-119.5);
+            normalDrive(0.5,74.5,74.5);
 
             CremalieraAutonom(-0.8);
             ClampAutonom(0);
