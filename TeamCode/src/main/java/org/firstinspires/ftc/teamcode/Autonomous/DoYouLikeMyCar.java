@@ -39,6 +39,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.TestPP;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -138,11 +139,15 @@ public class DoYouLikeMyCar extends LinearOpMode
 
         Servo wRelease = hardwareMap.get(Servo.class, "Sr_WReleaseLeft");
         sleep(1000);
-
+        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
         sensorDistance= (Rev2mDistanceSensor)sensorRange;
+        double ogAngle = angles.firstAngle;
+        double ogDistance = sensorDistance.getDistance(DistanceUnit.CM);
 
-        waitForStart();
+        DoYouLikeMyCar.DriveThread OdoThread = new DoYouLikeMyCar.DriveThread();
+        OdoThread.start();
+                waitForStart();
 
 
 
@@ -195,11 +200,15 @@ public class DoYouLikeMyCar extends LinearOpMode
 
 
     }*/
-
-        while (opModeIsActive())
-        {normalGyroDrive(0.5,0);}
-
-    }
+sleep(5000);
+        normalGyroDrive(0.8,ogAngle,5);
+        normalDistanceDrive(0.8,ogDistance,2);
+        normalGyroDrive(0.8,ogAngle,4);
+        normalDistanceDrive(0.5,ogDistance,1);
+        while(opModeIsActive()) {
+            OdoThread.interrupt();
+        }
+        }
 
     private void MSBAutonom() {
         double power = -0.94;;
@@ -617,7 +626,7 @@ public class DoYouLikeMyCar extends LinearOpMode
 
 
     }
-    public void normalGyroDrive(double speed,double angle){
+    public void normalGyroDrive(double speed,double angle,double buffer){
 FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -637,7 +646,7 @@ FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             FL.setPower(-Math.abs(speed));
             BR.setPower(Math.abs(speed));
             BL.setPower(-Math.abs(speed));}
-        while(angles.firstAngle>angle+10||angles.firstAngle<angle-6 && opModeIsActive())
+        while(angles.firstAngle>angle+buffer||angles.firstAngle<angle-buffer && opModeIsActive())
         {
             angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
@@ -674,6 +683,64 @@ FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
 
+
+
+    }
+    public void normalDistanceDrive (double speed, double distance,double buffer)
+    {
+        FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+// this creates the variables that will be calculated
+        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double distance2 = sensorDistance.getDistance(DistanceUnit.CM);
+        if (distance2<distance){
+            //this gets the absolute speed and converdets it into power for the motor.
+            FR.setPower(Math.abs(speed));
+            FL.setPower(-Math.abs(speed));
+            BR.setPower(-Math.abs(speed));
+            BL.setPower(Math.abs(speed));}
+        else if (distance2>distance){
+            //this gets the absolute speed and converdets it into power for the motor.
+            FR.setPower(-Math.abs(speed));
+            FL.setPower(Math.abs(speed));
+            BR.setPower(Math.abs(speed));
+            BL.setPower(-Math.abs(speed));}
+        while(distance2>distance+buffer||distance2<distance-buffer && opModeIsActive())
+        {if (Math.abs(distance2-distance)<distance/6) speed = speed/2;
+            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            distance2 = sensorDistance.getDistance(DistanceUnit.CM);
+            if (distance2<distance-2){
+                //this gets the absolute speed and converdets it into power for the motor.
+                FR.setPower(Math.abs(speed));
+                FL.setPower(-Math.abs(speed));
+                BR.setPower(-Math.abs(speed));
+                BL.setPower(Math.abs(speed));}
+            else if (distance2>distance+2){
+                //this gets the absolute speed and converdets it into power for the motor.
+                FR.setPower(-Math.abs(speed));
+                FL.setPower(Math.abs(speed));
+                BR.setPower(Math.abs(speed));
+                BL.setPower(-Math.abs(speed));
+                }
+        }
+
+
+        FR.setPower(0);
+        FL.setPower(0);
+        BR.setPower(0);
+        BL.setPower(0);
+// this stops the run to position.
+        FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+// resets all the data for the encoders.
+        FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
     }
@@ -951,6 +1018,37 @@ FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         telemetry.update();
     }
 
+    public class DriveThread extends Thread
+    {
+        public DriveThread()
+        {
+            this.setName("DriveThread");
+        }
 
+        // called when tread.start is called. thread stays in loop to do what it does until exit is
+        // signaled by main code calling thread.interrupt.
+        @Override
+        public void run()
+        {
+
+
+
+            while (!isInterrupted()) {
+                angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                double distance2 = sensorDistance.getDistance(DistanceUnit.CM);
+                telemetry.addData("angles",angles.firstAngle);
+                telemetry.addData("distance",distance2);
+                telemetry.update();
+
+            }
+
+            // interrupted means time to shutdown. note we can stop by detecting isInterrupted = true
+            // or by the interrupted exception thrown from the sleep function.
+            // an error occurred in the run loop.
+
+
+            //Logging.log("end of thread %s", this.getName());
+        }
+    }
 
 }
