@@ -1,7 +1,17 @@
 package com.company;
 
+
+import android.graphics.Point;
+
+
+import treamcode.MyOpMode;
+
+
 public class Robot {
+
+    Point SP = new Point(0,0);
     public static boolean usingComputer = true;
+MyOpMode coords = new MyOpMode();
 
     /**
      * Creates a robot simulation
@@ -20,6 +30,12 @@ public class Robot {
     public static double worldXPosition;
     public static double worldYPosition;
     public static double worldAngle_rad;
+
+    static final double TRACKWIDTH = 17.7;
+    static final double WHEEL_DIAMETER = 6.0*2.54;    // inches
+    static double TICKS_TO_INCHES;
+    static final double CENTER_WHEEL_OFFSET = 2.4;
+
 
     public double getXPos(){
         return worldXPosition;
@@ -46,11 +62,11 @@ public class Robot {
 
 
         //increment te positions
+        TICKS_TO_INCHES = WHEEL_DIAMETER * Math.PI / 8192;
+        worldXPosition = coords.WorldX();
+        worldYPosition = coords.WorldY();
 
-        worldXPosition = org.firstinspires.ftc.teamcode.odometry.RobotCoordinatePosition.getX();
-        worldYPosition = org.firstinspires.ftc.teamcode.odometry.RobotCoordinatePosition.getY();
-
-        worldAngle_rad = org.firstinspires.ftc.teamcode.odometry.RobotCoordinatePosition.getOrientationRad();
+        worldAngle_rad = coords.WorldAngle();
 
 
 

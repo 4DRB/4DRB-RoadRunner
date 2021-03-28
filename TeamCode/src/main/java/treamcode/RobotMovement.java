@@ -14,9 +14,13 @@ import java.util.ArrayList;
 import static treamcode.MathFunctions.AngleWrap;
 import static RobotUtilities.MovementVars.*;
 import static treamcode.MathFunctions.lineCircleIntersection;
+import static treamcode.MyOpMode.WorldX;
+import static treamcode.MyOpMode.WorldY;
 
 public class RobotMovement {
-    static double distanceToTarget;
+    public static double distanceToTarget2;
+    public static double distanceToX2;
+    public static double distanceToY2;
     public static void followCurve(ArrayList<CurvePoint> allPoints, double followAngle){
 
 
@@ -53,8 +57,12 @@ public class RobotMovement {
     public static void goToPosition(double x, double y, double movementSpeed, double preferredAngle, double turnSpeed) {
         //int worldYPosition;
         //int worldXPosition;
-         distanceToTarget = Math.hypot(x - worldXPosition, y - worldYPosition);
-
+         double distanceToTarget = Math.hypot(x - worldXPosition, y - worldYPosition);
+        double distanceToX = x - worldXPosition;
+        double distanceToY = y - worldYPosition;
+        distanceToX2 = distanceToX;
+        distanceToY2 = distanceToY;
+distanceToTarget2 = distanceToTarget;
         double absoluteAngleToTarget = Math.atan2(y - worldYPosition, x - worldXPosition);
 
         double relativeAngleToPoint = AngleWrap(absoluteAngleToTarget - (worldAngle_rad - Math.toRadians(90)));
@@ -72,9 +80,13 @@ public class RobotMovement {
 
         if (distanceToTarget < 10) {
             movement_turn = 0;
-            movement_x = 0;
-            movement_y= 0;
         }
+        if (Math.abs(distanceToX)-Math.abs(WorldX())<10&&Math.abs(distanceToY)-Math.abs(WorldY())<10)
+        {
+            movement_x = 0;
+            movement_y = 0;}
+
+
     }
     public static double leechX()
     {
@@ -88,5 +100,7 @@ public class RobotMovement {
     {
         return movement_turn;
     }
-    public static double leechDistance(){ return distanceToTarget;}
+    public static double leechDistance(){ return distanceToTarget2;}
+    public static double leechDistanceX(){ return distanceToX2;}
+    public static double leechDistanceY(){ return distanceToY2;}
 }

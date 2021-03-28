@@ -400,7 +400,7 @@ GearBox();
     public void JustLauncherTeleOp() {
         DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
         InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        double LaunchPower = -0.88;
+        double LaunchPower = -0.92;
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
         DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
         Servo Shooter = hardwareMap.get(Servo.class, "SR_SHOOTER");
