@@ -131,15 +131,18 @@ String inALoop = "at the beginning";
             ShooterAutomation();
             PowerShotAutomation();
             GearBox();
-            JustLauncherTeleOp();
-            JustLauncherTeleOpSlow();
-            JustShooterTeleOp();
+            //JustLauncherTeleOp();
+            //JustLauncherTeleOpSlow();
+            //JustShooterTeleOp();
             BetterIntakeTeleOp();
             ClampTeleOp();
             GlisieraTeleOp();
             CremalieraTeleOp();
-            ArmTeleOp();
-            FingerTeleOp();//uses the hypotenuse of left joystick and right joystick to calculate the speed of the robot
+            SingleShotTeleOp();
+            TriggerTeleOp();
+            ShooterTeleOp();
+            //ArmTeleOp();
+            //FingerTeleOp();//uses the hypotenuse of left joystick and right joystick to calculate the speed of the robot
             speed = -Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
 
             //finds the angle the robot is moving at
@@ -157,7 +160,40 @@ String inALoop = "at the beginning";
         }
         OdoThread.interrupt();
     }
+    public void SingleShotTeleOp()
+    {
+        Servo Trigger = hardwareMap.get(Servo.class, "SR_TRIGGER");
+        Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
+        double power = -1;
+        DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
+        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
+        Launcher1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (gamepad1.left_bumper)
+        {
+            Trigger.setPosition(0.3);
+            Launcher1.setPower(power);
+            Launcher2.setPower(power);
+            sleep(1000);
+            Shooter.setPosition(0.3);
+        }
 
+    }
+    public void TriggerTeleOp()
+    {
+        Servo Trigger = hardwareMap.get(Servo.class, "SR_TRIGGER");
+        if (gamepad2.dpad_up)
+        Trigger.setPosition(0.25);
+        else if (gamepad2.dpad_down)Trigger.setPosition(0);
+    }
+    public void ShooterTeleOp()
+    {
+        Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
+        if (gamepad2.dpad_right)
+            Shooter.setPosition(0.33);
+        else if (gamepad2.dpad_left)
+            Shooter.setPosition(0);
+    }
     public void setNicePos() {
         if (gamepad2.left_bumper) {
             ogAngle = angles.firstAngle;
@@ -700,28 +736,7 @@ inALoop = "outside of strafe drive loop";
         //telemetry.addData("Status", "Running");
     }
 
-    public void SingleShotTeleOp() {
-        double power = -1;
-        DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
-        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
-        Servo Shooter = hardwareMap.get(Servo.class, "SR_SHOOTER");
-        Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if (gamepad1.back) {
-            TleftDrive.setPower(0);
-            TrightDrive.setPower(0);
-            BleftDrive.setPower(0);
-            BrightDrive.setPower(0);
-            Launcher1.setPower(power);
-            Launcher2.setPower(power);
-            sleep(1500);
-            Shooter.setPosition(0.3);
-            sleep(300);
-            Shooter.setPosition(0);
-            Launcher1.setPower(0);
-            Launcher2.setPower(0);
-        }
-    }
+
 
     public void SingleShotSlowTeleOp() {
         double power = -0.9;
@@ -921,10 +936,10 @@ inALoop = "outside of strafe drive loop";
     public void GlisieraTeleOp() {
         double glsPower = 0.8;
 
-        DcMotor glisiera = hardwareMap.get(DcMotorEx.class, "GLS");
-        glisiera.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        CRServo glisiera = hardwareMap.get(CRServo.class, "GLS");
+        //glisiera.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         DigitalChannel glsMg = hardwareMap.get(DigitalChannel.class, "Mag_GLS");
-        glisiera.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //glisiera.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         if (gamepad1.dpad_up) {
@@ -948,10 +963,7 @@ inALoop = "outside of strafe drive loop";
         } else if (!gamepad1.dpad_up && !gamepad1.dpad_down) {
             glisiera.setPower(0);
         }
-        glisiera.setTargetPosition(target);
 
-
-        glisiera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
 /* public void GlisieraTeleOp() {
