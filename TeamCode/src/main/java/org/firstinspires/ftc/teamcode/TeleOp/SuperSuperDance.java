@@ -7,15 +7,21 @@ import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.ejml.dense.row.decompose.TriangularSolver_CDRM;
+import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -49,6 +55,7 @@ public class SuperSuperDance extends LinearOpMode {
     public final double offBrightDriveD = 6.5;
 
     double ok = 0;
+    double wTarget = 0;
     double power = 1.5;//1.41
     double FranaS, FranaD;
     boolean leftstickpress; //Outside of loop()
@@ -74,13 +81,35 @@ public class SuperSuperDance extends LinearOpMode {
     double ogDistance;
 double n = 1;
 boolean shoot=false;
+double fire = 0.0;
+double katyusha = 0.0;
 double timer = 0;
 String inALoop = "at the beginning";
+    Servo Trigger;
+    Servo Shooter;
+    boolean artiljerija  = false;
+    double LaunchPower=0;
+    double ICBM = -0.90 ;
+    NormalizedColorSensor colorUp,colorDown;
+    NormalizedRGBA colorsUp,colorsDown;
+    float gain = 95;
+    double Fpower;
+    boolean Fchanged;
+    Servo finger;
+    DcMotor Arm;
+    Servo flag;
+    //VoltageSensor voltSensor;
+    double voltage;
     /**
      *
      */
     @Override
     public void runOpMode() throws InterruptedException {
+        colorUp = hardwareMap.get(NormalizedColorSensor.class, "color_up");
+        colorDown = hardwareMap.get(NormalizedColorSensor.class, "color_down");//color_sensor = hardwareMap.colorSensor.get("color_up");
+        colorsUp = colorUp.getNormalizedColors();
+        colorsDown = colorDown.getNormalizedColors();
+        //voltSensor = hardwareMap.get(VoltageSensor.class,"ARM");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -88,7 +117,9 @@ String inALoop = "at the beginning";
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
+        Shooter = hardwareMap.get(Servo.class, "SR_SHOOTER");
+        Trigger = hardwareMap.get(Servo.class, "SR_TRIGGER");
+        //Shooter.setDirection(Servo.Direction.REVERSE);
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
@@ -98,7 +129,7 @@ String inALoop = "at the beginning";
         sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
         sensorDistance = (Rev2mDistanceSensor) sensorRange;
 
-
+         Arm = hardwareMap.get(DcMotor.class, "ARM");
         TleftDrive = hardwareMap.get(DcMotorEx.class, "FL");
         TrightDrive = hardwareMap.get(DcMotorEx.class, "FR");
         BleftDrive = hardwareMap.get(DcMotorEx.class, "BL");
@@ -112,12 +143,25 @@ String inALoop = "at the beginning";
 
         TrightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         BrightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        DriveThread OdoThread = new DriveThread();
-        OdoThread.start();
 
+
+        Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        finger = hardwareMap.get(Servo.class, "SR_FINGER");
+        Servo flag = hardwareMap.get(Servo.class,"SR_FLAG");
+        DriveThread TeleThread = new DriveThread();
+        voltage = getBatteryVoltage();
+
+        colorUp.setGain(gain);
+        colorDown.setGain(gain);
         waitForStart();
-
+        TeleThread.start();
         while (opModeIsActive()) {
+
+            voltage = getBatteryVoltage();
+            colorsUp = colorUp.getNormalizedColors();
+            colorsDown = colorDown.getNormalizedColors();
             // run until the end of the match (driver presses STOP)
             TleftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             TrightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -131,18 +175,19 @@ String inALoop = "at the beginning";
             ShooterAutomation();
             PowerShotAutomation();
             GearBox();
-            //JustLauncherTeleOp();
+            InterContinentalBallisticMissle();
             //JustLauncherTeleOpSlow();
             //JustShooterTeleOp();
             BetterIntakeTeleOp();
-            ClampTeleOp();
+            //ClampTeleOp();
             GlisieraTeleOp();
             CremalieraTeleOp();
-            SingleShotTeleOp();
+            //SingleShotTeleOp();
             TriggerTeleOp();
             ShooterTeleOp();
-            //ArmTeleOp();
-            //FingerTeleOp();//uses the hypotenuse of left joystick and right joystick to calculate the speed of the robot
+
+            ArmTeleOp();
+            FingerTeleOp();//uses the hypotenuse of left joystick and right joystick to calculate the speed of the robot
             speed = -Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
 
             //finds the angle the robot is moving at
@@ -155,15 +200,21 @@ String inALoop = "at the beginning";
             BrightDrive.setPower((speed * Math.sin(robotAngle) + gamepad1.right_stick_x) * power);
 
             //telemetry.update();
+            if (colorsUp.blue<0.85) {
+                flag.setPosition(0.5);
+            } else if (colorsDown.blue<0.85) {
+                flag.setPosition(0.3);
+            } else flag.setPosition(0.0);
 
 
         }
-        OdoThread.interrupt();
+        TeleThread.interrupt();
     }
     public void SingleShotTeleOp()
     {
         Servo Trigger = hardwareMap.get(Servo.class, "SR_TRIGGER");
         Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
+
         double power = -1;
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
         DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
@@ -181,18 +232,26 @@ String inALoop = "at the beginning";
     }
     public void TriggerTeleOp()
     {
-        Servo Trigger = hardwareMap.get(Servo.class, "SR_TRIGGER");
+         //Trigger = hardwareMap.get(Servo.class, "SR_TRIGGER");
         if (gamepad2.dpad_up)
-        Trigger.setPosition(0.25);
-        else if (gamepad2.dpad_down)Trigger.setPosition(0);
+            katyusha = 0.4;
+        else if (gamepad2.dpad_down)
+            //Shooter.setPosition(0);
+            katyusha=0.0;
+
+        Trigger.setPosition(katyusha);
     }
+
     public void ShooterTeleOp()
     {
-        Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
+        //Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
         if (gamepad2.dpad_right)
-            Shooter.setPosition(0.33);
+            fire = 0.9;
         else if (gamepad2.dpad_left)
-            Shooter.setPosition(0);
+            //Shooter.setPosition(0);
+            fire=0.0;
+
+        Shooter.setPosition(fire);
     }
     public void setNicePos() {
         if (gamepad2.left_bumper) {
@@ -374,6 +433,7 @@ inALoop="Out of distance drive loop";
         motorConfigurationType2.setAchieveableMaxRPMFraction(1.0);
         Launcher2.setMotorType(motorConfigurationType2);
         Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         //deci te dai in colt,apesi butonul si face PRA PRA PRA
         if (gamepad2.start) {
@@ -641,11 +701,11 @@ inALoop = "outside of strafe drive loop";
             Launcher2.setPower(0);
         }
     }
-
+/*
     public void JustLauncherTeleOp() {
         DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
         InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        double LaunchPower = -0.88 ;
+
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
         DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
         Servo Shooter = hardwareMap.get(Servo.class, "SR_SHOOTER");
@@ -664,15 +724,100 @@ inALoop = "outside of strafe drive loop";
         motorConfigurationType2.setAchieveableMaxRPMFraction(1.0);
         Launcher2.setMotorType(motorConfigurationType2);
         Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        if (gamepad1.left_bumper) {
 
-            TleftDrive.setPower(0);
-            TrightDrive.setPower(0);
-            BleftDrive.setPower(0);
-            BrightDrive.setPower(0);
-            Launcher1.setPower(LaunchPower);
-            Launcher2.setPower(LaunchPower);
-        } else if (!gamepad1.right_stick_button) {
+        if (gamepad1.left_bumper && !artiljerija ) {
+            if (LaunchPower == 0) LaunchPower = ICBM;
+            else LaunchPower = 0;
+            artiljerija  = true;
+        } else if (!gamepad1.left_bumper) artiljerija  = false;
+
+        TleftDrive.setPower(0);
+        TrightDrive.setPower(0);
+        BleftDrive.setPower(0);
+        BrightDrive.setPower(0);
+        Launcher1.setPower(LaunchPower);
+        Launcher2.setPower(LaunchPower);
+    }
+    */
+    public void InterContinentalBallisticMissle()
+    {
+
+
+        DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
+        InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
+        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
+
+        //Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //Shooter.setDirection(Servo.Direction.REVERSE);
+
+        MotorConfigurationType motorConfigurationType =
+                Launcher1.getMotorType().clone();
+        motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+        Launcher1.setMotorType(motorConfigurationType);
+        Launcher1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        MotorConfigurationType motorConfigurationType2 =
+                Launcher2.getMotorType().clone();
+        motorConfigurationType2.setAchieveableMaxRPMFraction(1.0);
+        Launcher2.setMotorType(motorConfigurationType2);
+        Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        /*if (voltage>14)
+        {
+            ICBM = -0.85;
+        }
+        else if (voltage<14&&voltage>13.5)
+        {
+            ICBM = -0.89;
+        }
+        else if (voltage<=13.5&&voltage>=13)
+        {
+            ICBM = -0.92;
+        }
+        else if (voltage<13)
+        {
+            ICBM = -0.95;
+        }*/
+        if (voltage>=14)
+        {
+            ICBM = -0.82+0;
+        }
+        else if (voltage<14&&voltage>=13.6)
+        {
+            ICBM = -0.82;
+        }
+        else if (voltage<13.6&&voltage>13.45)
+        {
+            ICBM = -0.82;
+        }
+        else if (voltage<=13.45&&voltage>13)
+        {
+            ICBM=-0.82;
+        }
+        else if (voltage<=13)
+        {
+            ICBM=-0.82;
+        }
+        else if (voltage<=12.5)
+        {
+            ICBM=-0.84;
+        }
+        if (gamepad1.left_bumper)
+        {
+            Trigger.setPosition(0.0);
+            Launcher1.setPower(ICBM);
+            Launcher2.setPower(ICBM);
+            sleep(1350);
+            Shooter.setPosition(0.22);
+            //sleep(500);
+            sleep(700);
+            Shooter.setPosition(0.55);
+            sleep(700);
+            Shooter.setPosition(0.9);
+            sleep(700);
+            Shooter.setPosition(0);
             Launcher1.setPower(0);
             Launcher2.setPower(0);
         }
@@ -1018,64 +1163,93 @@ inALoop = "outside of strafe drive loop";
     }
 
     public void ArmTeleOp() {
-        CRServo Arm = hardwareMap.get(CRServo.class, "SR_ARM");
 
-
-        if (gamepad1.back) {
+        Arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        /*if (gamepad2.x) {
             // move to 0 degrees.
-            Arm.setPower(0.4);
+            Arm.setPower(0.2);
 
-        } else if (gamepad1.start) {
+        } else if (gamepad2.y) {
             // move to 90 degrees.
-            Arm.setPower(-0.4);
+            Arm.setPower(-0.2);
         } else {
             Arm.setPower(0);
         }
+*/
+
+
+
+
+
+
+            if (gamepad2.x&&wTarget>100)
+            {
+                wTarget-=25;
+            }
+            if (gamepad2.y&&wTarget<525)
+            {
+                wTarget+=25;
+            }
+        Arm.setPower(0.75);
+        Arm.setTargetPosition((int) wTarget);
+        Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
     }
 
     public void FingerTeleOp() {
-        Servo finger = hardwareMap.get(Servo.class, "SR_FINGER");
 
 
-        if (gamepad1.x) {
-            // move to 0 degrees.
-            finger.setPosition(0.6);
 
-        } else if (gamepad1.y) {
-            // move to 90 degrees.
-            finger.setPosition(0.0);
-        }
-
+        if (gamepad2.a && !Fchanged) {
+            if (Fpower == 1) Fpower = 0;
+            else Fpower = 1;
+            Fchanged = true;
+        } else if (!gamepad2.a) Fchanged = false;
+finger.setPosition(Fpower);
         //telemetry.update();
     }
-    public class DriveThread extends Thread
-    {
-        public DriveThread()
-        {
+    double getBatteryVoltage() {
+        double result = Double.POSITIVE_INFINITY;
+        for (VoltageSensor sensor : hardwareMap.voltageSensor) {
+            double voltage = sensor.getVoltage();
+            if (voltage > 0) {
+                result = Math.min(result, voltage);
+            }
+        }
+        return result;
+    }
+    public class DriveThread extends Thread {
+        public DriveThread() {
             this.setName("DriveThread");
         }
 
         // called when tread.start is called. thread stays in loop to do what it does until exit is
         // signaled by main code calling thread.interrupt.
         @Override
-        public void run()
-        {
-
+        public void run() {
 
 
             while (!isInterrupted()) {
-                angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 double distance2 = sensorDistance.getDistance(DistanceUnit.CM);
-                telemetry.addData("ogAngle",ogAngle);
-                telemetry.addData("ogDistance",ogDistance);
-                telemetry.addData("speed",power);
-                telemetry.addData("angles",angles.firstAngle);
-                telemetry.addData("distance",distance2);
-                telemetry.addData("timer",timer);
-                telemetry.addData("inALoop = ",inALoop);
-                telemetry.addData("runeMode",TleftDrive.getMode());
+                telemetry.addData("ogAngle", ogAngle);
+                telemetry.addData("ogDistance", ogDistance);
+                telemetry.addData("speed", power);
+                telemetry.addData("angles", angles.firstAngle);
+                telemetry.addData("distance", distance2);
+                telemetry.addData("timer", timer);
+                telemetry.addData("runMode", TleftDrive.getMode());
+                try {
+                    telemetry.addData("Trigger pos", Trigger.getPosition());
+                    telemetry.addData("Shooter pos", Shooter.getPosition());
+                } catch (Exception e) {
+
+                }
+                telemetry.addData("ICBM=",ICBM);
+                telemetry.addData("voltage", "%.1f volts", getBatteryVoltage());
                 telemetry.update();
+
 
             }
 

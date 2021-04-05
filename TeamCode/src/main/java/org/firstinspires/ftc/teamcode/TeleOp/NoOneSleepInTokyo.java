@@ -90,13 +90,13 @@ PowerShotAutomation();
 GearBox();
           JustLauncherTeleOp();
           JustLauncherTeleOpSlow();
-          JustShooterTeleOp();
+          //JustShooterTeleOp();
           BetterIntakeTeleOp();
-          ClampTeleOp();
+          /*ClampTeleOp();
           GlisieraTeleOp();
           CremalieraTeleOp();
           ArmTeleOp();
-          FingerTeleOp();//uses the hypotenuse of left joystick and right joystick to calculate the speed of the robot
+          FingerTeleOp();*///uses the hypotenuse of left joystick and right joystick to calculate the speed of the robot
             speed = -Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
 
             //finds the angle the robot is moving at

@@ -67,7 +67,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this Op Mode to the Driver Station OpMode list
  */
 @TeleOp(name = "Sensor: Color", group = "Sensor")
-@Disabled
+
 public class SensorColor extends LinearOpMode {
 
   /** The colorSensor field will contain a reference to our color sensor hardware object */
@@ -135,7 +135,7 @@ public class SensorColor extends LinearOpMode {
     // Get a reference to our sensor object. It's recommended to use NormalizedColorSensor over
     // ColorSensor, because NormalizedColorSensor consistently gives values between 0 and 1, while
     // the values you get from ColorSensor are dependent on the specific sensor you're using.
-    colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
+    colorSensor = hardwareMap.get(NormalizedColorSensor.class, "color_down");
 
     // If possible, turn the light on in the beginning (it might already be on anyway,
     // we just make sure it is if we can).
@@ -155,9 +155,9 @@ public class SensorColor extends LinearOpMode {
       // Update the gain value if either of the A or B gamepad buttons is being held
       if (gamepad1.a) {
         // Only increase the gain by a small amount, since this loop will occur multiple times per second.
-        gain += 0.005;
+        gain += 1;
       } else if (gamepad1.b && gain > 1) { // A gain of less than 1 will make the values smaller, which is not helpful.
-        gain -= 0.005;
+        gain -= 1;
       }
 
       // Show the gain value via telemetry
