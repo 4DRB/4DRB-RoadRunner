@@ -100,6 +100,11 @@ String inALoop = "at the beginning";
     Servo flag;
     //VoltageSensor voltSensor;
     double voltage;
+    double sPos1;
+    double sPos2;
+    double sPos3;
+    long sSleep=700;
+
     /**
      *
      */
@@ -171,20 +176,20 @@ String inALoop = "at the beginning";
             //SingleShotTeleOp();
              inALoop = "in OpMode";
             //MultiShotTeleOp();
-            setNicePos();
-            ShooterAutomation();
-            PowerShotAutomation();
+            //setNicePos();
+            //ShooterAutomation();
+            //PowerShotAutomation();
             GearBox();
             InterContinentalBallisticMissle();
             //JustLauncherTeleOpSlow();
             //JustShooterTeleOp();
             BetterIntakeTeleOp();
-            //ClampTeleOp();
+            ClampTeleOp();
             GlisieraTeleOp();
             CremalieraTeleOp();
             //SingleShotTeleOp();
             TriggerTeleOp();
-            ShooterTeleOp();
+            //ShooterTeleOp();
 
             ArmTeleOp();
             FingerTeleOp();//uses the hypotenuse of left joystick and right joystick to calculate the speed of the robot
@@ -233,9 +238,9 @@ String inALoop = "at the beginning";
     public void TriggerTeleOp()
     {
          //Trigger = hardwareMap.get(Servo.class, "SR_TRIGGER");
-        if (gamepad2.dpad_up)
-            katyusha = 0.4;
-        else if (gamepad2.dpad_down)
+        if (gamepad1.dpad_up)
+            katyusha = 0.31;
+        else if (gamepad1.dpad_down)
             //Shooter.setPosition(0);
             katyusha=0.0;
 
@@ -780,46 +785,158 @@ inALoop = "outside of strafe drive loop";
         {
             ICBM = -0.95;
         }*/
-        if (voltage>=14)
+        /*if (voltage>=14)
         {
-            ICBM = -0.82+0;
+            ICBM = -0.81;
+            sPos1 =0.38;
+            sPos2 = 0.56;
+            sPos3 = 0.89;
+            sSleep = 700;
         }
-        else if (voltage<14&&voltage>=13.6)
+        else if (voltage<14&&voltage>13.8)
         {
-            ICBM = -0.82;
+            ICBM = -0.76;
+            sPos1 =0.4;
+            sPos2 = 0.48;
+            sPos3 = 0.82;
+            sSleep = 700;
         }
-        else if (voltage<13.6&&voltage>13.45)
+        else if (voltage<=13.8&&voltage>13.6)//////lucrez pe el
         {
-            ICBM = -0.82;
+            ICBM = -0.735;
+            sPos1 =0.16;
+            sPos2 = 0.78;
+            sPos3 = 0.95;
+            sSleep = 700;
         }
-        else if (voltage<=13.45&&voltage>13)
+        else if (voltage<=13.6&&voltage>13.4)
         {
-            ICBM=-0.82;
+            ICBM = -0.76;
+            sPos1 =0.4;
+            sPos2 = 0.48;
+            sPos3 = 0.82;
+            sSleep = 700;
         }
-        else if (voltage<=13)
+        else if (voltage<=13.4&&voltage>13.2)
         {
-            ICBM=-0.82;
+            ICBM = -0.76;
+            sPos1 =0.4;
+            sPos2 = 0.48;
+            sPos3 = 0.82;
+            sSleep = 700;
         }
-        else if (voltage<=12.5)
+        else if (voltage<=13.2&&voltage>13)///////binisor
         {
-            ICBM=-0.84;
+
+
+            ICBM = -0.76;
+            sPos1 =0.38;
+            sPos2 = 0.47;
+            sPos3 = 0.82;
         }
+        else if (voltage<=13&&voltage>12.8)///////////////////////////optimizat
+        {
+            ICBM = -0.76;
+            sPos1 =0.39;
+            sPos2 = 0.46;
+            sPos3 = 0.82;
+            sSleep = 700;
+        }
+        else if (voltage<=12.8)///////////////////////////////////LASER
+        {
+            ICBM=-0.74;
+            sPos1 =0.4;
+            sPos2 = 0.52;
+            sPos3 = 0.8;
+            sSleep = 600;
+        }*/
+        ICBM = -0.76;
         if (gamepad1.left_bumper)
         {
-            Trigger.setPosition(0.0);
-            Launcher1.setPower(ICBM);
-            Launcher2.setPower(ICBM);
-            sleep(1350);
-            Shooter.setPosition(0.22);
-            //sleep(500);
-            sleep(700);
-            Shooter.setPosition(0.55);
-            sleep(700);
-            Shooter.setPosition(0.9);
-            sleep(700);
+            /*Trigger.setPosition(0.0);
+            Launcher1.setVelocity(-2160);
+            Launcher2.setVelocity(-2160);
+            sleep(1550);
+            Shooter.setPosition(0.1);
+            sleep(250);
+            Launcher1.setVelocity(-1990);
+            Launcher2.setVelocity(-1990);
+            sleep(500);
+            Shooter.setPosition(0.5);
+            sleep(250);
+            Launcher1.setVelocity(-2100);
+            Launcher2.setVelocity(-2100);
+            sleep(500);
+            Shooter.setPosition(0.88);
+            sleep(1000);
             Shooter.setPosition(0);
             Launcher1.setPower(0);
-            Launcher2.setPower(0);
+            Launcher2.setPower(0);*/
+            if (voltage >= 13.6 && voltage < 13.9) {
+                Trigger.setPosition(0.0);
+                Launcher1.setVelocity(-2100);
+                Launcher2.setVelocity(-2100);
+                sleep(1550);
+                Shooter.setPosition(0.1);
+                sleep(250);
+                Launcher1.setVelocity(-1930);
+                Launcher2.setVelocity(-1930);
+                sleep(750);
+                Shooter.setPosition(0.77);
+                sleep(250);
+                Launcher1.setVelocity(-2100);
+                Launcher2.setVelocity(-2100);
+                sleep(750);
+                Shooter.setPosition(0.82);
+                sleep(1000);
+                Shooter.setPosition(0);
+                Launcher1.setPower(0);
+                Launcher2.setPower(0);
+            }
+            else
+            if (voltage >= 13.5 && voltage < 13.6) {
+                Trigger.setPosition(0.0);
+                Launcher1.setVelocity(-2180);
+                Launcher2.setVelocity(-2180);
+                sleep(1550);
+                Shooter.setPosition(0.1);
+                sleep(250);
+                Launcher1.setVelocity(-2010);
+                Launcher2.setVelocity(-2010);
+                sleep(500);
+                Shooter.setPosition(0.5);
+                sleep(250);
+                Launcher1.setVelocity(-2120);
+                Launcher2.setVelocity(-2120);
+                sleep(500);
+                Shooter.setPosition(0.88);
+                sleep(1000);
+                Shooter.setPosition(0);
+                Launcher1.setPower(0);
+                Launcher2.setPower(0);
+            }
+            else
+            if (voltage >= 13.4 && voltage < 13.5) {
+                Trigger.setPosition(0.0);
+                Launcher1.setVelocity(-2185);
+                Launcher2.setVelocity(-2185);
+                sleep(1550);
+                Shooter.setPosition(0.1);
+                sleep(250);
+                Launcher1.setVelocity(-2032);
+                Launcher2.setVelocity(-2035);
+                sleep(500);
+                Shooter.setPosition(0.5);
+                sleep(250);
+                Launcher1.setVelocity(-2138);
+                Launcher2.setVelocity(-2138);
+                sleep(500);
+                Shooter.setPosition(0.88);
+                sleep(1000);
+                Shooter.setPosition(0);
+                Launcher1.setPower(0);
+                Launcher2.setPower(0);
+            }
         }
     }
 
@@ -999,11 +1116,11 @@ inALoop = "outside of strafe drive loop";
         if (gamepad1.right_bumper) {//1
             InTake.setPower(IntakePower);
 
-        } else if (gamepad1.b)//-1
+        } else if (gamepad1.right_stick_button)//-1
         {
             InTake.setPower(-IntakePower);
 
-        } else if (!gamepad1.right_bumper && !gamepad1.b) {//0
+        } else if (!gamepad1.right_bumper && !gamepad1.right_stick_button) {//0
             InTake.setPower(0);
 
         }
@@ -1035,19 +1152,19 @@ inALoop = "outside of strafe drive loop";
         crMg_OK = !digChannel.getState();
         if (CrSensLastDep) {
             if (crMg_OK) {
-                if (gamepad1.dpad_left) {
+                if (gamepad2.dpad_left) {
                     cremaliera_Servo.setPower(0);
                     //CrSensLastDep = false;
-                } else if (gamepad1.dpad_right) {
+                } else if (gamepad2.dpad_right) {
                     cremaliera_Servo.setPower(-crPwr);
                     //CrSensLastDep = false;
                 }
 
             } else {
-                if (gamepad1.dpad_left) {
+                if (gamepad2.dpad_left) {
                     cremaliera_Servo.setPower(crPwr);
                     ////////////////////////CrSensLastDep = true;
-                } else if (gamepad1.dpad_right) {
+                } else if (gamepad2.dpad_right) {
                     cremaliera_Servo.setPower(0);
                     CrSensLastDep = false;
                 } else {
@@ -1056,17 +1173,17 @@ inALoop = "outside of strafe drive loop";
             }
         } else {
             if (crMg_OK) {
-                if (gamepad1.dpad_right) {
+                if (gamepad2.dpad_right) {
                     cremaliera_Servo.setPower(0);
-                } else if (gamepad1.dpad_left) {
+                } else if (gamepad2.dpad_left) {
                     cremaliera_Servo.setPower(crPwr);
                     //CrSensLastDep = true;
                 }
             }
             if (!crMg_OK) {
-                if (gamepad1.dpad_right) {
+                if (gamepad2.dpad_right) {
                     cremaliera_Servo.setPower(-crPwr);
-                } else if (gamepad1.dpad_left) {
+                } else if (gamepad2.dpad_left) {
                     cremaliera_Servo.setPower(crPwr);
                     CrSensLastDep = true;
                 } else {
@@ -1083,29 +1200,30 @@ inALoop = "outside of strafe drive loop";
 
         CRServo glisiera = hardwareMap.get(CRServo.class, "GLS");
         //glisiera.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         DigitalChannel glsMg = hardwareMap.get(DigitalChannel.class, "Mag_GLS");
         //glisiera.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        if (gamepad1.dpad_up) {
+        /*if (gamepad2.dpad_up) {
             if (target <= 2850) {
-                glisiera.setPower(glsPower);
-                target = target + 50;
+                glisiera.setPower(-glsPower);
+                target = target - 50;
             } else glisiera.setPower(0);
-        } else if (!gamepad1.dpad_up && !gamepad1.dpad_down) {
+        } else if (!gamepad2.dpad_up && !gamepad2.dpad_down) {
             glisiera.setPower(0);
         }
 
 
-        if (gamepad1.dpad_down) {
+        if (gamepad2.dpad_down) {
             if (glsMg.getState()) {
-                glisiera.setPower(-glsPower);
-                target = target - 100;
+                glisiera.setPower(glsPower);
+                target = target + 100;
             } else {
                 target = 0;
                 glisiera.setPower(0);
             }
-        } else if (!gamepad1.dpad_up && !gamepad1.dpad_down) {
+        } else if (!gamepad2.dpad_up && !gamepad2.dpad_down) {
             glisiera.setPower(0);
         }
 
@@ -1159,7 +1277,23 @@ inALoop = "outside of strafe drive loop";
 
 
     }*/
+        if (gamepad2.y) {
+            glisiera.setPower(-1);
+        }
 
+
+
+        if (gamepad2.x) {
+            if (glsMg.getState()) {
+                glisiera.setPower(1);
+
+            } else {
+                glisiera.setPower(0);
+            }
+        }
+        if (!gamepad2.y && !gamepad2.x) {
+            glisiera.setPower(0);
+        }
     }
 
     public void ArmTeleOp() {
@@ -1182,11 +1316,11 @@ inALoop = "outside of strafe drive loop";
 
 
 
-            if (gamepad2.x&&wTarget>100)
+            if (gamepad1.dpad_left&&wTarget>100)
             {
                 wTarget-=25;
             }
-            if (gamepad2.y&&wTarget<525)
+            if (gamepad1.dpad_right&&wTarget<525)
             {
                 wTarget+=25;
             }
@@ -1200,11 +1334,11 @@ inALoop = "outside of strafe drive loop";
 
 
 
-        if (gamepad2.a && !Fchanged) {
+        if (gamepad1.b && !Fchanged) {
             if (Fpower == 1) Fpower = 0;
             else Fpower = 1;
             Fchanged = true;
-        } else if (!gamepad2.a) Fchanged = false;
+        } else if (!gamepad1.b) Fchanged = false;
 finger.setPosition(Fpower);
         //telemetry.update();
     }
@@ -1238,7 +1372,7 @@ finger.setPosition(Fpower);
                 telemetry.addData("speed", power);
                 telemetry.addData("angles", angles.firstAngle);
                 telemetry.addData("distance", distance2);
-                telemetry.addData("timer", timer);
+                telemetry.addData("target", target);
                 telemetry.addData("runMode", TleftDrive.getMode());
                 try {
                     telemetry.addData("Trigger pos", Trigger.getPosition());
