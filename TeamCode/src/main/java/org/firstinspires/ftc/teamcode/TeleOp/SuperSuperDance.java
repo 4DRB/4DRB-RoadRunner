@@ -61,7 +61,7 @@ public class SuperSuperDance extends LinearOpMode {
     boolean leftstickpress; //Outside of loop()
     double intakePower = 0;
     boolean intakeOk = true;
-    int target = 0;
+    double target = 0.1;
     int intakePowerR = 0;
     boolean intakeOkR = true;
     boolean changed = false;
@@ -104,12 +104,14 @@ String inALoop = "at the beginning";
     double sPos2;
     double sPos3;
     long sSleep=700;
-
+    Servo glisiera;
+    double glsPos = 0;
     /**
      *
      */
     @Override
     public void runOpMode() throws InterruptedException {
+
         colorUp = hardwareMap.get(NormalizedColorSensor.class, "color_up");
         colorDown = hardwareMap.get(NormalizedColorSensor.class, "color_down");//color_sensor = hardwareMap.colorSensor.get("color_up");
         colorsUp = colorUp.getNormalizedColors();
@@ -180,17 +182,17 @@ String inALoop = "at the beginning";
             //ShooterAutomation();
             //PowerShotAutomation();
             GearBox();
-            InterContinentalBallisticMissle();
+            Katyusha();
             //JustLauncherTeleOpSlow();
             //JustShooterTeleOp();
             BetterIntakeTeleOp();
-            ClampTeleOp();
-            GlisieraTeleOp();
-            CremalieraTeleOp();
+            //ClampTeleOp();
+            //GlisieraTeleOp();
+            //CremalieraTeleOp();
             //SingleShotTeleOp();
             TriggerTeleOp();
-            //ShooterTeleOp();
-
+            ShooterTeleOp();
+            InterContinentalBallisticMissleRisingDaPeStrafe();
             ArmTeleOp();
             FingerTeleOp();//uses the hypotenuse of left joystick and right joystick to calculate the speed of the robot
             speed = -Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
@@ -238,9 +240,9 @@ String inALoop = "at the beginning";
     public void TriggerTeleOp()
     {
          //Trigger = hardwareMap.get(Servo.class, "SR_TRIGGER");
-        if (gamepad1.dpad_up)
-            katyusha = 0.31;
-        else if (gamepad1.dpad_down)
+        if (gamepad2.dpad_up)
+            katyusha = 0.35;
+        else if (gamepad2.dpad_down)
             //Shooter.setPosition(0);
             katyusha=0.0;
 
@@ -342,6 +344,8 @@ inALoop = "out of normal gyro loop";
         TleftDrive.setPower(0);
         BrightDrive.setPower(0);
         BleftDrive.setPower(0);
+// this stops the run to position.
+
 // this stops the run to position.
         TleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         TrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -517,10 +521,10 @@ inALoop="Out of distance drive loop";
     }
 
     public void normalDrive(double speed, double leftInches, double rightInches) {
-        TleftDrive = hardwareMap.get(DcMotor.class, "leftFront");
-        TrightDrive = hardwareMap.get(DcMotor.class, "rightFront");
-        BleftDrive = hardwareMap.get(DcMotor.class, "leftRear");
-        BrightDrive = hardwareMap.get(DcMotor.class, "rightRear");
+        TleftDrive = hardwareMap.get(DcMotor.class, "FL");
+        TrightDrive = hardwareMap.get(DcMotor.class, "FR");
+        BleftDrive = hardwareMap.get(DcMotor.class, "BL");
+        BrightDrive = hardwareMap.get(DcMotor.class, "BR");
 //stop and reset
         TleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         TrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -636,13 +640,22 @@ inALoop = "out of normal drive loop";
         TleftDrive.setPower(Math.abs(speed));
         BrightDrive.setPower(Math.abs(speed));
         BleftDrive.setPower(Math.abs(speed));
-
+int caca =1;
 
         while (TleftDrive.isBusy() && BleftDrive.isBusy() && TrightDrive.isBusy() && BrightDrive.isBusy() && opModeIsActive()) {
             inALoop = "in strafe drive loop";
-            if (gamepad2.back)
+
+            /*TrightDrive.setPower(Math.abs(speed));
+            TleftDrive.setPower(Math.abs(speed));
+            BrightDrive.setPower(Math.abs(speed));
+            BleftDrive.setPower(Math.abs(speed));*/
+            if (caca == 1)
             {
-                break;
+                TrightDrive.setPower(Math.abs(speed));
+                TleftDrive.setPower(Math.abs(speed));
+                BrightDrive.setPower(Math.abs(speed));
+                BleftDrive.setPower(Math.abs(speed));
+                caca = 0;
             }
         }
 inALoop = "outside of strafe drive loop";
@@ -744,7 +757,7 @@ inALoop = "outside of strafe drive loop";
         Launcher2.setPower(LaunchPower);
     }
     */
-    public void InterContinentalBallisticMissle()
+    public void Katyusha()
     {
 
 
@@ -769,87 +782,7 @@ inALoop = "outside of strafe drive loop";
         motorConfigurationType2.setAchieveableMaxRPMFraction(1.0);
         Launcher2.setMotorType(motorConfigurationType2);
         Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        /*if (voltage>14)
-        {
-            ICBM = -0.85;
-        }
-        else if (voltage<14&&voltage>13.5)
-        {
-            ICBM = -0.89;
-        }
-        else if (voltage<=13.5&&voltage>=13)
-        {
-            ICBM = -0.92;
-        }
-        else if (voltage<13)
-        {
-            ICBM = -0.95;
-        }*/
-        /*if (voltage>=14)
-        {
-            ICBM = -0.81;
-            sPos1 =0.38;
-            sPos2 = 0.56;
-            sPos3 = 0.89;
-            sSleep = 700;
-        }
-        else if (voltage<14&&voltage>13.8)
-        {
-            ICBM = -0.76;
-            sPos1 =0.4;
-            sPos2 = 0.48;
-            sPos3 = 0.82;
-            sSleep = 700;
-        }
-        else if (voltage<=13.8&&voltage>13.6)//////lucrez pe el
-        {
-            ICBM = -0.735;
-            sPos1 =0.16;
-            sPos2 = 0.78;
-            sPos3 = 0.95;
-            sSleep = 700;
-        }
-        else if (voltage<=13.6&&voltage>13.4)
-        {
-            ICBM = -0.76;
-            sPos1 =0.4;
-            sPos2 = 0.48;
-            sPos3 = 0.82;
-            sSleep = 700;
-        }
-        else if (voltage<=13.4&&voltage>13.2)
-        {
-            ICBM = -0.76;
-            sPos1 =0.4;
-            sPos2 = 0.48;
-            sPos3 = 0.82;
-            sSleep = 700;
-        }
-        else if (voltage<=13.2&&voltage>13)///////binisor
-        {
 
-
-            ICBM = -0.76;
-            sPos1 =0.38;
-            sPos2 = 0.47;
-            sPos3 = 0.82;
-        }
-        else if (voltage<=13&&voltage>12.8)///////////////////////////optimizat
-        {
-            ICBM = -0.76;
-            sPos1 =0.39;
-            sPos2 = 0.46;
-            sPos3 = 0.82;
-            sSleep = 700;
-        }
-        else if (voltage<=12.8)///////////////////////////////////LASER
-        {
-            ICBM=-0.74;
-            sPos1 =0.4;
-            sPos2 = 0.52;
-            sPos3 = 0.8;
-            sSleep = 600;
-        }*/
         ICBM = -0.76;
         if (gamepad1.left_bumper)
         {
@@ -872,7 +805,7 @@ inALoop = "outside of strafe drive loop";
             Shooter.setPosition(0);
             Launcher1.setPower(0);
             Launcher2.setPower(0);*/
-            if (voltage >= 13.6 && voltage < 13.9) {
+            /*if (voltage >= 13.6 && voltage < 13.9) {
                 Trigger.setPosition(0.0);
                 Launcher1.setVelocity(-2100);
                 Launcher2.setVelocity(-2100);
@@ -937,9 +870,460 @@ inALoop = "outside of strafe drive loop";
                 Launcher1.setPower(0);
                 Launcher2.setPower(0);
             }
+            else
+            if (voltage < 13.4) {
+                Trigger.setPosition(0.0);
+                Launcher1.setVelocity(-2185);
+                Launcher2.setVelocity(-2185);
+                sleep(1550);
+                Shooter.setPosition(0.1);
+                sleep(250);
+                Launcher1.setVelocity(-2032);
+                Launcher2.setVelocity(-2035);
+                sleep(500);
+                Shooter.setPosition(0.5);
+                sleep(250);
+                Launcher1.setVelocity(-2138);
+                Launcher2.setVelocity(-2138);
+                sleep(500);
+                Shooter.setPosition(0.88);
+                sleep(1000);
+                Shooter.setPosition(0);
+                Launcher1.setPower(0);
+                Launcher2.setPower(0);
+            }*/
+            Trigger.setPosition(0.0);
+            Launcher1.setVelocity(-2200);//2250/13.72V      2220/13.62V
+            Launcher2.setVelocity(-2200);
+            sleep(1300);
+            Shooter.setPosition(0.23);
+            sleep(500);
+            Shooter.setPosition(0.6);
+            sleep(600);
+            Shooter.setPosition(0.83);
+            sleep(600);
+            Shooter.setPosition(0);
+            Launcher1.setPower(0);
+            Launcher2.setPower(0);
         }
     }
+    public void InterContinentalBallisticMissle()
+    {
 
+
+        DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
+        InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
+        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
+
+        //Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //Shooter.setDirection(Servo.Direction.REVERSE);
+
+        MotorConfigurationType motorConfigurationType =
+                Launcher1.getMotorType().clone();
+        motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+        Launcher1.setMotorType(motorConfigurationType);
+        Launcher1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        MotorConfigurationType motorConfigurationType2 =
+                Launcher2.getMotorType().clone();
+        motorConfigurationType2.setAchieveableMaxRPMFraction(1.0);
+        Launcher2.setMotorType(motorConfigurationType2);
+        Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        ICBM = -0.76;
+
+            /*Trigger.setPosition(0.0);
+            Launcher1.setVelocity(-2160);
+            Launcher2.setVelocity(-2160);
+            sleep(1550);
+            Shooter.setPosition(0.1);
+            sleep(250);
+            Launcher1.setVelocity(-1990);
+            Launcher2.setVelocity(-1990);
+            sleep(500);
+            Shooter.setPosition(0.5);
+            sleep(250);
+            Launcher1.setVelocity(-2100);
+            Launcher2.setVelocity(-2100);
+            sleep(500);
+            Shooter.setPosition(0.88);
+            sleep(1000);
+            Shooter.setPosition(0);
+            Launcher1.setPower(0);
+            Launcher2.setPower(0);*/
+            /*if (voltage >= 13.6 && voltage < 13.9) {
+                Trigger.setPosition(0.0);
+                Launcher1.setVelocity(-2100);
+                Launcher2.setVelocity(-2100);
+                sleep(1550);
+                Shooter.setPosition(0.1);
+                sleep(250);
+                Launcher1.setVelocity(-1930);
+                Launcher2.setVelocity(-1930);
+                sleep(750);
+                Shooter.setPosition(0.77);
+                sleep(250);
+                Launcher1.setVelocity(-2100);
+                Launcher2.setVelocity(-2100);
+                sleep(750);
+                Shooter.setPosition(0.82);
+                sleep(1000);
+                Shooter.setPosition(0);
+                Launcher1.setPower(0);
+                Launcher2.setPower(0);
+            }
+            else
+            if (voltage >= 13.5 && voltage < 13.6) {
+                Trigger.setPosition(0.0);
+                Launcher1.setVelocity(-2180);
+                Launcher2.setVelocity(-2180);
+                sleep(1550);
+                Shooter.setPosition(0.1);
+                sleep(250);
+                Launcher1.setVelocity(-2010);
+                Launcher2.setVelocity(-2010);
+                sleep(500);
+                Shooter.setPosition(0.5);
+                sleep(250);
+                Launcher1.setVelocity(-2120);
+                Launcher2.setVelocity(-2120);
+                sleep(500);
+                Shooter.setPosition(0.88);
+                sleep(1000);
+                Shooter.setPosition(0);
+                Launcher1.setPower(0);
+                Launcher2.setPower(0);
+            }
+            else
+            if (voltage >= 13.4 && voltage < 13.5) {
+                Trigger.setPosition(0.0);
+                Launcher1.setVelocity(-2185);
+                Launcher2.setVelocity(-2185);
+                sleep(1550);
+                Shooter.setPosition(0.1);
+                sleep(250);
+                Launcher1.setVelocity(-2032);
+                Launcher2.setVelocity(-2035);
+                sleep(500);
+                Shooter.setPosition(0.5);
+                sleep(250);
+                Launcher1.setVelocity(-2138);
+                Launcher2.setVelocity(-2138);
+                sleep(500);
+                Shooter.setPosition(0.88);
+                sleep(1000);
+                Shooter.setPosition(0);
+                Launcher1.setPower(0);
+                Launcher2.setPower(0);
+            }
+            else
+            if (voltage < 13.4) {
+                Trigger.setPosition(0.0);
+                Launcher1.setVelocity(-2185);
+                Launcher2.setVelocity(-2185);
+                sleep(1550);
+                Shooter.setPosition(0.1);
+                sleep(250);
+                Launcher1.setVelocity(-2032);
+                Launcher2.setVelocity(-2035);
+                sleep(500);
+                Shooter.setPosition(0.5);
+                sleep(250);
+                Launcher1.setVelocity(-2138);
+                Launcher2.setVelocity(-2138);
+                sleep(500);
+                Shooter.setPosition(0.88);
+                sleep(1000);
+                Shooter.setPosition(0);
+                Launcher1.setPower(0);
+                Launcher2.setPower(0);
+            }*/
+        Trigger.setPosition(0.0);
+        Launcher1.setVelocity(-2200);//2250/13.72V      2220/13.62V
+        Launcher2.setVelocity(-2200);
+        sleep(1300);
+        Shooter.setPosition(0.23);
+        sleep(500);
+        Shooter.setPosition(0.6);
+        sleep(600);
+        Shooter.setPosition(0.83);
+        sleep(600);
+        Shooter.setPosition(0);
+        Launcher1.setPower(0);
+        Launcher2.setPower(0);
+
+    }
+    public void InterContinentalBallisticMissleRising() {
+
+/*
+        DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
+        InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
+        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
+
+        //Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //Shooter.setDirection(Servo.Direction.REVERSE);
+
+        MotorConfigurationType motorConfigurationType =
+                Launcher1.getMotorType().clone();
+        motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+        Launcher1.setMotorType(motorConfigurationType);
+        Launcher1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        MotorConfigurationType motorConfigurationType2 =
+                Launcher2.getMotorType().clone();
+        motorConfigurationType2.setAchieveableMaxRPMFraction(1.0);
+        Launcher2.setMotorType(motorConfigurationType2);
+        Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+if (gamepad2.left_bumper) {
+//normalGyroDrive(0.3,-2,0.6);
+    //normalDrive(0.3, -2.2, 2.2);
+    Trigger.setPosition(0.0);
+    Launcher1.setVelocity(-1880);//2250/13.72V      2220/13.62V
+    Launcher2.setVelocity(-1880);
+    sleep(1300);
+    Shooter.setPosition(0.21);
+    sleep(500);
+    //Shooter.setPosition(0);
+
+    normalDrive(0.3, 7.5, -7.5);
+    sleep(250);
+    Trigger.setPosition(0.0);
+    Launcher1.setVelocity(-1880);//2250/13.72V      2220/13.62V
+    Launcher2.setVelocity(-1880);
+    //sleep(1300);
+    Shooter.setPosition(0.87);
+    sleep(500);
+    //Shooter.setPosition(0);
+
+
+        //normalGyroDrive(0.3,-6,0.6);
+        normalDrive(0.3, -3, 3);
+        sleep(100);
+        Trigger.setPosition(0.0);
+        Launcher1.setVelocity(-1880);//2250/13.72V      2220/13.62V
+        Launcher2.setVelocity(-1880);
+        //sleep(1300);
+        Shooter.setPosition(0.55);
+        sleep(250);
+        Shooter.setPosition(0);
+
+        //normalGyroDrive(0.3,3.2,0.35);
+        Launcher1.setPower(0);
+        Launcher2.setPower(0);
+
+
+*/
+        DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
+        InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
+        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
+
+        //Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //Shooter.setDirection(Servo.Direction.REVERSE);
+
+        MotorConfigurationType motorConfigurationType =
+                Launcher1.getMotorType().clone();
+        motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+        Launcher1.setMotorType(motorConfigurationType);
+        Launcher1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        MotorConfigurationType motorConfigurationType2 =
+                Launcher2.getMotorType().clone();
+        motorConfigurationType2.setAchieveableMaxRPMFraction(1.0);
+        Launcher2.setMotorType(motorConfigurationType2);
+        Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        if (gamepad2.left_bumper){
+
+
+//normalGyroDrive(0.3,-2,0.6);
+    normalDrive(0.3, -2, 2);
+    sleep(100);
+    Trigger.setPosition(0.0);
+    Launcher1.setVelocity(-1897);//2250/13.72V      2220/13.62V
+    Launcher2.setVelocity(-1897);
+    sleep(1300);
+    Shooter.setPosition(0.23);
+    sleep(250);
+    //Shooter.setPosition(0);
+
+    //normalGyroDrive(0.3,-6,0.6);
+            normalDrive(0.3, 8.3, -8.3);
+    sleep(100);
+    Trigger.setPosition(0.0);
+    Launcher1.setVelocity(-1887);//2250/13.72V      2220/13.62V
+    Launcher2.setVelocity(-1887);
+    //sleep(1300);
+    Shooter.setPosition(0.55);
+    sleep(250);
+    //Shooter.setPosition(0);
+
+    //normalGyroDrive(0.3,3.2,0.35);
+            normalDrive(0.3, -3.3, 3.3);
+    sleep(250);
+    Trigger.setPosition(0.0);
+    Launcher1.setVelocity(-1900);//2250/13.72V      2220/13.62V
+    Launcher2.setVelocity(-1900);
+    //sleep(1300);
+            sleep(100);
+    Shooter.setPosition(0.87);
+    sleep(500);
+    Shooter.setPosition(0);
+    Launcher1.setPower(0);
+    Launcher2.setPower(0);
+
+}
+if (gamepad2.right_bumper){
+    normalDrive(0.55, 155, 155);
+}
+    }
+    public void InterContinentalBallisticMissleRisingDaPeStrafe() {
+
+/*
+        DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
+        InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
+        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
+
+        //Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //Shooter.setDirection(Servo.Direction.REVERSE);
+
+        MotorConfigurationType motorConfigurationType =
+                Launcher1.getMotorType().clone();
+        motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+        Launcher1.setMotorType(motorConfigurationType);
+        Launcher1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        MotorConfigurationType motorConfigurationType2 =
+                Launcher2.getMotorType().clone();
+        motorConfigurationType2.setAchieveableMaxRPMFraction(1.0);
+        Launcher2.setMotorType(motorConfigurationType2);
+        Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+if (gamepad2.left_bumper) {
+//normalGyroDrive(0.3,-2,0.6);
+    //normalDrive(0.3, -2.2, 2.2);
+    Trigger.setPosition(0.0);
+    Launcher1.setVelocity(-1880);//2250/13.72V      2220/13.62V
+    Launcher2.setVelocity(-1880);
+    sleep(1300);
+    Shooter.setPosition(0.21);
+    sleep(500);
+    //Shooter.setPosition(0);
+
+    normalDrive(0.3, 7.5, -7.5);
+    sleep(250);
+    Trigger.setPosition(0.0);
+    Launcher1.setVelocity(-1880);//2250/13.72V      2220/13.62V
+    Launcher2.setVelocity(-1880);
+    //sleep(1300);
+    Shooter.setPosition(0.87);
+    sleep(500);
+    //Shooter.setPosition(0);
+
+
+        //normalGyroDrive(0.3,-6,0.6);
+        normalDrive(0.3, -3, 3);
+        sleep(100);
+        Trigger.setPosition(0.0);
+        Launcher1.setVelocity(-1880);//2250/13.72V      2220/13.62V
+        Launcher2.setVelocity(-1880);
+        //sleep(1300);
+        Shooter.setPosition(0.55);
+        sleep(250);
+        Shooter.setPosition(0);
+
+        //normalGyroDrive(0.3,3.2,0.35);
+        Launcher1.setPower(0);
+        Launcher2.setPower(0);
+
+
+*/
+        DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
+        InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
+        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
+
+        //Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //Shooter.setDirection(Servo.Direction.REVERSE);
+
+        MotorConfigurationType motorConfigurationType =
+                Launcher1.getMotorType().clone();
+        motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+        Launcher1.setMotorType(motorConfigurationType);
+        Launcher1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        MotorConfigurationType motorConfigurationType2 =
+                Launcher2.getMotorType().clone();
+        motorConfigurationType2.setAchieveableMaxRPMFraction(1.0);
+        Launcher2.setMotorType(motorConfigurationType2);
+        Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        if (gamepad2.left_bumper){
+
+
+//normalGyroDrive(0.3,-2,0.6);
+            normalDrive(0.3, -2, 2);
+            sleep(100);
+            Trigger.setPosition(0.0);
+            Launcher1.setVelocity(-1897);//2250/13.72V      2220/13.62V
+            Launcher2.setVelocity(-1897);
+            sleep(1300);
+            Shooter.setPosition(0.23);
+            sleep(250);
+            //Shooter.setPosition(0);
+
+            //normalGyroDrive(0.3,-6,0.6);
+            telemetry.addData("we at","nsd");
+            normalstrafeDrive(0.3, 10, -10);
+
+            telemetry.addData("we at","ngd");
+            normalGyroDrive(0.3,0,0.2);
+
+
+            sleep(100);
+            Trigger.setPosition(0.0);
+            Launcher1.setVelocity(-1887);//2250/13.72V      2220/13.62V
+            Launcher2.setVelocity(-1887);
+            //sleep(1300);
+            Shooter.setPosition(0.55);
+            sleep(250);
+            //Shooter.setPosition(0);
+
+            //normalGyroDrive(0.3,3.2,0.35);
+            telemetry.addData("we at","nsd");
+            normalstrafeDrive(0.3, 10, -10);
+            telemetry.addData("we at","ngd");
+            normalGyroDrive(0.3,0,0.2);
+
+            sleep(250);
+            Trigger.setPosition(0.0);
+            Launcher1.setVelocity(-1900);//2250/13.72V      2220/13.62V
+            Launcher2.setVelocity(-1900);
+            //sleep(1300);
+            sleep(100);
+            Shooter.setPosition(0.87);
+            sleep(500);
+            Shooter.setPosition(0);
+            Launcher1.setPower(0);
+            Launcher2.setPower(0);
+
+        }
+        if (gamepad2.right_bumper){
+            normalDrive(0.55, 155, 155);
+        }
+    }
     public void JustShooterTeleOp() {
         /*double power = -1;
         Servo Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
@@ -1196,38 +1580,30 @@ inALoop = "outside of strafe drive loop";
     }
 
     public void GlisieraTeleOp() {
-        double glsPower = 0.8;
 
-        CRServo glisiera = hardwareMap.get(CRServo.class, "GLS");
+
+        glisiera = hardwareMap.get(Servo.class, "GLS");
         //glisiera.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         DigitalChannel glsMg = hardwareMap.get(DigitalChannel.class, "Mag_GLS");
         //glisiera.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        /*if (gamepad2.dpad_up) {
-            if (target <= 2850) {
-                glisiera.setPower(-glsPower);
-                target = target - 50;
-            } else glisiera.setPower(0);
-        } else if (!gamepad2.dpad_up && !gamepad2.dpad_down) {
-            glisiera.setPower(0);
+        if (gamepad2.dpad_up) {
+            target = target   +  0.1;
         }
 
 
         if (gamepad2.dpad_down) {
             if (glsMg.getState()) {
-                glisiera.setPower(glsPower);
-                target = target + 100;
-            } else {
-                target = 0;
-                glisiera.setPower(0);
+if (target>0.1)
+                target = target - 0.1;
             }
-        } else if (!gamepad2.dpad_up && !gamepad2.dpad_down) {
-            glisiera.setPower(0);
         }
-
-
+if (opModeIsActive()) {
+    glisiera.setPosition(target);
+    glsPos =glisiera.getPosition();
+}
 
 /* public void GlisieraTeleOp() {
 
@@ -1277,23 +1653,7 @@ inALoop = "outside of strafe drive loop";
 
 
     }*/
-        if (gamepad2.y) {
-            glisiera.setPower(-1);
-        }
 
-
-
-        if (gamepad2.x) {
-            if (glsMg.getState()) {
-                glisiera.setPower(1);
-
-            } else {
-                glisiera.setPower(0);
-            }
-        }
-        if (!gamepad2.y && !gamepad2.x) {
-            glisiera.setPower(0);
-        }
     }
 
     public void ArmTeleOp() {
@@ -1373,7 +1733,10 @@ finger.setPosition(Fpower);
                 telemetry.addData("angles", angles.firstAngle);
                 telemetry.addData("distance", distance2);
                 telemetry.addData("target", target);
+                telemetry.addData("gls pos",glsPos);
                 telemetry.addData("runMode", TleftDrive.getMode());
+                telemetry.addData("power",TleftDrive.getPower());
+                telemetry.addData("inALoop",inALoop);
                 try {
                     telemetry.addData("Trigger pos", Trigger.getPosition());
                     telemetry.addData("Shooter pos", Shooter.getPosition());
