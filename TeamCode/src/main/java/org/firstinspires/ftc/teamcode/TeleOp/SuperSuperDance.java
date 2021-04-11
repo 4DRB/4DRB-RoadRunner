@@ -65,6 +65,9 @@ public class SuperSuperDance extends LinearOpMode {
     int intakePowerR = 0;
     boolean intakeOkR = true;
     boolean changed = false;
+    boolean okClamp = false;
+    double clampPos =0;
+
     BNO055IMU imu;
     private Orientation angles;
     public DistanceSensor sensorRange;
@@ -87,6 +90,7 @@ double timer = 0;
 String inALoop = "at the beginning";
     Servo Trigger;
     Servo Shooter;
+    //Servo clamp;
     boolean artiljerija  = false;
     double LaunchPower=0;
     double ICBM = -0.90 ;
@@ -125,7 +129,7 @@ String inALoop = "at the beginning";
         parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         Shooter = hardwareMap.get(Servo.class, "SR_SHOOTER");
-        Trigger = hardwareMap.get(Servo.class, "SR_TRIGGER");
+        Trigger = hardwareMap.get(Servo.class, "SR_CLAMP");
         //Shooter.setDirection(Servo.Direction.REVERSE);
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
@@ -157,6 +161,7 @@ String inALoop = "at the beginning";
 
         finger = hardwareMap.get(Servo.class, "SR_FINGER");
         Servo flag = hardwareMap.get(Servo.class,"SR_FLAG");
+         //clamp = hardwareMap.get(Servo.class, "SR_CLAMP");
         DriveThread TeleThread = new DriveThread();
         voltage = getBatteryVoltage();
 
@@ -186,15 +191,16 @@ String inALoop = "at the beginning";
             //JustLauncherTeleOpSlow();
             //JustShooterTeleOp();
             BetterIntakeTeleOp();
-            //ClampTeleOp();
+            ClampTeleOp();
             //GlisieraTeleOp();
             //CremalieraTeleOp();
             //SingleShotTeleOp();
             TriggerTeleOp();
-            ShooterTeleOp();
+            //ShooterTeleOp();
             InterContinentalBallisticMissleRisingDaPeStrafe();
             ArmTeleOp();
-            FingerTeleOp();//uses the hypotenuse of left joystick and right joystick to calculate the speed of the robot
+            FingerTeleOp();
+            CremalieraTeleOp();//uses the hypotenuse of left joystick and right joystick to calculate the speed of the robot
             speed = -Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
 
             //finds the angle the robot is moving at
@@ -241,10 +247,10 @@ String inALoop = "at the beginning";
     {
          //Trigger = hardwareMap.get(Servo.class, "SR_TRIGGER");
         if (gamepad2.dpad_up)
-            katyusha = 0.35;
+            katyusha = 0.7;
         else if (gamepad2.dpad_down)
             //Shooter.setPosition(0);
-            katyusha=0.0;
+            katyusha=0.35;
 
         Trigger.setPosition(katyusha);
     }
@@ -1512,19 +1518,18 @@ if (gamepad2.left_bumper) {
     }
 
     public void ClampTeleOp() {
-        Servo clamp = hardwareMap.get(Servo.class, "SR_CLAMP");
 
 
-        if (gamepad2.b) {
-            // move to 0 degrees.
-            clamp.setPosition(0.0);
 
-        } else if (gamepad2.a) {
-            // move to 90 degrees.
-            clamp.setPosition(0.3);
-        }
+
+        if (gamepad2.a && !okClamp) {
+            if (clampPos == 0.5) clampPos = 1;
+            else clampPos = 0.5;
+            okClamp = true;
+        } else if (!gamepad2.a) okClamp = false;
         //telemetry.addData("Servo Position", clamp.getPosition());
         //telemetry.addData("Status", "Running");
+        //clamp.setPosition(clampPos);
     }
 
 
@@ -1745,6 +1750,7 @@ finger.setPosition(Fpower);
                 }
                 telemetry.addData("ICBM=",ICBM);
                 telemetry.addData("voltage", "%.1f volts", getBatteryVoltage());
+                telemetry.addData("clamp pos",clampPos);
                 telemetry.update();
 
 

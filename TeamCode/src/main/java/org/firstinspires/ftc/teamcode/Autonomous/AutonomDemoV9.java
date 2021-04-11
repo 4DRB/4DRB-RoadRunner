@@ -178,43 +178,44 @@ public class AutonomDemoV9 extends LinearOpMode {
         fingerAutonom(0);
 */
 
-        if (1==2){stop = 0;
-        wRelease(0);
-        normalDrive(0.55, 156, 156);
-        InterContinentalBallisticMissleRising();
-        normalGyroDrive(0.25, 0, 0.3);
-        normalDrive(0.45, 40, 40);
-        normalstrafeDrive(0.5, -96, 96);
-        wRelease(0.4);
-        normalDrive(0.7,-102,-102);
-        normalstrafeDrive(0.55, -55, 55);
-        normalstrafeDrive(0.4, 15, -15);
-        armAutonom(530);
-        fingerAutonom(0);
-        //sleep(100);
-        normalDistanceDrive(0.25,60,23);
-        sleep(200);
-        fingerAutonom(1);
-        sleep(250);
-        armAutonom(150);
-        //sleep(100);
-        stop = 1;
-        sleep(100);
-        normalstrafeDrive(0.5, 33, -33);
-        normalDrive(0.6,117,-117);
-        sleep(100);
-        normalDrive(0.651,-70,-70);
-        sleep(100);
-        stop = 0;
-        ///sleep(100);
-        armAutonom(480);
-        sleep(100);
-        fingerAutonom(0);
-        sleep(100);
-        normalDrive(0.6,5,5);
-        normalstrafeDrive(1,-60,60);
-        normalDrive(1,-20,-20);
-        TeleThread.interrupt();
+        if (0 == 1) {
+            stop = 0;
+            wRelease(0);
+            normalDrive(0.55, 156, 156);
+            InterContinentalBallisticMissleRising();
+            normalGyroDrive(0.25, 0, 0.3);
+            normalDrive(0.45, 40, 40);
+            normalstrafeDrive(0.5, -96, 96);
+            wRelease(0.4);
+            normalDrive(0.7, -102, -102);
+            normalstrafeDrive(0.55, -55, 55);
+            normalstrafeDrive(0.4, 15, -15);
+            armAutonom(530);
+            fingerAutonom(0);
+            //sleep(100);
+            normalDistanceDrive(0.25, 60, 23);
+            sleep(200);
+            fingerAutonom(1);
+            sleep(250);
+            armAutonom(150);
+            //sleep(100);
+            stop = 1;
+            sleep(100);
+            normalstrafeDrive(0.5, 33, -33);
+            normalDrive(0.6, 117, -117);
+            sleep(100);
+            normalDrive(0.651, -70, -70);
+            sleep(100);
+            stop = 0;
+            ///sleep(100);
+            armAutonom(480);
+            sleep(100);
+            fingerAutonom(0);
+            sleep(100);
+            normalDrive(0.6, 5, 5);
+            normalstrafeDrive(1, -60, 60);
+            normalDrive(1, -20, -20);
+            TeleThread.interrupt();
         }
 /*
             if(ringCount == 1.0){
@@ -368,50 +369,169 @@ public class AutonomDemoV9 extends LinearOpMode {
         }
 */
 
-/*
-        wRelease(0);
-        normalDrive(0.55, 159, 159);
-        InterContinentalBallisticMissleShooters();
-        normalGyroDrive(0.25, 0, 0.3);
+        if (1 != 1) {
+            //wRelease(0);
+            normalDrive(0.6, 159, 159);
+            InterContinentalBallisticMissleShooters();
+            //normalGyroDrive(0.25, 0, 0.3);
+            //normalDrive(0.45, 40, 40);
+            normalstrafeDrive(0.6, -58, 58);
+            normalGyroDrive(0.25, 0, 0.4);
+            Trigger(0.35);
+            Intake(-1);
+            normalDrive(0.6, -50, -50);
+            normalDrive(0.5, 50, 50);
+            Intake(0);
+            normalGyroDrive(0.25, 0, 0.4);
+            InterContinentalBallisticMissleSingle(3);
+
+            normalDrive(0.7, 90, 90);
+            normalstrafeDrive(0.7, 29, -29);
+            wRelease(0.4);
+            normalDrive(0.8, -150, -150);
+            normalstrafeDrive(0.8, -120, 120);
+            normalstrafeDrive(0.45, 15, -15);
+            armAutonom(530);
+            fingerAutonom(0);
+            //sleep(100);
+            normalDistanceDrive(0.3, 60, 23);
+            sleep(200);
+            fingerAutonom(1);
+            //sleep(250);
+            armAutonom(150);
+            //sleep(100);
+            stop = 1;
+            sleep(100);
+            normalstrafeDrive(0.7, 90, -90);
+            normalDrive(0.7, 118, -118);
+            sleep(100);
+            normalDrive(0.7, -120, -120);
+            stop = 0;
+            ///sleep(100);
+            armAutonom(480);
+            sleep(100);
+            fingerAutonom(0);
+            sleep(100);
+            normalDrive(1, 10, 10);
+
+        }
+        if (1 == 2){
+        wRelease.setPosition(0);
+        fingerAutonom(0.5);
+        normalDrive(0.7, 155, 155);
+
+        //InterContinentalBallisticMissleShooters();
+        //normalGyroDrive(0.25, 0, 0.3);
         //normalDrive(0.45, 40, 40);
-        normalstrafeDrive(0.5, -58, 58);
-        normalGyroDrive(0.25,0,0.3);
+        normalstrafeDrive(0.6, -58, 58);
+        //normalGyroDrive(0.3, 0, 0.5);
+        Katyusha();
         Trigger(0.35);
         Intake(-1);
-        normalDrive(0.5,-50,-50);
-        normalDrive(0.5,50,50);
+        normalDrive(0.6, -45, -45);
+        normalDrive(0.5, 45, 45);
         Intake(0);
-        normalGyroDrive(0.25,0,0.3);
+        //normalGyroDrive(0.3, 0, 0.5);
         InterContinentalBallisticMissleSingle(3);
-        */
-        normalDrive(0.7,90,90);
-        normalstrafeDrive(0.7,28,-28);
+
+        normalDrive(1, 43, 43);
+        normalDrive(1, 55, -55);
+
         wRelease(0.4);
-normalDrive(0.7,-150,-150);
-normalstrafeDrive(0.7,-120,120);
+        normalstrafeDrive(1, 10, -10);
+        normalDrive(1, -52, 52);
+        normalDrive(1, -100, -100);
+        normalstrafeDrive(1, -85, 85);
         normalstrafeDrive(0.4, 15, -15);
         armAutonom(530);
         fingerAutonom(0);
         //sleep(100);
-        normalDistanceDrive(0.25,60,23);
+        normalDistanceDrive(0.25, 60, 22.5);
         sleep(200);
         fingerAutonom(1);
-        sleep(250);
+        sleep(200);
         armAutonom(150);
         //sleep(100);
         stop = 1;
         sleep(100);
-        normalstrafeDrive(0.6, 90, -90);
-        normalDrive(0.7,118,-118);
+        normalstrafeDrive(1, 90, -90);
+        normalDrive(1, 121, -121);
         sleep(100);
-        normalDrive(0.7,-120,-120);
+        normalDrive(1, -100, -100);
         stop = 0;
         ///sleep(100);
-        armAutonom(480);
+        armAutonom(320);
         sleep(100);
         fingerAutonom(0);
         sleep(100);
-        normalDrive(1,10,10);
+        normalDrive(1, 10, 10);
+    }
+        wRelease.setPosition(0);
+        fingerAutonom(0.5);
+        normalDrive(0.7, 155, 155);
+
+        //InterContinentalBallisticMissleShooters();
+        //normalGyroDrive(0.25, 0, 0.3);
+        //normalDrive(0.45, 40, 40);
+        normalstrafeDrive(0.6, -58, 58);
+        //normalGyroDrive(0.3, 0, 0.5);
+        Katyusha();
+        Trigger(0.35);
+        sleep(100);
+        Intake(-1);
+        normalDrive(0.6, -40, -40);
+        //normalDrive(0.5, 45, 45);
+        //Intake(0);
+        //normalGyroDrive(0.3, 0, 0.5);
+        //InterContinentalBallisticMissleSingle(3);
+        //normalDrive(0.6,-18,-18);
+        sleep(200);
+        normalDrive(0.6,-14,-14);
+        sleep(500);
+        Intake(0);
+        normalDrive(0.6,54,54);
+
+        Katyusha();
+        Trigger(0.35);
+        Intake(-1);
+        normalDrive(0.7,-80,-80);
+        sleep(500);
+        Intake(0);
+        normalDrive(0.65,80,80);
+        InterContinentalBallisticMissleSingle(3);        //normalDrive(0.7,-10,-10);
+        //sleep(500);
+
+        /*normalDrive(1, 43, 43);
+        normalDrive(1, 55, -55);
+
+        wRelease(0.4);
+        normalstrafeDrive(1, 10, -10);
+        normalDrive(1, -52, 52);
+        normalDrive(1, -100, -100);
+        normalstrafeDrive(1, -85, 85);
+        normalstrafeDrive(0.4, 15, -15);
+        armAutonom(530);
+        fingerAutonom(0);
+        //sleep(100);
+        normalDistanceDrive(0.25, 60, 22.5);
+        sleep(200);
+        fingerAutonom(1);
+        sleep(200);
+        armAutonom(150);
+        //sleep(100);
+        stop = 1;
+        sleep(100);
+        normalstrafeDrive(1, 90, -90);
+        normalDrive(1, 121, -121);
+        sleep(100);
+        normalDrive(1, -100, -100);
+        stop = 0;
+        ///sleep(100);
+        armAutonom(320);
+        sleep(100);
+        fingerAutonom(0);
+        sleep(100);
+        normalDrive(1, 10, 10);*/
     }
 
     public void Intake(double speed) {
@@ -447,7 +567,8 @@ normalstrafeDrive(0.7,-120,120);
         }
         while (distance2 > distance + buffer || distance2 < distance - buffer && opModeIsActive()) {
             //inALoop="in DistanceDrive loop";
-
+if (distance2>5000)
+{break;}
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             distance2 = sensorDistance.getDistance(DistanceUnit.CM);
             if (distance2 < distance ) {
@@ -531,10 +652,10 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void Trigger(double pos) {
-        for (int i = 1;i<=2000;i++)
-        {
+
+
             Trigger.setPosition(pos);
-        }
+        idle();
         sleep(500);
     }
 
@@ -727,7 +848,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 //normalGyroDrive(0.3,-2,0.6);
-        normalDrive(0.3, -2.2, 2.2);
+        //normalDrive(0.3, -2.2, 2.2);
         Trigger.setPosition(0.0);
         Launcher1.setVelocity(-1890);//2250/13.72V      2220/13.62V
         Launcher2.setVelocity(-1890);
@@ -760,126 +881,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Launcher1.setPower(0);
         Launcher2.setPower(0);
 
-            /*Trigger.setPosition(0.0);
-            Launcher1.setVelocity(-2160);
-            Launcher2.setVelocity(-2160);
-            sleep(1550);
-            Shooter.setPosition(0.1);
-            sleep(250);
-            Launcher1.setVelocity(-1990);
-            Launcher2.setVelocity(-1990);
-            sleep(500);
-            Shooter.setPosition(0.5);
-            sleep(250);
-            Launcher1.setVelocity(-2100);
-            Launcher2.setVelocity(-2100);
-            sleep(500);
-            Shooter.setPosition(0.88);
-            sleep(1000);
-            Shooter.setPosition(0);
-            Launcher1.setPower(0);
-            Launcher2.setPower(0);*/
-            /*if (voltage >= 13.6 && voltage < 13.9) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2100);
-                Launcher2.setVelocity(-2100);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-1930);
-                Launcher2.setVelocity(-1930);
-                sleep(750);
-                Shooter.setPosition(0.77);
-                sleep(250);
-                Launcher1.setVelocity(-2100);
-                Launcher2.setVelocity(-2100);
-                sleep(750);
-                Shooter.setPosition(0.82);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }
-            else
-            if (voltage >= 13.5 && voltage < 13.6) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2180);
-                Launcher2.setVelocity(-2180);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-2010);
-                Launcher2.setVelocity(-2010);
-                sleep(500);
-                Shooter.setPosition(0.5);
-                sleep(250);
-                Launcher1.setVelocity(-2120);
-                Launcher2.setVelocity(-2120);
-                sleep(500);
-                Shooter.setPosition(0.88);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }
-            else
-            if (voltage >= 13.4 && voltage < 13.5) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2185);
-                Launcher2.setVelocity(-2185);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-2032);
-                Launcher2.setVelocity(-2035);
-                sleep(500);
-                Shooter.setPosition(0.5);
-                sleep(250);
-                Launcher1.setVelocity(-2138);
-                Launcher2.setVelocity(-2138);
-                sleep(500);
-                Shooter.setPosition(0.88);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }
-            else
-            if (voltage < 13.4) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2185);
-                Launcher2.setVelocity(-2185);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-2032);
-                Launcher2.setVelocity(-2035);
-                sleep(500);
-                Shooter.setPosition(0.5);
-                sleep(250);
-                Launcher1.setVelocity(-2138);
-                Launcher2.setVelocity(-2138);
-                sleep(500);
-                Shooter.setPosition(0.88);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }*/
-        /*Trigger.setPosition(0.0);
-        Launcher1.setVelocity(-2200);//2250/13.72V      2220/13.62V
-        Launcher2.setVelocity(-2200);
-        sleep(1300);
-        Shooter.setPosition(0.23);
-        sleep(500);
-        Shooter.setPosition(0.6);
-        sleep(600);
-        Shooter.setPosition(0.84);
-        sleep(600);
-        Shooter.setPosition(0);
-        Launcher1.setPower(0);
-        Launcher2.setPower(0);
-*/
+
 
     }
     public void InterContinentalBallisticMissleSingle(int pos) {
@@ -911,8 +913,8 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if (pos == 1) {
             //normalDrive(0.3, -2.2, 2.2);
             Trigger.setPosition(0.0);
-            Launcher1.setVelocity(-1890);//2250/13.72V      2220/13.62V
-            Launcher2.setVelocity(-1890);
+            Launcher1.setVelocity(-2200);//2250/13.72V      2220/13.62V
+            Launcher2.setVelocity(-2050);
             sleep(1300);
             Shooter.setPosition(0.23);
             sleep(250);
@@ -925,8 +927,8 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             //normalDrive(0.3, 4.3, -4.3);
             //sleep(100);
             Trigger.setPosition(0.0);
-            Launcher1.setVelocity(-1910);//2250/13.72V      2220/13.62V
-            Launcher2.setVelocity(-1910);
+            Launcher1.setVelocity(-2050);//2250/13.72V      2220/13.62V
+            Launcher2.setVelocity(-2050);
             sleep(1300);
             Shooter.setPosition(0.55);
             sleep(250);
@@ -939,8 +941,8 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if (pos == 3) {
                 //sleep(250);
             Trigger.setPosition(0.0);
-            Launcher1.setVelocity(-1925);
-            Launcher2.setVelocity(-1925);//1915
+            Launcher1.setVelocity(-2060);
+            Launcher2.setVelocity(-2060);//1915
             sleep(1000);
             Shooter.setPosition(0.87);
             sleep(700);
@@ -948,126 +950,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             Launcher1.setVelocity(0);
             Launcher2.setVelocity(0);
         }
-            /*Trigger.setPosition(0.0);
-            Launcher1.setVelocity(-2160);
-            Launcher2.setVelocity(-2160);
-            sleep(1550);
-            Shooter.setPosition(0.1);
-            sleep(250);
-            Launcher1.setVelocity(-1990);
-            Launcher2.setVelocity(-1990);
-            sleep(500);
-            Shooter.setPosition(0.5);
-            sleep(250);
-            Launcher1.setVelocity(-2100);
-            Launcher2.setVelocity(-2100);
-            sleep(500);
-            Shooter.setPosition(0.88);
-            sleep(1000);
-            Shooter.setPosition(0);
-            Launcher1.setPower(0);
-            Launcher2.setPower(0);*/
-            /*if (voltage >= 13.6 && voltage < 13.9) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2100);
-                Launcher2.setVelocity(-2100);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-1930);
-                Launcher2.setVelocity(-1930);
-                sleep(750);
-                Shooter.setPosition(0.77);
-                sleep(250);
-                Launcher1.setVelocity(-2100);
-                Launcher2.setVelocity(-2100);
-                sleep(750);
-                Shooter.setPosition(0.82);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }
-            else
-            if (voltage >= 13.5 && voltage < 13.6) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2180);
-                Launcher2.setVelocity(-2180);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-2010);
-                Launcher2.setVelocity(-2010);
-                sleep(500);
-                Shooter.setPosition(0.5);
-                sleep(250);
-                Launcher1.setVelocity(-2120);
-                Launcher2.setVelocity(-2120);
-                sleep(500);
-                Shooter.setPosition(0.88);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }
-            else
-            if (voltage >= 13.4 && voltage < 13.5) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2185);
-                Launcher2.setVelocity(-2185);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-2032);
-                Launcher2.setVelocity(-2035);
-                sleep(500);
-                Shooter.setPosition(0.5);
-                sleep(250);
-                Launcher1.setVelocity(-2138);
-                Launcher2.setVelocity(-2138);
-                sleep(500);
-                Shooter.setPosition(0.88);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }
-            else
-            if (voltage < 13.4) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2185);
-                Launcher2.setVelocity(-2185);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-2032);
-                Launcher2.setVelocity(-2035);
-                sleep(500);
-                Shooter.setPosition(0.5);
-                sleep(250);
-                Launcher1.setVelocity(-2138);
-                Launcher2.setVelocity(-2138);
-                sleep(500);
-                Shooter.setPosition(0.88);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }*/
-        /*Trigger.setPosition(0.0);
-        Launcher1.setVelocity(-2200);//2250/13.72V      2220/13.62V
-        Launcher2.setVelocity(-2200);
-        sleep(1300);
-        Shooter.setPosition(0.23);
-        sleep(500);
-        Shooter.setPosition(0.6);
-        sleep(600);
-        Shooter.setPosition(0.84);
-        sleep(600);
-        Shooter.setPosition(0);
-        Launcher1.setPower(0);
-        Launcher2.setPower(0);
-*/
+
 
     }
 
@@ -1101,9 +984,9 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Trigger.setPosition(0.0);
         Launcher1.setVelocity(-1890);//2250/13.72V      2220/13.62V
         Launcher2.setVelocity(-1890);
-        sleep(1300);
+        sleep(1000);
         Shooter.setPosition(0.23);
-        sleep(250);
+        sleep(200);
         //Shooter.setPosition(0);
 
         //normalGyroDrive(0.3,-6,0.6);
@@ -1114,18 +997,18 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Launcher2.setVelocity(-1910);
         //sleep(1300);
         Shooter.setPosition(0.55);
-        sleep(250);
+        sleep(200);
         //Shooter.setPosition(0);
 
         //normalGyroDrive(0.3,3.2,0.35);
         normalDrive(0.3, 7.5, -7.5);
-        sleep(250);
+        sleep(200);
         Trigger.setPosition(0.0);
         Launcher1.setVelocity(-1900);//2250/13.72V      2220/13.62V
         Launcher2.setVelocity(-1900);
         //sleep(1300);
         Shooter.setPosition(0.87);
-        sleep(500);
+        sleep(400);
         Shooter.setPosition(0);
         Launcher1.setPower(0);
         Launcher2.setPower(0);
@@ -1462,122 +1345,17 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         double ICBM = -0.76;
 
-            /*Trigger.setPosition(0.0);
-            Launcher1.setVelocity(-2160);
-            Launcher2.setVelocity(-2160);
-            sleep(1550);
-            Shooter.setPosition(0.1);
-            sleep(250);
-            Launcher1.setVelocity(-1990);
-            Launcher2.setVelocity(-1990);
-            sleep(500);
-            Shooter.setPosition(0.5);
-            sleep(250);
-            Launcher1.setVelocity(-2100);
-            Launcher2.setVelocity(-2100);
-            sleep(500);
-            Shooter.setPosition(0.88);
-            sleep(1000);
-            Shooter.setPosition(0);
-            Launcher1.setPower(0);
-            Launcher2.setPower(0);*/
-            /*if (voltage >= 13.6 && voltage < 13.9) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2100);
-                Launcher2.setVelocity(-2100);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-1930);
-                Launcher2.setVelocity(-1930);
-                sleep(750);
-                Shooter.setPosition(0.77);
-                sleep(250);
-                Launcher1.setVelocity(-2100);
-                Launcher2.setVelocity(-2100);
-                sleep(750);
-                Shooter.setPosition(0.82);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }
-            else
-            if (voltage >= 13.5 && voltage < 13.6) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2180);
-                Launcher2.setVelocity(-2180);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-2010);
-                Launcher2.setVelocity(-2010);
-                sleep(500);
-                Shooter.setPosition(0.5);
-                sleep(250);
-                Launcher1.setVelocity(-2120);
-                Launcher2.setVelocity(-2120);
-                sleep(500);
-                Shooter.setPosition(0.88);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }
-            else
-            if (voltage >= 13.4 && voltage < 13.5) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2185);
-                Launcher2.setVelocity(-2185);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-2032);
-                Launcher2.setVelocity(-2035);
-                sleep(500);
-                Shooter.setPosition(0.5);
-                sleep(250);
-                Launcher1.setVelocity(-2138);
-                Launcher2.setVelocity(-2138);
-                sleep(500);
-                Shooter.setPosition(0.88);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }
-            else
-            if (voltage < 13.4) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2185);
-                Launcher2.setVelocity(-2185);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-2032);
-                Launcher2.setVelocity(-2035);
-                sleep(500);
-                Shooter.setPosition(0.5);
-                sleep(250);
-                Launcher1.setVelocity(-2138);
-                Launcher2.setVelocity(-2138);
-                sleep(500);
-                Shooter.setPosition(0.88);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }*/
+
         Trigger.setPosition(0.0);
-        Launcher1.setVelocity(-2200);//2250/13.72V      2220/13.62V
-        Launcher2.setVelocity(-2200);
-        sleep(1300);
+        Launcher1.setVelocity(-2130);//2250/13.72V      2220/13.62V
+        Launcher2.setVelocity(-2130);
+        sleep(1000);
         Shooter.setPosition(0.23);
         sleep(500);
         Shooter.setPosition(0.6);
-        sleep(600);
-        Shooter.setPosition(0.84);
-        sleep(600);
+        sleep(500);
+        Shooter.setPosition(0.86);
+        sleep(500);
         Shooter.setPosition(0);
         Launcher1.setPower(0);
         Launcher2.setPower(0);
