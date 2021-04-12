@@ -67,7 +67,7 @@ public class SuperSuperDance extends LinearOpMode {
     boolean changed = false;
     boolean okClamp = false;
     double clampPos =0;
-
+boolean lainceput=true;
     BNO055IMU imu;
     private Orientation angles;
     public DistanceSensor sensorRange;
@@ -85,7 +85,7 @@ public class SuperSuperDance extends LinearOpMode {
 double n = 1;
 boolean shoot=false;
 double fire = 0.0;
-double katyusha = 0.0;
+double katyusha = 0.87;
 double timer = 0;
 String inALoop = "at the beginning";
     Servo Trigger;
@@ -98,7 +98,12 @@ String inALoop = "at the beginning";
     NormalizedRGBA colorsUp,colorsDown;
     float gain = 95;
     double Fpower;
+    double Tpower ;
     boolean Fchanged;
+    boolean Tchanged;
+    double Spower ;
+    //boolean Fchanged;
+    boolean Schanged;
     Servo finger;
     DcMotor Arm;
     Servo flag;
@@ -109,7 +114,7 @@ String inALoop = "at the beginning";
     double sPos3;
     long sSleep=700;
     Servo glisiera;
-    double glsPos = 0;
+    double glsPos = 0;//Trigger GearBox Katyusha    Intake
     /**
      *
      */
@@ -129,7 +134,7 @@ String inALoop = "at the beginning";
         parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         Shooter = hardwareMap.get(Servo.class, "SR_SHOOTER");
-        Trigger = hardwareMap.get(Servo.class, "SR_CLAMP");
+        Trigger = hardwareMap.get(Servo.class, "SR_TRIGGER");
         //Shooter.setDirection(Servo.Direction.REVERSE);
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
@@ -170,7 +175,14 @@ String inALoop = "at the beginning";
         waitForStart();
         TeleThread.start();
         while (opModeIsActive()) {
+            /*if (lainceput == true)
+            {
+                Trigger.setPosition(0.85);
 
+                    sleep(100);
+                lainceput=false;
+
+            }*/
             voltage = getBatteryVoltage();
             colorsUp = colorUp.getNormalizedColors();
             colorsDown = colorDown.getNormalizedColors();
@@ -191,16 +203,16 @@ String inALoop = "at the beginning";
             //JustLauncherTeleOpSlow();
             //JustShooterTeleOp();
             BetterIntakeTeleOp();
-            ClampTeleOp();
+            //ClampTeleOp();
             //GlisieraTeleOp();
             //CremalieraTeleOp();
             //SingleShotTeleOp();
             TriggerTeleOp();
-            //ShooterTeleOp();
-            InterContinentalBallisticMissleRisingDaPeStrafe();
+            ShooterTeleOp();
+            //InterContinentalBallisticMissleRisingDaPeStrafe();
             ArmTeleOp();
             FingerTeleOp();
-            CremalieraTeleOp();//uses the hypotenuse of left joystick and right joystick to calculate the speed of the robot
+            //CremalieraTeleOp();//uses the hypotenuse of left joystick and right joystick to calculate the speed of the robot
             speed = -Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
 
             //finds the angle the robot is moving at
@@ -235,7 +247,7 @@ String inALoop = "at the beginning";
         Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if (gamepad1.left_bumper)
         {
-            Trigger.setPosition(0.3);
+            Trigger.setPosition(0.7);
             Launcher1.setPower(power);
             Launcher2.setPower(power);
             sleep(1000);
@@ -245,26 +257,25 @@ String inALoop = "at the beginning";
     }
     public void TriggerTeleOp()
     {
-         //Trigger = hardwareMap.get(Servo.class, "SR_TRIGGER");
-        if (gamepad2.dpad_up)
-            katyusha = 0.7;
-        else if (gamepad2.dpad_down)
-            //Shooter.setPosition(0);
-            katyusha=0.35;
-
-        Trigger.setPosition(katyusha);
+        
+        if (gamepad1.x && !Tchanged) {
+            if (Tpower == 0.35) Tpower = 0.87;
+            else Tpower = 0.35;
+            Tchanged = true;
+        } else if (!gamepad1.x) Tchanged = false;
+        Trigger.setPosition(Tpower);
     }
 
     public void ShooterTeleOp()
     {
         //Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
-        if (gamepad2.dpad_right)
-            fire = 0.9;
-        else if (gamepad2.dpad_left)
-            //Shooter.setPosition(0);
-            fire=0.0;
 
-        Shooter.setPosition(fire);
+        if (gamepad1.y && !Schanged) {
+            if (Spower == 0.0) Spower = 0.6;
+            else Spower = 0.0;
+            Schanged = true;
+        } else if (!gamepad1.y) Schanged = false;
+        Shooter.setPosition(Spower);
     }
     public void setNicePos() {
         if (gamepad2.left_bumper) {
@@ -792,122 +803,17 @@ inALoop = "outside of strafe drive loop";
         ICBM = -0.76;
         if (gamepad1.left_bumper)
         {
-            /*Trigger.setPosition(0.0);
-            Launcher1.setVelocity(-2160);
-            Launcher2.setVelocity(-2160);
-            sleep(1550);
-            Shooter.setPosition(0.1);
-            sleep(250);
-            Launcher1.setVelocity(-1990);
-            Launcher2.setVelocity(-1990);
-            sleep(500);
-            Shooter.setPosition(0.5);
-            sleep(250);
-            Launcher1.setVelocity(-2100);
-            Launcher2.setVelocity(-2100);
-            sleep(500);
-            Shooter.setPosition(0.88);
+           
+            Trigger.setPosition(0.87);
+            Launcher1.setVelocity(-2130);//2250/13.72V      2220/13.62V
+            Launcher2.setVelocity(-2130);
             sleep(1000);
-            Shooter.setPosition(0);
-            Launcher1.setPower(0);
-            Launcher2.setPower(0);*/
-            /*if (voltage >= 13.6 && voltage < 13.9) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2100);
-                Launcher2.setVelocity(-2100);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-1930);
-                Launcher2.setVelocity(-1930);
-                sleep(750);
-                Shooter.setPosition(0.77);
-                sleep(250);
-                Launcher1.setVelocity(-2100);
-                Launcher2.setVelocity(-2100);
-                sleep(750);
-                Shooter.setPosition(0.82);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }
-            else
-            if (voltage >= 13.5 && voltage < 13.6) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2180);
-                Launcher2.setVelocity(-2180);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-2010);
-                Launcher2.setVelocity(-2010);
-                sleep(500);
-                Shooter.setPosition(0.5);
-                sleep(250);
-                Launcher1.setVelocity(-2120);
-                Launcher2.setVelocity(-2120);
-                sleep(500);
-                Shooter.setPosition(0.88);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }
-            else
-            if (voltage >= 13.4 && voltage < 13.5) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2185);
-                Launcher2.setVelocity(-2185);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-2032);
-                Launcher2.setVelocity(-2035);
-                sleep(500);
-                Shooter.setPosition(0.5);
-                sleep(250);
-                Launcher1.setVelocity(-2138);
-                Launcher2.setVelocity(-2138);
-                sleep(500);
-                Shooter.setPosition(0.88);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }
-            else
-            if (voltage < 13.4) {
-                Trigger.setPosition(0.0);
-                Launcher1.setVelocity(-2185);
-                Launcher2.setVelocity(-2185);
-                sleep(1550);
-                Shooter.setPosition(0.1);
-                sleep(250);
-                Launcher1.setVelocity(-2032);
-                Launcher2.setVelocity(-2035);
-                sleep(500);
-                Shooter.setPosition(0.5);
-                sleep(250);
-                Launcher1.setVelocity(-2138);
-                Launcher2.setVelocity(-2138);
-                sleep(500);
-                Shooter.setPosition(0.88);
-                sleep(1000);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-            }*/
-            Trigger.setPosition(0.0);
-            Launcher1.setVelocity(-2200);//2250/13.72V      2220/13.62V
-            Launcher2.setVelocity(-2200);
-            sleep(1300);
             Shooter.setPosition(0.23);
             sleep(500);
             Shooter.setPosition(0.6);
-            sleep(600);
-            Shooter.setPosition(0.83);
-            sleep(600);
+            sleep(500);
+            Shooter.setPosition(0.86);
+            sleep(500);
             Shooter.setPosition(0);
             Launcher1.setPower(0);
             Launcher2.setPower(0);
@@ -1153,7 +1059,7 @@ if (gamepad2.left_bumper) {
 //normalGyroDrive(0.3,-2,0.6);
     normalDrive(0.3, -2, 2);
     sleep(100);
-    Trigger.setPosition(0.0);
+    Trigger.setPosition(0.35);
     Launcher1.setVelocity(-1897);//2250/13.72V      2220/13.62V
     Launcher2.setVelocity(-1897);
     sleep(1300);
@@ -1164,7 +1070,7 @@ if (gamepad2.left_bumper) {
     //normalGyroDrive(0.3,-6,0.6);
             normalDrive(0.3, 8.3, -8.3);
     sleep(100);
-    Trigger.setPosition(0.0);
+    Trigger.setPosition(0.35);
     Launcher1.setVelocity(-1887);//2250/13.72V      2220/13.62V
     Launcher2.setVelocity(-1887);
     //sleep(1300);
@@ -1175,7 +1081,7 @@ if (gamepad2.left_bumper) {
     //normalGyroDrive(0.3,3.2,0.35);
             normalDrive(0.3, -3.3, 3.3);
     sleep(250);
-    Trigger.setPosition(0.0);
+    Trigger.setPosition(0.35);
     Launcher1.setVelocity(-1900);//2250/13.72V      2220/13.62V
     Launcher2.setVelocity(-1900);
     //sleep(1300);
@@ -1282,7 +1188,7 @@ if (gamepad2.left_bumper) {
 //normalGyroDrive(0.3,-2,0.6);
             normalDrive(0.3, -2, 2);
             sleep(100);
-            Trigger.setPosition(0.0);
+            Trigger.setPosition(0.35);
             Launcher1.setVelocity(-1897);//2250/13.72V      2220/13.62V
             Launcher2.setVelocity(-1897);
             sleep(1300);
@@ -1299,7 +1205,7 @@ if (gamepad2.left_bumper) {
 
 
             sleep(100);
-            Trigger.setPosition(0.0);
+            Trigger.setPosition(0.35);
             Launcher1.setVelocity(-1887);//2250/13.72V      2220/13.62V
             Launcher2.setVelocity(-1887);
             //sleep(1300);
@@ -1314,7 +1220,7 @@ if (gamepad2.left_bumper) {
             normalGyroDrive(0.3,0,0.2);
 
             sleep(250);
-            Trigger.setPosition(0.0);
+            Trigger.setPosition(0.35);
             Launcher1.setVelocity(-1900);//2250/13.72V      2220/13.62V
             Launcher2.setVelocity(-1900);
             //sleep(1300);
@@ -1516,7 +1422,7 @@ if (gamepad2.left_bumper) {
         }
 
     }
-
+/*
     public void ClampTeleOp() {
 
 
@@ -1657,10 +1563,10 @@ if (opModeIsActive()) {
         telemetry.update();
 
 
-    }*/
-
     }
 
+    }
+*/
     public void ArmTeleOp() {
 
         Arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

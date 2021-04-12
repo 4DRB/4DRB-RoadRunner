@@ -60,7 +60,7 @@ import java.util.Arrays;
 @Autonomous
 public class AutonomDemoV9 extends LinearOpMode {
     static double ringCount = 0;
-    //RingDetectingPipeline pipeline;
+    RingDetectingPipeline pipeline;
     private static int intPosition;
     DcMotor FL = null;
     DcMotor FR = null;
@@ -118,26 +118,50 @@ public class AutonomDemoV9 extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftEncoder"));
-        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightEncoder"));
-        frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontEncoder"));
-        Trigger = hardwareMap.get(Servo.class, "SR_TRIGGER");
-        Shooter = hardwareMap.get(Servo.class, "SR_SHOOTER");
+        //leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftEncoder"));
+        //rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightEncoder"));
+        //frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontEncoder"));
+        //Trigger = hardwareMap.get(Servo.class, "SR_TRIGGER");
+        //Shooter = hardwareMap.get(Servo.class, "SR_SHOOTER");
 
-        rightEncoder.setDirection(Encoder.Direction.REVERSE);
-        leftEncoder.setDirection(Encoder.Direction.REVERSE);
+        //rightEncoder.setDirection(Encoder.Direction.REVERSE);
+        //leftEncoder.setDirection(Encoder.Direction.REVERSE);
 
-        //int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        //webCam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam"), cameraMonitorViewId);
-        //pipeline = new RingDetectingPipeline();
-        //webCam.setPipeline(new RingDetectingPipeline());
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        webCam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam"), cameraMonitorViewId);
+        pipeline = new RingDetectingPipeline();
+        webCam.setPipeline(new RingDetectingPipeline());
+
+        //starts the stream
+        webCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+
+            public void onOpened()
+            {
+                /*
+                 * Tell the camera to start streaming images to us! Note that you must make sure
+                 * the resolution you specify is supported by the camera. If it is not, an exception
+                 * will be thrown.
+                 *
+                 * Also, we specify the rotation that the camera is used in. This is so that the image
+                 * from the camera sensor can be rotated such that it is always displayed with the image upright.
+                 * For a front facing camera, rotation is defined assuming the user is looking at the screen.
+                 * For a rear facing camera or a webcam, rotation is defined assuming the camera is facing
+                 * away from the user.
+                 */
+                webCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+            }
+        });
+        telemetry.addData("Suntem in cazul",ringCount);
+        telemetry.addData("Average",pipeline.avg1);
+        telemetry.update();
 
         //starts the stream
 
-        FL = hardwareMap.get(DcMotor.class, "leftFront");
-        FR = hardwareMap.get(DcMotor.class, "rightFront");
-        BL = hardwareMap.get(DcMotor.class, "leftRear");
-        BR = hardwareMap.get(DcMotor.class, "rightRear");
+        FL = hardwareMap.get(DcMotor.class, "FL");
+        FR = hardwareMap.get(DcMotor.class, "FR");
+        BL = hardwareMap.get(DcMotor.class, "BL");
+        BR = hardwareMap.get(DcMotor.class, "BR");
 //stop and reset
         FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -165,7 +189,7 @@ public class AutonomDemoV9 extends LinearOpMode {
 
         waitForStart();
         TeleThread.start();
-
+sleep(100);
 
         //normalDrive(0.6,138,133.5);
         //normalGyroDrive(0.5,-3,0.5);
@@ -177,6 +201,144 @@ public class AutonomDemoV9 extends LinearOpMode {
         stop = 0;
         fingerAutonom(0);
 */
+
+            if(ringCount == 1.0){
+
+                wRelease.setPosition(0);
+                fingerAutonom(0.5);
+                normalDrive(0.7, 155, 155);
+
+                //InterContinentalBallisticMissleShooters();
+                //normalGyroDrive(0.25, 0, 0.3);
+                //normalDrive(0.45, 40, 40);
+                normalstrafeDrive(0.6, -58, 58);
+                //normalGyroDrive(0.3, 0, 0.5);
+                Katyusha();
+                Trigger(0.35);
+                Intake(-1);
+                normalDrive(0.6, -45, -45);
+                normalDrive(0.5, 45, 45);
+                Intake(0);
+                //normalGyroDrive(0.3, 0, 0.5);
+                InterContinentalBallisticMissleSingle(3);
+
+                normalDrive(1, 43, 43);
+                normalDrive(1, 55, -55);
+
+                wRelease(0.4);
+                normalstrafeDrive(1, 10, -10);
+                normalDrive(1, -52, 52);
+                normalDrive(1, -100, -100);
+                normalstrafeDrive(1, -85, 85);
+                normalstrafeDrive(0.4, 15, -15);
+                armAutonom(530);
+                fingerAutonom(0);
+                //sleep(100);
+                normalDistanceDrive(0.25, 60, 22.5);
+                sleep(200);
+                fingerAutonom(1);
+                sleep(200);
+                armAutonom(150);
+                //sleep(100);
+                stop = 1;
+                sleep(100);
+                normalstrafeDrive(1, 90, -90);
+                normalDrive(1, 121, -121);
+                sleep(100);
+                normalDrive(1, -100, -100);
+                stop = 0;
+                ///sleep(100);
+                armAutonom(320);
+                sleep(100);
+                fingerAutonom(0);
+                sleep(100);
+                normalDrive(1, 10, 10);
+            stop();
+        } else
+            if(ringCount == 4.0){
+                wRelease.setPosition(0);
+                fingerAutonom(0.5);
+                normalDrive(0.7, 155, 155);
+
+                //InterContinentalBallisticMissleShooters();
+                //normalGyroDrive(0.25, 0, 0.3);
+                //normalDrive(0.45, 40, 40);
+                normalstrafeDrive(0.6, -58, 58);
+                sleep(100);
+                normalGyroDrive(0.2, 0, 0.3);
+                Katyusha();
+                Trigger(0.35);
+                //sleep(100);
+                Intake(-1);
+                normalDrive(0.5, -40, -40);
+                //normalDrive(0.5, 45, 45);
+                //Intake(0);
+                //normalGyroDrive(0.3, 0, 0.5);
+                //InterContinentalBallisticMissleSingle(3);
+                //normalDrive(0.6,-18,-18);
+                sleep(250);
+                normalDrive(0.5, -16, -16);
+                sleep(500);
+                normalDrive(0.6, 54, 54);
+                Intake(0);
+
+                Katyusha();
+                Trigger(0.35);
+                Intake(-1);
+                normalDrive(0.5, -80, -80);
+                sleep(500);
+                normalDrive(0.65, 80, 80);
+                Intake(0);
+                normalGyroDrive(0.2, 0, 0.3);
+
+                InterContinentalBallisticMissleSingle(3);
+                normalDrive(1, 140, 140);
+                wRelease(0.4);
+                sleep(100);
+                normalDrive(1, -110, -110);
+                //normalDrive(0.7,-10,-10);
+                //sleep(500);
+        }
+            else{
+                stop = 0;
+                wRelease(0);
+                normalDrive(0.55, 156, 156);
+                InterContinentalBallisticMissleRising();
+                normalGyroDrive(0.25, 0, 0.3);
+                normalDrive(0.45, 40, 40);
+                normalstrafeDrive(0.5, -96, 96);
+                wRelease(0.4);
+                normalDrive(0.7, -102, -102);
+                normalstrafeDrive(0.55, -55, 55);
+                normalstrafeDrive(0.4, 15, -15);
+                armAutonom(530);
+                fingerAutonom(0);
+                //sleep(100);
+                normalDistanceDrive(0.25, 60, 23);
+                sleep(200);
+                fingerAutonom(1);
+                sleep(250);
+                armAutonom(150);
+                //sleep(100);
+                stop = 1;
+                sleep(100);
+                normalstrafeDrive(0.5, 33, -33);
+                normalDrive(0.6, 117, -117);
+                sleep(100);
+                normalDrive(0.651, -70, -70);
+                sleep(100);
+                stop = 0;
+                ///sleep(100);
+                armAutonom(480);
+                sleep(100);
+                fingerAutonom(0);
+                sleep(100);
+                normalDrive(0.6, 5, 5);
+                normalstrafeDrive(1, -60, 60);
+                normalDrive(1, -20, -20);
+                TeleThread.interrupt();
+                stop();
+        }
 
         if (0 == 1) {
             stop = 0;
@@ -217,158 +379,6 @@ public class AutonomDemoV9 extends LinearOpMode {
             normalDrive(1, -20, -20);
             TeleThread.interrupt();
         }
-/*
-            if(ringCount == 1.0){
-
-            Shooter.setPosition(0.1);
-            Shooter.setPosition(0);
-            wRelease.setPosition(0);
-            normalDrive(0.6,145,145);
-            normalstrafeDrive(0.6,51,-51);
-            normalDrive(0.5,5,-5);
-            IntakeAutonom(0);
-            BetterShooterAutonomV2(0.92,2250);
-            sleep(100);//normalstrafeDrive(0.4,-7,7);
-            normalDrive(0.5,-5,5);
-            //arunca gogosile,se duca sa mai ia gogosi
-            IntakeAutonom(-1);
-            normalDrive(0.5,-34,-34);
-            sleep(1000);
-            normalDrive(0.6,34,34);
-            normalDrive(0.5,5,-5);
-            IntakeAutonom(0);
-            BetterShooterAutonomV2(0.92,850);
-            sleep(100);//normalstrafeDrive(0.4,-7,7);
-            normalDrive(0.5,-5,5);
-
-            //arunca gogosile,se duce la  patrat 2
-
-            normalDrive(0.6,101,101);
-            normalstrafeDrive(0.5,30,-30);
-
-            wRelease.setPosition(0.4);
-
-            for(int i =1;i<=2000;i++)
-            {wRelease.setPosition(0.4);}
-            sleep(500);
-
-            normalDrive(0.6,-70,-70);
-
-            normalDrive(0.6,120,-120);
-            sleep(100);
-            normalstrafeDrive(0.5,15,-15);
-            normalDrive(0.5,104,104);
-
-
-            CremalieraAutonom(-0.8);
-            ClampAutonom(0);
-            sleep(500);
-            GlisieraAutonom(200,1);
-
-            normalDrive(0.6,-120,-120);
-            normalDrive(0.6,-115,115);
-            ClampAutonom(0.3);
-            CremalieraAutonom(0.9);
-            //drive somewhere else
-            sleep(1000);
-            stop();
-        } else
-            if(ringCount == 4.0){
-            Shooter.setPosition(0.1);
-            Shooter.setPosition(0);
-            wRelease.setPosition(0);
-            normalDrive(0.65,150,150);
-            normalstrafeDrive(0.4,50,-50);
-            normalDrive(0.5,3,-3);
-            sleep(100);
-            BetterShooterAutonomV2(0.9,2200);
-            //normalstrafeDrive(0.4,-7,7);
-            normalDrive(0.5,-3,3);
-            //normalstrafeDrive(0.4,-5,5);
-            //arunca gogosile,se duca sa mai ia gogosi
-            IntakeAutonom(-1);
-            normalDrive(0.6,-18,-18);
-            sleep(1000);
-            normalDrive(0.5,-10,-10);
-            sleep(1100);
-            normalDrive(0.3,-10,-10);
-            sleep(1100);
-            normalDrive(0.7,34,34);
-            IntakeAutonom(0);
-            //strafeDrive(0.4,-3,3);
-            //normalstrafeDrive(0.4,7,-7);
-            normalDrive(0.5,4,-4);
-            sleep(100);
-            BetterShooterAutonomV2(0.9,2200);
-            //normalstrafeDrive(0.4,-7,7);
-            normalDrive(0.5,-4,4);
-
-            IntakeAutonom(-1);
-            normalDrive(0.5,-65,-65);
-            sleep(800);
-            normalDrive(0.8,67,67);
-            normalDrive(0.5,4,-4);
-            sleep(100);
-            IntakeAutonom(0);
-            sleep(50);
-            BetterShooterAutonomV2(0.9,900);
-            //normalstrafeDrive(0.4,-7,7);
-            normalDrive(0.5,-4,4);
-            //arunca gogosile,se duce la  patrat 3
-            normalDrive(1,130,130);
-            normalstrafeDrive(0.7,-25,25);
-
-            normalDrive(1,30,-30);
-            wRelease.setPosition(0.4);
-
-            for(int i =1;i<=2000;i++)
-            {wRelease.setPosition(0.4);}
-            sleep(500);
-            normalDrive(0.75,-30,30);
-            normalDrive(1,-85,-85);
-
-
-        }
-            else{
-            //drive to a different spot
-            Shooter.setPosition(0.1);
-            Shooter.setPosition(0);
-            wRelease.setPosition(0);
-            sleep(100);
-            normalDrive(0.5,188,188);
-            wRelease.setPosition(0.4);
-            normalstrafeDrive(0.5,63,-63);
-
-            normalDrive(0.5,-40,-40);
-
-            //MultiShottestAutonom();
-            BetterShooterAutonomV2(0.935,2250);
-            //normalstrafeDrive(0.5,-5,5);
-            sleep(100);
-            normalDrive(0.5,119.5,-119.5);
-            normalDrive(0.5,74.5,74.5);
-
-            CremalieraAutonom(-0.8);
-            ClampAutonom(0);
-            sleep(500);
-            GlisieraAutonom(200,1);
-
-
-
-            normalDrive(0.5,-135,-135);
-            normalDrive(0.5,58.6,-58.6);
-            normalDrive(0.5,20,20);
-
-            ClampAutonom(0.3);
-            CremalieraAutonom(0.8);
-
-            normalstrafeDrive(0.5,-10,10);
-            normalDrive(0.6,-30,-30);
-            normalDrive(0.5,-58.6,58.6);
-            stop();
-        }
-*/
-
         if (1 != 1) {
             //wRelease(0);
             normalDrive(0.6, 159, 159);
@@ -466,41 +476,119 @@ public class AutonomDemoV9 extends LinearOpMode {
         sleep(100);
         normalDrive(1, 10, 10);
     }
+if (4==1) {
+    wRelease.setPosition(0);
+    fingerAutonom(0.5);
+    normalDrive(0.7, 155, 155);
+
+    //InterContinentalBallisticMissleShooters();
+    //normalGyroDrive(0.25, 0, 0.3);
+    //normalDrive(0.45, 40, 40);
+    normalstrafeDrive(0.6, -58, 58);
+    sleep(100);
+    normalGyroDrive(0.2, 0, 0.3);
+    Katyusha();
+    Trigger(0.35);
+    //sleep(100);
+    Intake(-1);
+    normalDrive(0.5, -40, -40);
+    //normalDrive(0.5, 45, 45);
+    //Intake(0);
+    //normalGyroDrive(0.3, 0, 0.5);
+    //InterContinentalBallisticMissleSingle(3);
+    //normalDrive(0.6,-18,-18);
+    sleep(250);
+    normalDrive(0.5, -16, -16);
+    sleep(500);
+    normalDrive(0.6, 54, 54);
+    Intake(0);
+
+    Katyusha();
+    Trigger(0.35);
+    Intake(-1);
+    normalDrive(0.5, -80, -80);
+    sleep(500);
+    normalDrive(0.65, 80, 80);
+    Intake(0);
+    normalGyroDrive(0.2, 0, 0.3);
+
+    InterContinentalBallisticMissleSingle(3);
+    normalDrive(1, 140, 140);
+    wRelease(0.4);
+    sleep(100);
+    normalDrive(1, -110, -110);
+    //normalDrive(0.7,-10,-10);
+    //sleep(500);
+}
+        /*if (4==2){
+
         wRelease.setPosition(0);
         fingerAutonom(0.5);
-        normalDrive(0.7, 155, 155);
+        normalDrive(1, 155, 155);
 
         //InterContinentalBallisticMissleShooters();
         //normalGyroDrive(0.25, 0, 0.3);
         //normalDrive(0.45, 40, 40);
-        normalstrafeDrive(0.6, -58, 58);
-        //normalGyroDrive(0.3, 0, 0.5);
+        normalstrafeDrive(1, -58, 58);
+        //sleep(100);
+        normalGyroDrive(0.2, 0, 0.3);
         Katyusha();
         Trigger(0.35);
-        sleep(100);
+
+        //sleep(100);
         Intake(-1);
-        normalDrive(0.6, -40, -40);
+        normalDrive(1, -40, -40);
         //normalDrive(0.5, 45, 45);
         //Intake(0);
         //normalGyroDrive(0.3, 0, 0.5);
         //InterContinentalBallisticMissleSingle(3);
         //normalDrive(0.6,-18,-18);
         sleep(200);
-        normalDrive(0.6,-14,-14);
-        sleep(500);
+        normalDrive(1, -16, -16);
+        sleep(250);
+        normalDrive(1, 54, 54);
         Intake(0);
-        normalDrive(0.6,54,54);
-
+normalGyroDrive(0.2,0,0.3);
         Katyusha();
         Trigger(0.35);
-        Intake(-1);
-        normalDrive(0.7,-80,-80);
-        sleep(500);
-        Intake(0);
-        normalDrive(0.65,80,80);
-        InterContinentalBallisticMissleSingle(3);        //normalDrive(0.7,-10,-10);
-        //sleep(500);
+        normalDrive(1, 135, 135);
+        normalstrafeDrive(1,-15,15);
+        wRelease(0.4);
+        //sleep(100);
+        normalGyroDrive(0.2,0,0.3);
 
+        Intake(-1);
+        normalDrive(1, -190, -190);
+
+        normalstrafeDrive(1, -90, 90);
+        normalstrafeDrive(0.45, 15, -15);
+        armAutonom(530);
+        fingerAutonom(0);
+        //sleep(100);
+        normalDistanceDrive(0.27, 60, 22.5);
+        sleep(200);
+        fingerAutonom(1);
+        sleep(200);
+        armAutonom(150);
+        }*/
+        //sleep(100);
+        /*stop = 1;
+        sleep(100);
+        normalstrafeDrive(1, 90, -90);
+        normalDrive(1, 121, -121);
+        sleep(100);
+        normalDrive(1, -100, -100);
+        stop = 0;
+        ///sleep(100);
+        armAutonom(320);
+        sleep(100);
+        fingerAutonom(0);
+        sleep(100);
+        normalDrive(1, 10, 10);
+
+        */
+
+        //normalDrive(0.7,-10,-10);
         /*normalDrive(1, 43, 43);
         normalDrive(1, 55, -55);
 
@@ -585,8 +673,7 @@ if (distance2>5000)
                 BL.setPower(-Math.abs(speed));
             }
         }
-        //inALoop="Out of distance drive loop";
-
+        //inALoop="Out of distance drive loop";777
         FR.setPower(0);
         FL.setPower(0);
         BR.setPower(0);
@@ -849,7 +936,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 //normalGyroDrive(0.3,-2,0.6);
         //normalDrive(0.3, -2.2, 2.2);
-        Trigger.setPosition(0.0);
+        Trigger.setPosition(0.87);
         Launcher1.setVelocity(-1890);//2250/13.72V      2220/13.62V
         Launcher2.setVelocity(-1890);
         sleep(1300);
@@ -860,7 +947,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //normalGyroDrive(0.3,-6,0.6);
         normalDrive(0.3, 4.3, -4.3);
         sleep(100);
-        Trigger.setPosition(0.0);
+        Trigger.setPosition(0.87);
         Launcher1.setVelocity(-1910);//2250/13.72V      2220/13.62V
         Launcher2.setVelocity(-1910);
         //sleep(1300);
@@ -871,7 +958,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //normalGyroDrive(0.3,3.2,0.35);
         normalDrive(0.3, 7.5, -7.5);
         sleep(250);
-        Trigger.setPosition(0.0);
+        Trigger.setPosition(0.87);
         Launcher1.setVelocity(-1900);//2250/13.72V      2220/13.62V
         Launcher2.setVelocity(-1900);
         //sleep(1300);
@@ -912,7 +999,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //normalGyroDrive(0.3,-2,0.6);
         if (pos == 1) {
             //normalDrive(0.3, -2.2, 2.2);
-            Trigger.setPosition(0.0);
+            Trigger.setPosition(0.87);
             Launcher1.setVelocity(-2200);//2250/13.72V      2220/13.62V
             Launcher2.setVelocity(-2050);
             sleep(1300);
@@ -926,7 +1013,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             //normalGyroDrive(0.3,-6,0.6);
             //normalDrive(0.3, 4.3, -4.3);
             //sleep(100);
-            Trigger.setPosition(0.0);
+            Trigger.setPosition(0.87);
             Launcher1.setVelocity(-2050);//2250/13.72V      2220/13.62V
             Launcher2.setVelocity(-2050);
             sleep(1300);
@@ -940,7 +1027,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //normalDrive(0.3, 7.5, -7.5);
         if (pos == 3) {
                 //sleep(250);
-            Trigger.setPosition(0.0);
+            Trigger.setPosition(0.87);
             Launcher1.setVelocity(-2060);
             Launcher2.setVelocity(-2060);//1915
             sleep(1000);
@@ -981,7 +1068,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 //normalGyroDrive(0.3,-2,0.6);
         normalDrive(0.3, -2.2, 2.2);
-        Trigger.setPosition(0.0);
+        Trigger.setPosition(0.87);
         Launcher1.setVelocity(-1890);//2250/13.72V      2220/13.62V
         Launcher2.setVelocity(-1890);
         sleep(1000);
@@ -992,7 +1079,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //normalGyroDrive(0.3,-6,0.6);
         normalDrive(0.3, 4.3, -4.3);
         sleep(100);
-        Trigger.setPosition(0.0);
+        Trigger.setPosition(0.87);
         Launcher1.setVelocity(-1910);//2250/13.72V      2220/13.62V
         Launcher2.setVelocity(-1910);
         //sleep(1300);
@@ -1003,7 +1090,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //normalGyroDrive(0.3,3.2,0.35);
         normalDrive(0.3, 7.5, -7.5);
         sleep(200);
-        Trigger.setPosition(0.0);
+        Trigger.setPosition(0.87);
         Launcher1.setVelocity(-1900);//2250/13.72V      2220/13.62V
         Launcher2.setVelocity(-1900);
         //sleep(1300);
@@ -1163,7 +1250,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 //normalGyroDrive(0.3,-2,0.6);
         normalDrive(0.3, -2.2, 2.2);
-        Trigger.setPosition(0.0);
+        Trigger.setPosition(0.87);
         Launcher1.setVelocity(-2155);//2250/13.72V      2220/13.62V
         Launcher2.setVelocity(-2155);
         sleep(1300);
@@ -1174,7 +1261,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //normalGyroDrive(0.3,-6,0.6);
         normalDrive(0.3, -3, 3);
         sleep(500);
-        Trigger.setPosition(0.0);
+        Trigger.setPosition(0.87);
         Launcher1.setVelocity(-2155);//2250/13.72V      2220/13.62V
         Launcher2.setVelocity(-2155);
         //sleep(1300);
@@ -1185,7 +1272,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //normalGyroDrive(0.3,3.2,0.35);
         normalDrive(0.3, 7.9, -7.9);
         sleep(500);
-        Trigger.setPosition(0.0);
+        Trigger.setPosition(0.87);
         Launcher1.setVelocity(-2155);//2250/13.72V      2220/13.62V
         Launcher2.setVelocity(-2155);
         //sleep(1300);
@@ -1346,7 +1433,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double ICBM = -0.76;
 
 
-        Trigger.setPosition(0.0);
+        Trigger.setPosition(0.87);
         Launcher1.setVelocity(-2130);//2250/13.72V      2220/13.62V
         Launcher2.setVelocity(-2130);
         sleep(1000);
@@ -1362,7 +1449,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
-    public void encoderDrive(double speed, double leftInches, double rightInches) {
+  /*  public void encoderDrive(double speed, double leftInches, double rightInches) {
 
         double encPower = 0.2;
 // this creates the variables that will be calculated
@@ -1488,19 +1575,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
         }
-*/
-        PosXL = leftEncoder.getCurrentPosition();
-        PosXR = rightEncoder.getCurrentPosition();
 
-        double x = (PosXL - OldXL) - (PosXR - OldXR);
-
-        while (Math.abs(x) > 50 && opModeIsActive()) {
-            PosXL = leftEncoder.getCurrentPosition();
-            PosXR = rightEncoder.getCurrentPosition();
-            telemetry.addData("leftEN", leftEncoder.getCurrentPosition());
-            telemetry.addData("rightEN", rightEncoder.getCurrentPosition());
-            telemetry.addData("SE CORECTEAZA POG!1!!", 1);
-            telemetry.update();
 
 
             x = (PosXL - OldXL) - (PosXR - OldXR);
@@ -1631,7 +1706,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
-
+*/
     public void normalDrive(double speed, double leftInches, double rightInches) {
 
 // this creates the variables that will be calculated
@@ -1665,7 +1740,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             telemetry.addData("Status:", "Moving to pos");
             telemetry.addData("Pos:", FL.getCurrentPosition());
             telemetry.update();
-            initDiff = frontEncoder.getCurrentPosition() - leftEncoder.getCurrentPosition();
+            //initDiff = frontEncoder.getCurrentPosition() - leftEncoder.getCurrentPosition();
         }
 
 
@@ -1985,24 +2060,32 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
 
-   /* public static class RingDetectingPipeline extends OpenCvPipeline {
+    public static class RingDetectingPipeline extends OpenCvPipeline
+    {
         public static int getPosition() {
             return intPosition;
         }
 
+        /*
+         * An enum to define the skystone position
+         */
+        public enum RingPosition
+        {
             FOUR,
             ONE,
             NONE
+        }
 
-        public enum RingPosition {
-       }
-
-
+        /*
+         * Some color constants
+         */
         static final Scalar BLUE = new Scalar(0, 0, 255);
         static final Scalar GREEN = new Scalar(0, 255, 0);
 
-
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(70, 170);
+        /*
+         * The core values which define the location and size of the sample regions
+         */
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(70,170);
 
         static final int REGION_WIDTH = 30;
         static final int REGION_HEIGHT = 20;
@@ -2017,7 +2100,9 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
                 REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
 
-
+        /*
+         * Working variables
+         */
         Mat region1_Cb;
         Mat YCrCb = new Mat();
         Mat Cb = new Mat();
@@ -2027,21 +2112,27 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Volatile since accessed by OpMode thread w/o synchronization
         public volatile RingPosition position = RingPosition.FOUR;
 
-
-        void inputToCb(Mat input) {
+        /*
+         * This function takes the RGB frame, converts to YCrCb,
+         * and extracts the Cb channel to the 'Cb' variable
+         */
+        void inputToCb(Mat input)
+        {
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
             Core.extractChannel(YCrCb, Cb, 1);
         }
 
         @Override
-        public void init(Mat firstFrame) {
+        public void init(Mat firstFrame)
+        {
             inputToCb(firstFrame);
 
             region1_Cb = Cb.submat(new Rect(region1_pointA, region1_pointB));
         }
 
         @Override
-        public Mat processFrame(Mat input) {
+        public Mat processFrame(Mat input)
+        {
             inputToCb(input);
 
             avg1 = (int) Core.mean(region1_Cb).val[0];
@@ -2054,16 +2145,18 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     2); // Thickness of the rectangle lines
 
             position = RingPosition.FOUR; // Record our analysis
-            if (avg1 > FOUR_RING_THRESHOLD) {
+            if(avg1 > FOUR_RING_THRESHOLD){
                 position = RingPosition.FOUR;
-                ringCount = 4;
-
-            } else if (avg1 > ONE_RING_THRESHOLD) {
+                ringCount=4;
+                //average1 = avg1;
+            }else if (avg1 > ONE_RING_THRESHOLD){
                 position = RingPosition.ONE;
-                ringCount = 1;
-            } else {
+                ringCount=1;
+                //average1 = avg1;
+            }else{
                 position = RingPosition.NONE;
-                ringCount = 0;
+                ringCount=0;
+                //average1 = avg1;
             }
 
             Imgproc.rectangle(
@@ -2076,14 +2169,14 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             return input;
         }
 
-        public int getAnalysis() {
+        public int getAnalysis()
+        {
             return avg1;
         }
 
 
-    }*/
-
-    public void WRealeaseLeftAutonom(double position) {
+    }
+        public void WRealeaseLeftAutonom(double position) {
         Servo wRelease = hardwareMap.get(Servo.class, "Sr_WReleaseLeft");
 
         wRelease.setPosition(position);
