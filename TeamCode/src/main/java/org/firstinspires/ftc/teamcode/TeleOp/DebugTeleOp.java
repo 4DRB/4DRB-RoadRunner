@@ -1,18 +1,14 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import com.arcrobotics.ftclib.util.Timing;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
@@ -21,20 +17,15 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.ejml.dense.row.decompose.TriangularSolver_CDRM;
-import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.Autonomous.DoYouLikeMyCar;
-
-import java.util.Timer;
 
 
-@TeleOp(name = "SuperSuperDance")
-public class SuperSuperDance extends LinearOpMode {
+@TeleOp(name = "DebugTeleOp")
+public class DebugTeleOp extends LinearOpMode {
 
     private Boolean CrSensLastDep = true;//ultima directie in care am mers(scos sau bagat)
     private Boolean GlSensLastDep = true;//ultima directie in care am mers(sus sau jos)
@@ -99,7 +90,7 @@ String inALoop = "at the beginning";
     NormalizedRGBA colorsUp,colorsDown;
     float gain = 95;
     double Fpower;
-    double Tpower=0.35;
+    double Tpower =0.35;
     boolean Fchanged;
     boolean Tchanged;
     double Spower ;
@@ -121,7 +112,6 @@ String inALoop = "at the beginning";
     double offset = 0; // Use this if you have a desired offset.
     //AnalogPotentiometer pot = new AnalogPotentiometer(channel, fullRange, offset);
     AnalogInput potentiometer;
-    int flaggers =0;
 
 
     /**
@@ -130,7 +120,6 @@ String inALoop = "at the beginning";
     @Override
     public void runOpMode() throws InterruptedException {
         potentiometer = hardwareMap.analogInput.get("potentiometer");
-        flag = hardwareMap.get(Servo.class,"SR_FLAG");
         colorUp = hardwareMap.get(NormalizedColorSensor.class, "color_up");
         colorDown = hardwareMap.get(NormalizedColorSensor.class, "color_down");//color_sensor = hardwareMap.colorSensor.get("color_up");
         colorsUp = colorUp.getNormalizedColors();
@@ -175,7 +164,8 @@ String inALoop = "at the beginning";
         Arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         finger = hardwareMap.get(Servo.class, "SR_FINGER");
-              //clamp = hardwareMap.get(Servo.class, "SR_CLAMP");
+        Servo flag = hardwareMap.get(Servo.class,"SR_FLAG");
+         //clamp = hardwareMap.get(Servo.class, "SR_CLAMP");
         DriveThread TeleThread = new DriveThread();
         voltage = getBatteryVoltage();
 
@@ -209,8 +199,7 @@ String inALoop = "at the beginning";
             PowerShotAutomation();
             GearBox();
             HandBreak();
-            //Katyusha();
-            InterContinentalBallisticMissle();
+            Katyusha1();
             //Katyusha1();
             //JustLauncherTeleOpSlow();
             //JustShooterTeleOp();
@@ -237,15 +226,13 @@ String inALoop = "at the beginning";
             BrightDrive.setPower((speed * Math.sin(robotAngle) + gamepad1.right_stick_x) * power);
 
             //telemetry.update();
-
-
-            if (colorsUp.blue<0.9) {
+            if (colorsUp.blue<0.85) {
                 flag.setPosition(0.5);
-            } else if (colorsDown.blue<0.9) {
+            } else if (colorsDown.blue<0.85) {
                 flag.setPosition(0.3);
-            } else flag.setPosition(0.1);
+            } else flag.setPosition(0.0);
 
-flaggers=1;
+
         }
         TeleThread.interrupt();
     }
@@ -273,11 +260,11 @@ flaggers=1;
     public void TriggerTeleOp()
     {
         
-        if (gamepad2.x && !Tchanged) {
+        if (gamepad1.x && !Tchanged) {
             if (Tpower == 0.35) Tpower = 0.87;
             else Tpower = 0.35;
             Tchanged = true;
-        } else if (!gamepad2.x) Tchanged = false;
+        } else if (!gamepad1.x) Tchanged = false;
         Trigger.setPosition(Tpower);
     }
 
@@ -285,11 +272,11 @@ flaggers=1;
     {
         //Shooter = hardwareMap.get(Servo.class,"SR_SHOOTER");
 
-        if (gamepad2.y && !Schanged) {
+        if (gamepad1.y && !Schanged) {
             if (Spower == 0.0) Spower = 0.6;
             else Spower = 0.0;
             Schanged = true;
-        } else if (!gamepad2.y) Schanged = false;
+        } else if (!gamepad1.y) Schanged = false;
         Shooter.setPosition(Spower);
     }
     public void setNicePos() {
@@ -484,12 +471,10 @@ inALoop="Out of distance drive loop";
 //normalGyroDrive(0.3,-2,0.6);
         //normalDrive(0.3, -2, 2);
         Trigger.setPosition(0.87);
-        Launcher1.setVelocity(1350);//2250/13.72V      2220/13.62V
-        //Launcher2.setVelocity(2000);
+        Launcher1.setVelocity(-1890);//2250/13.72V      2220/13.62V
+        Launcher2.setVelocity(-1890);
         sleep(1300);
-        Shooter.setPosition(0.13);
-        //sleep(500);
-
+        Shooter.setPosition(0.23);
         sleep(250);
         //Shooter.setPosition(0);
 
@@ -498,20 +483,22 @@ inALoop="Out of distance drive loop";
         normalstrafeDrive(0.5,-20,20);
         sleep(100);
         Trigger.setPosition(0.87);
-        Launcher1.setVelocity(1350);
+        Launcher1.setVelocity(-1907);//2250/13.72V      2220/13.62V
+        Launcher2.setVelocity(-1905);
         //sleep(1300);
-        Shooter.setPosition(0.53);
+        Shooter.setPosition(0.55);
         sleep(250);
         //Shooter.setPosition(0);
 
         //normalGyroDrive(0.3,3.2,0.35);
         //normalDrive(0.3, -5, 5);
-        normalstrafeDrive(0.5,-30,30);
+        normalstrafeDrive(0.5,-20,20);
         sleep(250);
         Trigger.setPosition(0.87);
-        Launcher1.setVelocity(1350);
+        Launcher1.setVelocity(-1915);//2250/13.72V      2220/13.62V
+        Launcher2.setVelocity(-1915.);
         //sleep(1300);
-        Shooter.setPosition(0.84);
+        Shooter.setPosition(0.87);
         sleep(500);
         Shooter.setPosition(0);
         Launcher1.setPower(0);
@@ -541,7 +528,7 @@ inALoop="Out of distance drive loop";
 
         //deci te dai in colt,apesi butonul si face PRA PRA PRA
         if (gamepad1.start) {
-            normalstrafeDrive(0.5, -80, 80);
+            normalstrafeDrive(0.5, -45, 45);
 
             InterContinentalBallisticMissleShooter();
         }
@@ -840,54 +827,8 @@ power = 1-gamepad1.right_trigger;
         Launcher2.setPower(LaunchPower);
     }
     */
-public void Katyusha1()
-{
 
-
-    DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
-    InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-    DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
-    DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
-
-    //Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    //Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    //Shooter.setDirection(Servo.Direction.REVERSE);
-
-    MotorConfigurationType motorConfigurationType =
-            Launcher1.getMotorType().clone();
-    motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
-    Launcher1.setMotorType(motorConfigurationType);
-    Launcher1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-    MotorConfigurationType motorConfigurationType2 =
-            Launcher2.getMotorType().clone();
-    motorConfigurationType2.setAchieveableMaxRPMFraction(1.0);
-    Launcher2.setMotorType(motorConfigurationType2);
-    Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-    ICBM = -0.76;
-    if (gamepad2.left_bumper) {
-
-        Trigger.setPosition(0.87);
-        Launcher1.setVelocity(-2700);
-        Launcher2.setVelocity(-2700);//2180
-        sleep(1000);
-        Shooter.setPosition(0.21);
-        sleep(700);
-        Shooter.setPosition(0.62);
-        sleep(700);
-        Shooter.setPosition(0.89);
-        sleep(700);
-        //Trigger.setPosition(0.87);
-        Shooter.setPosition(0);
-        Launcher1.setPower(0);
-        Launcher2.setPower(0);
-        //Trigger.setPosition(0.35);
-
-    }
-}
-    public void Katyusha()
+    public void Katyusha1()
     {
 
 
@@ -914,27 +855,35 @@ public void Katyusha1()
         Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         ICBM = -0.76;
+        if (gamepad1.left_bumper) {
 
-            if (gamepad1.left_bumper) {
+            Trigger.setPosition(0.87);
+            Launcher1.setVelocity(-2700);
+            Launcher2.setVelocity(-2700);//2180
+            sleep(1000);
+            Shooter.setPosition(0.21);
+            sleep(700);
+            Shooter.setPosition(0.62);
+            sleep(700);
+            Shooter.setPosition(0.89);
+            sleep(700);
+            //Trigger.setPosition(0.87);
+            Shooter.setPosition(0);
+            Launcher1.setPower(0);
+            Launcher2.setPower(0);
+            //Trigger.setPosition(0.35);
 
-                Trigger.setPosition(0.87);
-                Launcher1.setVelocity(-3050);
-                Launcher2.setVelocity(-3050);//2180
-                sleep(1000);
-                Shooter.setPosition(0.21);
-                sleep(700);
-                Shooter.setPosition(0.62);
-                sleep(700);
-                Shooter.setPosition(0.89);
-                sleep(700);
-                //Trigger.setPosition(0.87);
-                Shooter.setPosition(0);
-                Launcher1.setPower(0);
-                Launcher2.setPower(0);
-                //Trigger.setPosition(0.35);
+        }
+            if(gamepad1.right_bumper)
+        {
+            normalDrive(0.7, 153, 153);
 
-            }
-
+            //InterContinentalBallisticMissleShooters();
+            //normalGyroDrive(0.25, 0, 0.3);
+            //normalDrive(0.45, 40, 40);
+            normalstrafeDrive(0.6, -55, 55);
+            normalDrive(0.3,0,1);
+        }
     }
     public void InterContinentalBallisticMissle()
     {
@@ -944,7 +893,7 @@ public void Katyusha1()
         InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
-        //DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
+        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
 
         //Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -956,12 +905,12 @@ public void Katyusha1()
         Launcher1.setMotorType(motorConfigurationType);
         Launcher1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        /*MotorConfigurationType motorConfigurationType2 =
+        MotorConfigurationType motorConfigurationType2 =
                 Launcher2.getMotorType().clone();
         motorConfigurationType2.setAchieveableMaxRPMFraction(1.0);
         Launcher2.setMotorType(motorConfigurationType2);
         Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-*/
+
         ICBM = -0.76;
 
             /*Trigger.setPosition(0.0);
@@ -1070,28 +1019,20 @@ public void Katyusha1()
                 Launcher1.setPower(0);
                 Launcher2.setPower(0);
             }*/
-        if (gamepad1.left_bumper) {
-            Trigger.setPosition(0.87);
-            //Launcher1.setVelocity(-3000);//2250/13.72V      2220/13.62V
-            //Launcher2.setVelocity(-3000);
-            Launcher1.setVelocity(2600);
+        Trigger.setPosition(0.0);
+        Launcher1.setVelocity(-2200);//2250/13.72V      2220/13.62V
+        Launcher2.setVelocity(-2200);
+        sleep(1300);
+        Shooter.setPosition(0.23);
+        sleep(500);
+        Shooter.setPosition(0.6);
+        sleep(600);
+        Shooter.setPosition(0.83);
+        sleep(600);
+        Shooter.setPosition(0);
+        Launcher1.setPower(0);
+        Launcher2.setPower(0);
 
-            sleep(2000);
-            Shooter.setPosition(0.13);
-            //sleep(500);
-            Shooter.setPosition(0.53);
-            //sleep(600);
-            Shooter.setPosition(0.84);
-            /*Shooter.setPosition(0.24);
-            //sleep(500);
-            Shooter.setPosition(0.59);
-            //sleep(600);
-            Shooter.setPosition(0.84);*/
-            sleep(1000);
-            Shooter.setPosition(0);
-            Launcher1.setPower(0.0);
-            //Launcher2.setPower(0);
-        }
     }
     public void InterContinentalBallisticMissleRising() {
 
@@ -1712,11 +1653,11 @@ double pot=potentiometer.getVoltage();
 
 
 
-            if (gamepad2.dpad_left&&pot>0.4)
+            if (gamepad1.dpad_left&&pot>0.4)
             {
                 wTarget-=25;
             }
-            if (gamepad2.dpad_right&&pot<1.8)
+            if (gamepad1.dpad_right&&pot<1.8)
             {
                 wTarget+=25;
             }
@@ -1730,11 +1671,11 @@ double pot=potentiometer.getVoltage();
 
 
 
-        if (gamepad2.b && !Fchanged) {
+        if (gamepad1.b && !Fchanged) {
             if (Fpower == 1) Fpower = 0;
             else Fpower = 1;
             Fchanged = true;
-        } else if (!gamepad2.b) Fchanged = false;
+        } else if (!gamepad1.b) Fchanged = false;
 finger.setPosition(Fpower);
         //telemetry.update();
     }
@@ -1763,6 +1704,8 @@ finger.setPosition(Fpower);
 
                 angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 double distance2 = sensorDistance.getDistance(DistanceUnit.CM);
+                telemetry.addData("ogAngle", ogAngle);
+                telemetry.addData("ogDistance", ogDistance);
                 telemetry.addData("speed", power);
                 telemetry.addData("angles", angles.firstAngle);
                 telemetry.addData("distance", distance2);
@@ -1777,11 +1720,8 @@ finger.setPosition(Fpower);
                 } catch (Exception e) {
 
                 }
-                telemetry.addData("colorsUP",colorsUp.blue);
-                telemetry.addData("colorsDown",colorsDown.blue);
-                if (flaggers==1) {
-                    telemetry.addData("flagPos", flag.getPosition());
-                }telemetry.addData("voltage", "%.1f volts", getBatteryVoltage());
+                telemetry.addData("ICBM=",ICBM);
+                telemetry.addData("voltage", "%.1f volts", getBatteryVoltage());
                 telemetry.addData("potentiometer",potentiometer.getVoltage());
                 telemetry.update();
 

@@ -40,7 +40,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.TeleOp.SuperSuperDance;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -58,7 +57,7 @@ import java.util.Arrays;
 //import org.firstinspires.ftc.teamcode.OdometryAutonomous.OdometryGlobalCoordinatePosition;
 
 @Autonomous
-public class AutonomDemoV9 extends LinearOpMode {
+public class AutonomDemoV10 extends LinearOpMode {
     static double ringCount = 0;
     RingDetectingPipeline pipeline;
     private static int intPosition;
@@ -217,7 +216,7 @@ sleep(100);
                 //normalGyroDrive(0.25, 0, 0.3);
                 //normalDrive(0.45, 40, 40);
                 normalstrafeDrive(0.7, -55, 55);
-                normalDrive(0.4,1,-1);
+                normalDrive(0.4,-4.5,4.5);
                 //normalGyroDrive(0.3, 0, 0.5);
                 Katyusha1();
                 //sleep(100);
@@ -226,13 +225,13 @@ sleep(100);
                 normalDrive(0.7, -45, -45);
                 sleep(100);
                 normalDrive(0.7, 46, 46);
-                normalDrive(0.4,3,-3);
+                //normalDrive(0.4,-2,2);
 
                 //sleep(100);
                 Intake(0);
                 //normalGyroDrive(0.3, 0, 0.5);
                 InterContinentalBallisticMissleSingle(3);
-
+                normalGyroDrive(0.3, 0, 0.5);
                 normalDrive(1, 43, 43);
                 normalDrive(1, 55, -55);
 
@@ -253,10 +252,10 @@ sleep(100);
                 //sleep(100);
                 stop = 1;
                 //sleep(100);
-                normalstrafeDrive(1, 85, -85);
-                normalDrive(1, 123, -123);
+                normalstrafeDrive(1, 82, -82);
+                normalDrive(1, 119.5, -119.5);
                 //sleep(100);
-                normalDrive(1, -103,-103);
+                normalDrive(1, -115,-115);
                 stop = 0;
                 ///sleep(100);
                 armAutonom(370);
@@ -265,20 +264,21 @@ sleep(100);
                 //sleep(100);
                 armAutonom(150);
                 normalDrive(1, 10, 10);
-            stop();
+                stop();
         } else
             if(ringCount == 4.0){
                 wRelease.setPosition(0);
                 fingerAutonom(0.5);
-                normalDrive(0.7, 155, 155);
+                normalDrive(0.7, 156, 156);
 
                 //InterContinentalBallisticMissleShooters();
                 //normalGyroDrive(0.25, 0, 0.3);
                 //normalDrive(0.45, 40, 40);
                 normalstrafeDrive(0.6, -55, 55);
-                normalDrive(0.3,1,-1);
-                Katyusha4();
+                normalDrive(0.3,-5,5);
+                Katyusha(2750,0.22,0.59,0.86);
                 Trigger(0.35);
+                normalDrive(0.3,5,-5);
                 //sleep(100);
                 Intake(-1);
                 normalDrive(0.5, -40, -40);
@@ -292,18 +292,25 @@ sleep(100);
                 sleep(500);
                 normalDrive(0.6, 50, 50);
                 Intake(0);
-                normalDrive(0.3,2,-2);
+                //normalDrive(0.3,-2,2);
 
-                Katyusha4();
+                normalDrive(0.3,-5,5);
+                Katyusha(2769,0.22,0.59,0.84);
                 Trigger(0.35);
+                normalDrive(0.3,5,-5);
                 Intake(-1);
                 normalDrive(0.5, -80, -80);
                 sleep(500);
                 normalDrive(0.65, 80, 80);
                 Intake(0);
-                normalDrive(0.3,1,-1);
+                //normalDrive(0.3,-1,1);
 
-                InterContinentalBallisticMissleSingle(3);
+                normalDrive(0.3,-5,5);
+                Katyusha(2750,0.24,0.59,0.83);
+                Trigger(0.35);
+                //normalDrive(0.3,5,-5);
+                normalGyroDrive(0.25, 0, 0.3);
+
                 normalDrive(1, 140, 140);
                 normalstrafeDrive(1,-25,25);
                 wRelease(0.4);
@@ -328,9 +335,9 @@ sleep(100);
                 //normalGyroDrive(0.25, 0, 0.3);
                 //normalDrive(0.45, 40, 40);
                 normalstrafeDrive(0.6, -55, 55);
-                normalDrive(0.4,3,-3);
+                normalDrive(0.4,-5,5);
                 //normalGyroDrive(0.3, 0, 0.5);
-                Katyusha0();
+                Katyusha(2750,0.22,0.59,0.86);
 
 
 
@@ -559,7 +566,7 @@ if (4==1) {
     normalstrafeDrive(0.6, -58, 58);
     sleep(100);
     normalGyroDrive(0.2, 0, 0.3);
-    Katyusha4();
+    Katyusha();
     Trigger(0.35);
     //sleep(100);
     Intake(-1);
@@ -575,7 +582,7 @@ if (4==1) {
     normalDrive(0.6, 54, 54);
     Intake(0);
 
-    Katyusha4();
+    Katyusha();
     Trigger(0.35);
     Intake(-1);
     normalDrive(0.5, -80, -80);
@@ -780,7 +787,7 @@ if (distance2>5000)
 
 
 
-            Arm.setPower(0.3);
+            Arm.setPower(0.25);
             Arm.setTargetPosition(pos);
             Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -1100,10 +1107,9 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if (pos == 3) {
                 //sleep(250);
             Trigger.setPosition(0.87);
-            Launcher1.setVelocity(-2250);
-            Launcher2.setVelocity(-2250);//1915
+            Launcher1.setVelocity(2800);//1915
             sleep(1000);
-            Shooter.setPosition(0.87);
+            Shooter.setPosition(0.84);
             sleep(700);
             Shooter.setPosition(0);
             Launcher1.setVelocity(0);
@@ -1477,7 +1483,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
-    public void Katyusha4() {
+    public void Katyusha() {
 
 
         DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
@@ -1502,9 +1508,22 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Launcher2.setMotorType(motorConfigurationType2);
         Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        double ICBM = -0.76;
+        Trigger.setPosition(0.87);
+        //Launcher1.setVelocity(-3000);//2250/13.72V      2220/13.62V
+        //Launcher2.setVelocity(-3000);
+        Launcher1.setVelocity(2769);
 
-
+        sleep(1500);
+        Shooter.setPosition(0.24);
+        //sleep(500);
+        Shooter.setPosition(0.59);
+        //sleep(600);
+        Shooter.setPosition(0.84);
+        sleep(800);
+        Shooter.setPosition(0);
+        Launcher1.setPower(0.0);
+        //Launcher2.setPower(0);
+/*
         Trigger.setPosition(0.87);
         Launcher1.setVelocity(-2500);
         Launcher2.setVelocity(-2500);//2180
@@ -1519,7 +1538,64 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Shooter.setPosition(0);
         Launcher1.setPower(0);
         Launcher2.setPower(0);
+*/
+    }
+    public void Katyusha(double v,double s1,double s2,double s3) {
 
+
+        DcMotorEx InTake = hardwareMap.get(DcMotorEx.class, "leftEncoder");
+        InTake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        DcMotorEx Launcher1 = hardwareMap.get(DcMotorEx.class, "rightEncoder");
+        DcMotorEx Launcher2 = hardwareMap.get(DcMotorEx.class, "frontEncoder");
+
+        //Launcher1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //Launcher2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //Shooter.setDirection(Servo.Direction.REVERSE);
+
+        MotorConfigurationType motorConfigurationType =
+                Launcher1.getMotorType().clone();
+        motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+        Launcher1.setMotorType(motorConfigurationType);
+        Launcher1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        MotorConfigurationType motorConfigurationType2 =
+                Launcher2.getMotorType().clone();
+        motorConfigurationType2.setAchieveableMaxRPMFraction(1.0);
+        Launcher2.setMotorType(motorConfigurationType2);
+        Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        Trigger.setPosition(0.87);
+        //Launcher1.setVelocity(-3000);//2250/13.72V      2220/13.62V
+        //Launcher2.setVelocity(-3000);
+        Launcher1.setVelocity(v);//2769,0.24,0.59,0.84
+
+        sleep(1500);
+        Shooter.setPosition(s1);
+        //sleep(500);
+        Shooter.setPosition(s2);
+        //sleep(600);
+        Shooter.setPosition(s3);
+        sleep(800);
+        Shooter.setPosition(0);
+        Launcher1.setPower(0.0);
+        //Launcher2.setPower(0);
+/*
+        Trigger.setPosition(0.87);
+        Launcher1.setVelocity(-2500);
+        Launcher2.setVelocity(-2500);//2180
+        sleep(1000);
+        Shooter.setPosition(0.21);
+        sleep(700);
+        Shooter.setPosition(0.62);
+        sleep(700);
+        Shooter.setPosition(0.89);
+        sleep(700);
+        //Trigger.setPosition(0.87);
+        Shooter.setPosition(0);
+        Launcher1.setPower(0);
+        Launcher2.setPower(0);
+*/
     }
     public void Katyusha1() {
 
@@ -1548,8 +1624,22 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         double ICBM = -0.76;
 
-
         Trigger.setPosition(0.87);
+        //Launcher1.setVelocity(-3000);//2250/13.72V      2220/13.62V
+        //Launcher2.setVelocity(-3000);
+        Launcher1.setVelocity(2800);
+
+        sleep(1800);
+        Shooter.setPosition(0.24);
+        //sleep(500);
+        Shooter.setPosition(0.59);
+        //sleep(600);
+        Shooter.setPosition(0.84);
+        sleep(800);
+        Shooter.setPosition(0);
+        Launcher1.setPower(0.0);
+        //Launcher2.setPower(0);
+        /*Trigger.setPosition(0.87);
         Launcher1.setVelocity(-2610);
         Launcher2.setVelocity(-2610);//2180
         sleep(1000);
@@ -1563,7 +1653,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Shooter.setPosition(0);
         Launcher1.setPower(0);
         Launcher2.setPower(0);
-
+*/
 
     }
     public void Katyusha0() {
@@ -1591,10 +1681,22 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Launcher2.setMotorType(motorConfigurationType2);
         Launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        double ICBM = -0.76;
-
-
         Trigger.setPosition(0.87);
+        //Launcher1.setVelocity(-3000);//2250/13.72V      2220/13.62V
+        //Launcher2.setVelocity(-3000);
+        Launcher1.setVelocity(2800);
+
+        sleep(2000);//2800,0.24,0.59,0.84
+        Shooter.setPosition(0.24);
+        //sleep(500);
+        Shooter.setPosition(0.59);
+        //sleep(600);
+        Shooter.setPosition(0.84);
+        sleep(1000);
+        Shooter.setPosition(0);
+        Launcher1.setPower(0.0);
+        //Launcher2.setPower(0);
+        /*Trigger.setPosition(0.87);
         Launcher1.setVelocity(-2700);
         Launcher2.setVelocity(-2700);//2180
         sleep(1000);
@@ -1608,7 +1710,7 @@ Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Shooter.setPosition(0);
         Launcher1.setPower(0);
         Launcher2.setPower(0);
-
+*/
 
     }
   /*  public void encoderDrive(double speed, double leftInches, double rightInches) {
